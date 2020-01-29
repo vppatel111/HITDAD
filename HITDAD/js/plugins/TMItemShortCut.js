@@ -80,17 +80,15 @@
  *   このプラグインは RPGツクールMV Version 1.5.0 で動作確認をしています。
  *
  *
- * プラグインコマンド:
- *
- *   setItemSC 0 1
- *     アイテム１番をスロット０番に登録
+ * To set items use:
+ * setItemSC <hotbar_index> <item_id> as a plugin command.
  */
 
 var Imported = Imported || {};
 Imported.TMItemShortCut = true;
 
 (function() {
-  
+
   var parameters = PluginManager.parameters('TMItemShortCut');
   var shortCutKey = parameters['shortCutKey'] || 'S';
   var slotNumber = +(parameters['slotNumber'] || 8);
@@ -106,7 +104,7 @@ Imported.TMItemShortCut = true;
   //
 
   Input.keyMapper[shortCutKey.charCodeAt()] = 'shortCut';
-  
+
   Input._isItemShortCut = function() {
     return this.isPressed('shortCut');
   };
@@ -121,7 +119,7 @@ Imported.TMItemShortCut = true;
     _Game_Party_initialize.call(this);
     this.initShortCut();
   };
-  
+
   // ショートカットの初期化
   Game_Party.prototype.initShortCut = function() {
     this._shortCut = [];
@@ -129,7 +127,7 @@ Imported.TMItemShortCut = true;
       this._shortCut[i] = 0;
     }
   };
-  
+
   // ショートカットのセット
   Game_Party.prototype.setShortCut = function(index, itemId) {
     this._shortCut[index] = itemId;
@@ -138,14 +136,15 @@ Imported.TMItemShortCut = true;
   //-----------------------------------------------------------------------------
   // Game_Player
   //
-  
-  // 移動が可能かどうかを返す
+
+  // Stop the player from moving when hotbar menu is open.
+  // TODO: After hotkeys are changed to WASD, remove this constraint.
   var _Game_Player_canMove = Game_Player.prototype.canMove;
   Game_Player.prototype.canMove = function() {
     if (Input._isItemShortCut()) return false;
     return _Game_Player_canMove.call(this);
   };
-  
+
   //-----------------------------------------------------------------------------
   // Game_Interpreter
   //
@@ -157,11 +156,11 @@ Imported.TMItemShortCut = true;
       $gameParty.setShortCut(+args[0], +args[1]);
     }
   };
-  
+
   //-----------------------------------------------------------------------------
   // Window_Item
   //
-  
+
   var _Window_ItemList_processHandling = Window_ItemList.prototype.processHandling;
   Window_ItemList.prototype.processHandling = function() {
     _Window_ItemList_processHandling.call(this);
@@ -172,18 +171,18 @@ Imported.TMItemShortCut = true;
       this.callHandler('menu');
     }
   };
-  
+
   //-----------------------------------------------------------------------------
   // Window_ShortCut
   //
-  
+
   function Window_ShortCut() {
     this.initialize.apply(this, arguments);
   }
-  
+
   Window_ShortCut.prototype = Object.create(Window_Selectable.prototype);
   Window_ShortCut.prototype.constructor = Window_ShortCut;
-  
+
   // オブジェクトの初期化
   Window_ShortCut.prototype.initialize = function(mapFlag) {
     Window_Selectable.prototype.initialize.call(this, windowX, windowY,
@@ -200,7 +199,7 @@ Imported.TMItemShortCut = true;
     }
     this.select(0);
   };
-  
+
   // 標準パディングを取得
   Window_ShortCut.prototype.standardPadding = function() {
     return 12;
@@ -210,12 +209,12 @@ Imported.TMItemShortCut = true;
   Window_ShortCut.prototype.maxCols = function() {
     return slotNumber;
   };
-  
+
   // 項目数の取得
   Window_ShortCut.prototype.maxItems = function() {
     return slotNumber;
   };
-  
+
   // 項目の間隔
   Window_ShortCut.prototype.spacing = function() {
     return 0;
@@ -253,7 +252,7 @@ Imported.TMItemShortCut = true;
       this._data[index] = 0;
     }
   };
-  
+
   // フレーム更新
   Window_ShortCut.prototype.update = function() {
     Window_Selectable.prototype.update.call(this);
@@ -281,21 +280,21 @@ Imported.TMItemShortCut = true;
       }
     }
   };
-  
+
   Window_ShortCut.prototype.playOkSound = function() {
   };
 
   //-----------------------------------------------------------------------------
   // Scene_Map
   //
-  
+
   // 表示物の作成
   var _Scene_Map_createDisplayObjects = Scene_Map.prototype.createDisplayObjects;
   Scene_Map.prototype.createDisplayObjects = function() {
     _Scene_Map_createDisplayObjects.call(this);
     this.createShortCutWindow();
   };
-  
+
   // ショートカットウィンドウの作成
   Scene_Map.prototype.createShortCutWindow = function() {
     this._shortCutWindow = new Window_ShortCut(true);
@@ -311,12 +310,12 @@ Imported.TMItemShortCut = true;
     }
     _Scene_Map_terminate.call(this);
   };
-  
+
   // メニュー呼び出し判定
   Scene_Map.prototype.isMenuCalled = function() {
     return Input.isTriggered('cancel') || TouchInput.isCancelled();
   };
-  
+
   // ショートカット実行
   Scene_Map.prototype.onShortCutOk = function() {
     var item = this._shortCutWindow.item();
@@ -413,7 +412,7 @@ Imported.TMItemShortCut = true;
     var item = this.item();
     return DataManager.isItem(item) ? item.occasion !== 1 : false;
   };
-  
+
   Scene_Item.prototype.onShortCutCancel = function() {
     this.hideSubWindow(this._shortCutWindow);
   };
