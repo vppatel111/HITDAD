@@ -351,6 +351,12 @@
  * 初期値: Z
  * @default Z
  *
+ * @param pickupKey
+ * @type string
+ * @desc プレイヤーの弾発射に使用するキー
+ * 初期値: shift
+ * @default shift
+ *
  * @param jumpKey
  * @type string
  * @desc プレイヤーのジャンプに使用するキー
@@ -638,6 +644,9 @@ function Game_Bullet() {
 
   if (parameters['attackKey']) {
     Input.keyMapper[parameters['attackKey'].charCodeAt()] = 'attack';
+  }
+  if (parameters['pickupKey']) {
+    Input.keyMapper[parameters['pickupKey'].charCodeAt()] = 'pickup';
   }
   if (parameters['jumpKey']) {
     Input.keyMapper[parameters['jumpKey'].charCodeAt()] = 'jump';
@@ -1220,7 +1229,8 @@ function Game_Bullet() {
     this._lastY = 0;
     this._lastSwim = false;
     this._collideW = 0.375;
-    this._collideH = 0.75;
+    this._collideH = 1.0;
+    // this._collideH = 0.75;
     this._collideIds = [];
     this._landingObject = null;
     this._landingRegion = 0;
@@ -2140,7 +2150,7 @@ function Game_Bullet() {
   // ボタン操作による持ち上げ（投げ）
   Game_Player.prototype.carryByInput = function() {
     if (this.isCarrying()) {
-      if (Input.isTriggered('attack')) {
+      if (Input.isTriggered('pickup')) {
         var target = this._carryingObject;
         var lastRealX = target._realX;
         target.collideMapLeft();
@@ -2172,15 +2182,26 @@ function Game_Bullet() {
         this.executeHurl();
       }
     } else {
-      if (Input.isTriggered('attack') && Input.isPressed('down') &&
-          this.isLanding() && !this.isGuarding() &&
-          Object.prototype.toString.call(this._landingObject) !== '[object Array]') {
-        if (this._carryPower >= this._landingObject._weight) {
-          this.executeCarry();
-        } else {
-          this._shotDelay = 1;
-        }
+      if (Input.isTriggered('pickup') && this.isLanding() && Object.prototype.toString.call(this._landingObject) !== '[object Array]') // 7PF Pickup Implementation
+      {
+        this.executeCarry();
+        console.log("Pickup Called");
+        // if (this._carryPower >= this._landingObject._weight) {
+        //
+        // } else {
+        //   this._shotDelay = 1;
+        // }
       }
+      // if (Input.isTriggered('pickup') &&
+      //     this.isLanding() &&
+      //     Object.prototype.toString.call(this._landingObject) !== '[object Array]') {
+      //
+      //   if (this._carryPower >= this._landingObject._weight) {
+      //     this.executeCarry();
+      //   } else {
+      //     this._shotDelay = 1;
+      //   }
+      // }
     }
   };
 
@@ -2733,7 +2754,7 @@ function Game_Bullet() {
   Game_Event.prototype.update = function() {
     if (this._carried) {
       this._realX = $gamePlayer._realX;
-      this._realY = $gamePlayer._realY - $gamePlayer._collideH - 0.001;
+      this._realY = $gamePlayer._realY - $gamePlayer._collideH  * 2.5 - 0.001; // Height of carried object 7PF
       this._x = Math.floor(this._realX);
       this._y = Math.floor(this._realY);
     } else {
