@@ -2063,6 +2063,7 @@ function Game_Bullet() {
   // 入力の処理
   Game_Player.prototype.updateInput = function() {
     this.carryByInput();
+    this.answerPhone();                             // 7PF function 
     if (this.isCarrying()) this._shotDelay = 1;
     this.attackByInput();
     this.changeByInput();
@@ -3763,3 +3764,16 @@ function Game_Bullet() {
   };
 
 })();
+
+// 7PF Function
+Game_Player.prototype.answerPhone = function() {
+  if (Input.isTriggered('tab')) {
+    if ($gameSwitches.value(10)) {
+      console.log("Answer Clicked!!")
+      $gameSwitches.setValue($gameVariables.value(10), true);
+      $gameSwitches.setValue(10, false);
+    } else {
+      console.log("Answer Clicked But No Phone Call!!")
+    }
+  }
+}
