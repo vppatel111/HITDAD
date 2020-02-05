@@ -1,4 +1,4 @@
-﻿//=============================================================================
+//=============================================================================
 // TMPlugin - ジャンプアクション
 // バージョン: 1.0.1
 // 最終更新日: 2017/07/28
@@ -1241,13 +1241,13 @@ function Game_Bullet() {
     this._jumpInput = 0;
     this._dashCount = 0;
     this._friction = 0;
-    this._moveSpeed = 0.05;
-    this._jumpSpeed = 0.14;
+    this._moveSpeed = 0.07;
+    this._jumpSpeed = 0.15;
     this._swimSpeed = 0.02;
     this._dashSpeedX = 0.1;
     this._dashSpeedY = 0.03;
     this._ladderSpeed = 0.04;
-    this._accele = 0.003
+    this._accele = 0.007
     this._ladderAccele = 0.003;
     this._jumpInputTime = 0;
     this._dashCountTime = 30;
@@ -2579,11 +2579,11 @@ function Game_Bullet() {
       var characterName   = actor.characterName();
       var characterIndex  = actor.characterIndex();
       var data = actor.actor();
-      this._moveSpeed = +(data.meta['move_speed'] || 0.05);
-      this._jumpSpeed = +(data.meta['jump_speed'] || 0.14);
+      this._moveSpeed = +(data.meta['move_speed'] || 0.07);
+      this._jumpSpeed = +(data.meta['jump_speed'] || 0.15);
       this._swimSpeed = +(data.meta['swim_speed'] || 0.02);
       this._ladderSpeed = +(data.meta['ladder_speed'] || 0.04);
-      this._accele = +(data.meta['accele'] || 0.003);
+      this._accele = +(data.meta['accele'] || 0.007);
       this._ladderAccele = +(data.meta['ladder_accele'] || 0.003);
       this._jumpInputTime = +(data.meta['jump_input'] || 0);
       this._swimJump = +(data.meta['swim_jump'] || 0.1);
