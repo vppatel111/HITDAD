@@ -2754,7 +2754,7 @@ function Game_Bullet() {
   Game_Event.prototype.update = function() {
     if (this._carried) {
       this._realX = $gamePlayer._realX;
-      this._realY = $gamePlayer._realY - $gamePlayer._collideH  * 2.5 - 0.001; // Height of carried object 7PF
+      this._realY = $gamePlayer._realY - $gamePlayer._collideH - 0.001; // Height of carried object 7PF
       this._x = Math.floor(this._realX);
       this._y = Math.floor(this._realY);
     } else {
