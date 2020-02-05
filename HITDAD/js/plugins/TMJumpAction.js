@@ -1229,7 +1229,7 @@ function Game_Bullet() {
     this._lastY = 0;
     this._lastSwim = false;
     this._collideW = 0.375;
-    this._collideH = 1.0;
+    this._collideH = 0.75;
     // this._collideH = 0.75;
     this._collideIds = [];
     this._landingObject = null;
