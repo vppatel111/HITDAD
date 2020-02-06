@@ -2214,7 +2214,7 @@ function Game_Bullet() {
   };
 
   // 投げる
-  Game_Player.prototype.executeHurl = function() {
+  Game_Player.prototype.executeHurl = function() { // 7PF Modify Here To Throw In Direction of Mouse
     this._carryingObject.hurl();
     if (Input.isPressed('up')) {            // 上を押しながら投げた
       this._carryingObject.dash(this._vx, -0.14);
@@ -2228,9 +2228,9 @@ function Game_Bullet() {
       }
     } else {    // 左右いずれかを押しながら、またはどちらも押さずに投げた
       if (this._direction === 4 || Input.isPressed('left')) {
-        this._carryingObject.dash(-0.14, -0.03)
-      } else if (this._direction === 6 || Input.isPressed('right')) {
-        this._carryingObject.dash(0.14, -0.03)
+        this._carryingObject.dash(-0.07, -0.03)
+      } else if (this._direction === 6 || Input.isPressed('right')) { // 7PF Modify
+        this._carryingObject.dash(0.07, -0.03)
       } else {
         this._carryingObject.dash(0, 0);
       }
