@@ -9,5 +9,6 @@ var $plugins =
 {"name":"TMItemShortCut","status":true,"description":"マップシーンで直接アイテムを使用する機能を追加します。","parameters":{"shortCutKey":"E","slotNumber":"8","windowX":"408","windowY":"0","windowWidth":"408","windowHeight":"64","backgroundType":"0","windowHide":"true"}},
 {"name":"SRD_SuperToolsEngine","status":true,"description":"The heart of all maker-style plugins; it adds a playtesting editor that can be opened with F12.","parameters":{"Connect Editor":"true","Auto Open Window":"false","Auto Move Window":"true","Menu Editor Exempt List":"[\"Window_BattleLog\",\"Window_MapName\"]"}},
 {"name":"SRD_HUDMaker","status":true,"description":"Allows developers to create their own map-based HUD through an in-game GUI window!","parameters":{"Active Updating":"false","Show During Events":"transparent","Map Global Condition":"","Battle Global Condition":"","Disable Delete Key":"true"}},
-{"name":"SPF_PhoneCall","status":true,"description":"Allows Phone Call mechanic in conjunction with SRD_HUDMaker.js plugin!","parameters":{}}
+{"name":"SPF_PhoneCall","status":true,"description":"Allows Phone Call mechanic in conjunction with SRD_HUDMaker.js plugin!","parameters":{}},
+{"name":"SPFMeleeAttack","status":true,"description":"This plugin implements a melee attack where when the player\r\npresses a key with \"keyCode\", the gamePlayer will use an item specified\r\nby \"itemID\" and immediately incapacitate an enemy.","parameters":{"keyCode":"81","itemID":"1"}}
 ];
