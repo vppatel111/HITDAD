@@ -1260,6 +1260,10 @@ function Game_Bullet() {
     this._invincibleTime = 10;
     this._carried = false;
     this._carryingObject = null;
+	
+	
+	//DECLARE VARIABLES FOR SOUND EFFECTS INTEGRATION --eesayas
+	this._jumpBefore = false;
   };
 
   // バトラーの取得
@@ -1640,9 +1644,18 @@ function Game_Bullet() {
   Game_CharacterBase.prototype.getLand = function(y) {
     this._realY = y;
     this._vy = 0;
-    this.resetJump();
+	
+	//PLAY LANDING AFTTER JUMP SOUND EFFECTS --eesayas
+	if(this._jumpBefore){
+		var jumpLand =  {name: 'Jump_Land', pan: 0, pitch: 100, volume: 500};
+		AudioManager.playSe(jumpLand);
+		this._jumpBefore = false;
+    }
+	
+	this.resetJump();
     if (this._ladder) this.getOffLadder();
     this.updateDamageFall();
+
   };
 
   // ジャンプカウントのリセット
@@ -2419,7 +2432,11 @@ function Game_Bullet() {
       this._vy = this.isSwimming() ? -this._swimJump : -this._jumpSpeed;
       this.resetStopCount();
       this.straighten();
-      AudioManager.playSe(actSeJump);
+	  
+	  //PLAY SOUND EFFECTS FROM IMPORTED AUDIO - eesayas
+	  var jumpGrunt =  {name: 'Jump_Grunt', pan: 0, pitch: 100, volume: 75};
+      AudioManager.playSe(jumpGrunt);
+	  this._jumpBefore = true;
     }
   };
 
@@ -3364,6 +3381,7 @@ function Game_Bullet() {
   };
 
   // シールドの更新
+
   Sprite_Character.prototype.updateShield = function() {
     var battler = this._character.battler();
     if (this._shieldSprite) {
