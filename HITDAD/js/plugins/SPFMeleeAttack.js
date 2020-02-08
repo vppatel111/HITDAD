@@ -74,8 +74,7 @@
     enemy._walkAnime = false;
     enemy._stepAnime = false;
 
-    var enemyJSON = SPF_ParseNote(event);
-    enemyJSON.isStunned = true;
+    enemy._isStunned = true;
   }
 
   // Checks collision of player with all events based on the direction they

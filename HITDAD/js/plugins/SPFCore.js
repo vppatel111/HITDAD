@@ -2,11 +2,17 @@
 // SPFCore
 // v1.0
 //
+// To initialize enemies:
+// Each level needs ONE event with the following calls:
+// Plugin command: spf_initializeEnemies()
+// Wait: 60 frames
+// Erase Event (under character).
 //=============================================================================
 
 /*:
  * @plugindesc This plugin is required for all SPF plugins to work.
- * This plugin assumes that TMJumpAction plugin is also installed.
+ * This plugin assumes that TMJumpAction plugin is also installed. Also each level
+ * requires some initialization, see above.
  *
  * @author Vishal Patel
  */
@@ -21,6 +27,9 @@ var DIRECTION = {
 var SPF_NPCS = {
   SECURITY_NPC: "security_npc"
 };
+
+// TODO: Convert this to an object later.
+var SPF_Enemies = [];
 
 function SPF_Projectile() {
   this.initialize.apply(this, arguments);
@@ -42,7 +51,6 @@ function SPF_ParseNote(event) {
   var parsedJSON = {};
   try {
       parsedJSON = JSON.parse(event.event().note);
-      // console.log("Actually parsed: ", parsedJSON);
   } catch(e) {
       // Do nothing...
   }
@@ -52,11 +60,42 @@ function SPF_ParseNote(event) {
 
 (function() {
 
+  var aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function(command, args) {
+    aliasPluginCommand.call(this, command, args);
+
+    if (command === 'spf_initializeEnemies()') {
+      initializeEnemies();
+    }
+  };
+
+  function initializeEnemies() {
+    console.log("called once and hopefully never again");
+    var allEvents = $gameMap.events();
+    SPF_Enemies = getEnemyEvents(allEvents);
+  }
+
+  function getEnemyEvents(events) {
+
+    var enemyEvents = [];
+    events.forEach(function(event) {
+
+      var eventJSON = SPF_ParseNote(event);
+
+      if (!SPF_isEmpty(eventJSON) &&
+          eventJSON.npcType == SPF_NPCS.SECURITY_NPC) {
+
+        enemyEvents.push(event);
+      }
+
+    });
+
+    return enemyEvents;
+  }
+
   SPF_Projectile.prototype.initialize = function(override_projectile) {
     this._opacity = 0;
     this.setup($gamePlayer.x, $gamePlayer.y - 1, 0.01);
-
-    console.log("This is override", override_projectile);
 
     // If an override of SPF_Projectile is passed in use that, otherwise
     // use default SPF_Projectile object.

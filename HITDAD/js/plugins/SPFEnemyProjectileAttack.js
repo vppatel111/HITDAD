@@ -30,7 +30,6 @@
   var ENEMY_RANGE = parseInt(parameters['enemyDetectionRange']);
 
   var aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
-
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     aliasPluginCommand.call(this, command, args);
 
@@ -38,28 +37,6 @@
       checkEnemyDetection();
     }
   };
-
-  // TODO: Optimization: Only check for enemies that are within the screen range.
-  function getEnemyEvents(events) {
-
-    var enemyEvents = [];
-    events.forEach(function(event) {
-
-      var eventJSON = SPF_ParseNote(event);
-
-      console.log(eventJSON);
-
-      if (!SPF_isEmpty(eventJSON) &&
-          eventJSON.npcType == SPF_NPCS.SECURITY_NPC &&
-          !eventJSON.isStunned) {
-
-        enemyEvents.push(event);
-      }
-
-    });
-
-    return enemyEvents;
-  }
 
   function isLookingInDirectionOfPlayer(event) {
     var distanceX = event.x - $gamePlayer.x;
@@ -134,13 +111,12 @@
   }
 
   function checkEnemyDetection() {
-    var allEvents = $gameMap.events();
-    var enemyEvents = getEnemyEvents(allEvents);
 
-    enemyEvents.forEach(function(enemy) {
+    SPF_Enemies.forEach(function(enemy) {
 
       if (isPlayerInRange(enemy) &&
-          isLookingInDirectionOfPlayer(enemy)) {
+          isLookingInDirectionOfPlayer(enemy) &&
+          !enemy._isStunned) {
 
         var bullet = new SPF_EnemyProjectile();
 
