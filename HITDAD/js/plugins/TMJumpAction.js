@@ -1229,7 +1229,7 @@ function Game_Bullet() {
     this._lastY = 0;
     this._lastSwim = false;
     this._collideW = 0.375;
-    this._collideH = 1.0;
+    this._collideH = 0.75;
     // this._collideH = 0.75;
     this._collideIds = [];
     this._landingObject = null;
@@ -1260,6 +1260,10 @@ function Game_Bullet() {
     this._invincibleTime = 10;
     this._carried = false;
     this._carryingObject = null;
+	
+	
+	//DECLARE VARIABLES FOR SOUND EFFECTS INTEGRATION --eesayas
+	this._jumpBefore = false;
   };
 
   // バトラーの取得
@@ -1640,9 +1644,18 @@ function Game_Bullet() {
   Game_CharacterBase.prototype.getLand = function(y) {
     this._realY = y;
     this._vy = 0;
-    this.resetJump();
+	
+	//PLAY LANDING AFTTER JUMP SOUND EFFECTS --eesayas
+	if(this._jumpBefore){
+		var jumpLand =  {name: 'Jump_Land', pan: 0, pitch: 100, volume: 500};
+		AudioManager.playSe(jumpLand);
+		this._jumpBefore = false;
+    }
+	
+	this.resetJump();
     if (this._ladder) this.getOffLadder();
     this.updateDamageFall();
+
   };
 
   // ジャンプカウントのリセット
@@ -2214,7 +2227,7 @@ function Game_Bullet() {
   };
 
   // 投げる
-  Game_Player.prototype.executeHurl = function() {
+  Game_Player.prototype.executeHurl = function() { // 7PF Modify Here To Throw In Direction of Mouse
     this._carryingObject.hurl();
     if (Input.isPressed('up')) {            // 上を押しながら投げた
       this._carryingObject.dash(this._vx, -0.14);
@@ -2228,9 +2241,9 @@ function Game_Bullet() {
       }
     } else {    // 左右いずれかを押しながら、またはどちらも押さずに投げた
       if (this._direction === 4 || Input.isPressed('left')) {
-        this._carryingObject.dash(-0.14, -0.03)
-      } else if (this._direction === 6 || Input.isPressed('right')) {
-        this._carryingObject.dash(0.14, -0.03)
+        this._carryingObject.dash(-0.07, -0.03)
+      } else if (this._direction === 6 || Input.isPressed('right')) { // 7PF Modify
+        this._carryingObject.dash(0.07, -0.03)
       } else {
         this._carryingObject.dash(0, 0);
       }
@@ -2419,7 +2432,11 @@ function Game_Bullet() {
       this._vy = this.isSwimming() ? -this._swimJump : -this._jumpSpeed;
       this.resetStopCount();
       this.straighten();
-      AudioManager.playSe(actSeJump);
+	  
+	  //PLAY SOUND EFFECTS FROM IMPORTED AUDIO - eesayas
+	  var jumpGrunt =  {name: 'Jump_Grunt', pan: 0, pitch: 100, volume: 75};
+      AudioManager.playSe(jumpGrunt);
+	  this._jumpBefore = true;
     }
   };
 
@@ -2754,7 +2771,7 @@ function Game_Bullet() {
   Game_Event.prototype.update = function() {
     if (this._carried) {
       this._realX = $gamePlayer._realX;
-      this._realY = $gamePlayer._realY - $gamePlayer._collideH  * 2.5 - 0.001; // Height of carried object 7PF
+      this._realY = $gamePlayer._realY - $gamePlayer._collideH - 0.001; // Height of carried object 7PF
       this._x = Math.floor(this._realX);
       this._y = Math.floor(this._realY);
     } else {
@@ -3364,6 +3381,7 @@ function Game_Bullet() {
   };
 
   // シールドの更新
+
   Sprite_Character.prototype.updateShield = function() {
     var battler = this._character.battler();
     if (this._shieldSprite) {
