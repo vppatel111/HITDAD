@@ -3,8 +3,6 @@
 // v1.0
 //
 // TODOS:
-// - Ensure player can only hit enemies specificed with characterName (param).
-// - Might have to change incapacitateEnemy() to stop event from running.
 // - Add variable distance collision detection.
 // - Only allow player to melee attack active enemies
 //=============================================================================

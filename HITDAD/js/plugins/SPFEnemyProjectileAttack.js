@@ -6,9 +6,11 @@
 // their notes to shoot at you.
 //
 // To use:
-// 1. You must place an event in the world that calls plugin command "spf_ShootBullet()"
+// 1. You must place a parallel event in the world that calls
+//    plugin command "spf_ShootBullet()"
 // 2. Then place a delay of N seconds (attack speed of enemy).
-// 3. Ensure enemies have {"npcType": "security_npc"} in their note field.
+// 3. Ensure enemies have {"npcType": "security_npc"} in their note field and
+//    have priority set to "Same as characters".
 //=============================================================================
 
 /*:

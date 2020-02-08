@@ -157,7 +157,7 @@ function SPF_ParseNote(event) {
       Sprite.prototype.initialize.call(this);
 
       var bitmap = new Bitmap(100, 100);
-      bitmap.drawCircle(25, 25, 15, 'white');
+      bitmap.drawCircle(25, 25, 15, 'red');
       this.bitmap = bitmap;
 
       // Bullet keeps track of projectile X & Y in map.
