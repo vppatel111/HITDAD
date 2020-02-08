@@ -1,5 +1,4 @@
 [
 null,
-{"id":1,"battlerName":"","characterIndex":0,"characterName":"hitdadnew","classId":1,"equips":[],"faceIndex":4,"faceName":"","traits":[],"initialLevel":1,"maxLevel":99,"name":"HITDAD","nickname":"","note":"<w:0.3><h:1.9>","profile":""},
-{"id":2,"battlerName":"","characterIndex":2,"characterName":"hitdadnew","classId":1,"equips":[0,0,0,0,0],"faceIndex":0,"faceName":"","traits":[],"initialLevel":1,"maxLevel":99,"name":"Security Guard 1","nickname":"","note":"","profile":""}
+{"id":1,"battlerName":"","characterIndex":0,"characterName":"hitdadnew","classId":1,"equips":[],"faceIndex":0,"faceName":"HITDAD_Portrait_SET","traits":[],"initialLevel":1,"maxLevel":99,"name":"HITDAD","nickname":"","note":"<w:0.3><h:1.9>","profile":""}
 ]
