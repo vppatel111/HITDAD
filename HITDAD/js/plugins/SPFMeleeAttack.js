@@ -58,7 +58,9 @@
 
     var enemyEvent = {};
     events.forEach(function(event) {
-      if (event.event().note == "security_npc") {
+
+      var eventJSON = SPF_ParseNote(event);
+      if (eventJSON.npcType == SPF_NPCS.SECURITY_NPC) {
         enemyEvent = event;
       }
     });
@@ -66,15 +68,14 @@
     return enemyEvent;
   }
 
-  function isEmpty(obj) {
-    return Object.keys(obj).length === 0;
-  }
-
   function incapacitateEnemy(enemy) {
 
     enemy._moveType = 0; // Fixed
     enemy._walkAnime = false;
     enemy._stepAnime = false;
+
+    var enemyJSON = SPF_ParseNote(event);
+    enemyJSON.isStunned = true;
   }
 
   // Checks collision of player with all events based on the direction they
@@ -110,13 +111,13 @@
 
     var item = findItemById(itemID, $gameParty.allItems());
 
-    if (!isEmpty(item)) {
+    if (!SPF_isEmpty(item)) {
 
       // Figure out if we hit an enemy.
       var enemyHit = getEnemyCollision(eventsHit);
 
       // Incapacitate the enemy.
-      if (!isEmpty(enemyHit)) {
+      if (!SPF_isEmpty(enemyHit)) {
         $gameParty.loseItem(item, 1);
         incapacitateEnemy(enemyHit);
       }
