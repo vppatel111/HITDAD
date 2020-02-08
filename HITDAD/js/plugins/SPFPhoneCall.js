@@ -15,6 +15,7 @@
  * Plugin Commands
  *========================================================================================
  * Phone Trigger 1         // Call this in the event trigger
+ * Phone Ring              // Will count down ring until call is missed or answered
  * Phone Answer            // To answer phone (Not required typically, is called on click)
  * Phone End               // Call after dialogue is over
  *========================================================================================
@@ -25,7 +26,7 @@
  *
  * For event:
  *      Event Page 1 should call Phone Trigger N with N being the phone call number.
- *      Event Page 2 should open when the variable N + 10 = 1 and include the ringtone.
+ *      Event Page 2 should open when the variable N + 10 = 1 and call Phone Ring.
  *      Event Page 3 should open when the variable N + 10 = 2 and include the dialogue,
  *             and then call Phone End.
  *      Event Page 4 should open when the variable N + 10 = 3 and be blank.
@@ -45,11 +46,44 @@
  * @desc The variable and switch number that will be used to keep track of the state of phone calls.
  * @default 10
  *
+ * @param ringtone
+ * @desc Ringtone for when HitDad gets a call
+ * @default
+ * @dir audio/bgs/
+ * @type file
+ *
+ * @param ringtoneParams
+ * @type string
+ * @desc Parameters for ringtone ( {"volume":90, "pitch":100, "pan":0} )
+ * @default {"volume":90, "pitch":100, "pan":0}
+ *
+ * @param ringDuration
+ * @type number
+ * @desc Seconds until call is missed
+ * @default 8
+ *
+ * @param phoneClickSound
+ * @desc Ringtone for when HitDad gets a call
+ * @default
+ * @dir audio/se/
+ * @type file
+ *
+ * @param phoneClickParams
+ * @type string
+ * @desc Parameters for ringtone ( {"volume":90, "pitch":100, "pan":0} )
+ * @default {"volume":90, "pitch":100, "pan":0}
+ *
+ *
  */
 (function() {
     let parameters = PluginManager.parameters('SPFPhoneCall');
-    let answerKey = parameters['key'];
-    let varNum = parseInt(parameters["varNum"])
+    let answerKey = parameters['key'] || "mouseup";
+    let varNum = parseInt(parameters["varNum"] || 10)
+    let ringDuration = parseInt(parameters["ringDuration"] || 8)
+    let ringTone = JSON.parse(parameters['ringtoneParams'] || '{}');
+    ringTone.name = parameters['ringtone'] || '';
+    let phoneClickSe = JSON.parse(parameters['phoneClickParams'] || '{}');
+    phoneClickSe.name = parameters['phoneClickSound'] || '';
 
     if (answerKey === "mouseup") {
         document.addEventListener("mouseup", function (event) {
@@ -79,12 +113,24 @@
                         $gameSwitches.setValue(varNum, true);
                         $gameVariables.setValue(varNum, parseInt(args[1]) + 10);
                         $gameVariables.setValue($gameVariables.value(varNum), 1);
+                        $gameTimer.start(ringDuration * 60);
+                        AudioManager.playBgs(ringTone);
+                        break;
+                    case "Ring":
+                        if ($gameTimer.seconds() === 0)
+                        {
+                            $gameSwitches.setValue(varNum, false);
+                            $gameVariables.setValue($gameVariables.value(varNum), 3);
+                            $gameTimer.stop();
+                            AudioManager.stopBgs(ringTone);
+                        }
                         break;
                     case "Answer":
                         AnswerCall();
                         break;
                     case "End":
                         $gameVariables.setValue($gameVariables.value(varNum), 3);
+                        AudioManager.playSe(phoneClickSe);
                     default:
                         break;
                 }
@@ -95,6 +141,9 @@
     let AnswerCall = function() {
         $gameSwitches.setValue(varNum, false);
         $gameVariables.setValue($gameVariables.value(varNum), 2);
+        $gameTimer.stop();
+        AudioManager.playSe(phoneClickSe);
+        AudioManager.stopBgs(ringTone);
     }
 
 })();
