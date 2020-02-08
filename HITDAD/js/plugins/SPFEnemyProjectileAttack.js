@@ -7,10 +7,8 @@
 //
 // To use:
 // 1. You must place an event in the world that calls plugin command "spf_ShootBullet()"
-// 2. Then place a delay of 1s (attack speed of enemy).
-// 3. Ensure enemies have "security_npc" in their note field.
-
-// TODO: Stop the enemy from shooting at you while incapacitated.
+// 2. Then place a delay of N seconds (attack speed of enemy).
+// 3. Ensure enemies have {"npcType": "security_npc"} in their note field.
 //=============================================================================
 
 /*:
@@ -23,11 +21,24 @@
  * @desc Key to press to perform melee attack.
  * @default 5
  *
+ * @param bulletDamage
+ * @type number
+ * @desc When the player gets hit, this is the amount of damage they'll take.
+ * @default 500
+ *
+ * @param bulletSpeed
+ * @type number
+ * @desc The speed of the bullet.
+ * @default 0.1
+ *
  */
 (function() {
 
   var parameters = PluginManager.parameters('SPFEnemyProjectileAttack');
+
   var ENEMY_RANGE = parseInt(parameters['enemyDetectionRange']);
+  var BULLET_DAMAGE = parseInt(parameters['bulletDamage']);
+  var BULLET_SPEED = parseFloat(parameters['bulletSpeed']);
 
   var aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
@@ -98,7 +109,7 @@
   }
 
   SPF_EnemyProjectile.prototype.killPlayer = function() {
-    $gamePlayer.battler().gainHp(-500); // Instantly kill player.
+    $gamePlayer.battler().gainHp(-1 * BULLET_DAMAGE); // Damage the player.
   }
 
   SPF_EnemyProjectile.prototype.update = function () {
@@ -122,9 +133,9 @@
 
         // Shoot the projectile in that direction.
         if (enemy.direction() == DIRECTION.LEFT) {
-          bullet.setup(enemy.x, enemy.y - 1, -0.1);
+          bullet.setup(enemy.x, enemy.y - 1, -1 * BULLET_SPEED);
         } else {
-          bullet.setup(enemy.x, enemy.y - 1, 0.1);
+          bullet.setup(enemy.x, enemy.y - 1, BULLET_SPEED);
         }
 
       }

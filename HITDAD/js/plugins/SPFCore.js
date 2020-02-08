@@ -14,6 +14,8 @@
  * This plugin assumes that TMJumpAction plugin is also installed. Also each level
  * requires some initialization, see above.
  *
+ * IMPORTANT: Import this plugin BEFORE the other SPF plugins.
+ *
  * @author Vishal Patel
  */
 
@@ -40,9 +42,8 @@ function SPF_isEmpty(obj) {
 }
 
 /*
-  Use event notes field to keep track of event state.
-  ex) {"npcType": "security_npc", "isStunned": "false"}
-
+  Use event notes field to keep track of types
+  ex) {"npcType": "security_npc"}
 */
 
 // Converts Note JSON into a JS object.
@@ -70,7 +71,6 @@ function SPF_ParseNote(event) {
   };
 
   function initializeEnemies() {
-    console.log("called once and hopefully never again");
     var allEvents = $gameMap.events();
     SPF_Enemies = getEnemyEvents(allEvents);
   }
@@ -165,9 +165,6 @@ function SPF_ParseNote(event) {
 
       this.visible = true;
       this.opacity = 255;
-
-      console.log($gameMap.adjustY(this._bullet._y),
-                  $gameMap.adjustY(this._bullet._x))
 
       SceneManager._scene.addChild(this);
   };
