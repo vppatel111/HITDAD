@@ -182,4 +182,6 @@ function SPF_ParseNote(event) {
       this.y = this._bullet.screenY();
   };
 
+
+
 })();
