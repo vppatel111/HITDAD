@@ -282,6 +282,17 @@
  * @desc 防御効果音のパラメータ。
  * 初期値: {"volume":90, "pitch":150, "pan":0}
  * @default {"volume":90, "pitch":150, "pan":0}
+ *
+ * @param landSe
+ * @desc Sound Effect to be played when landing
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param landSeParam
+ * @type string
+ * @desc Sound effect when landing
+ * @default {"volume":50, "pitch":100, "pan":0}
  * 
  * @param playerBulletsMax
  * @type number
@@ -604,6 +615,8 @@ function Game_Bullet() {
   var actUseEventSeSwim = JSON.parse(parameters['useEventSeSwim']);
   var actSeJump = JSON.parse(parameters['jumpSeParam'] || '{}');
   actSeJump.name = parameters['jumpSe'] || '';
+  var actSeLand = JSON.parse(parameters['landSeParam'] || '{}');
+  actSeLand.name = parameters['landSe'] || '';
   var actSeDash = JSON.parse(parameters['dashSeParam'] || '{}');
   actSeDash.name = parameters['dashSe'] || '';
   var actSeFlick = JSON.parse(parameters['flickSeParam'] || '{}');
@@ -1262,7 +1275,7 @@ function Game_Bullet() {
     this._carryingObject = null;
 	
 	
-	//DECLARE VARIABLES FOR SOUND EFFECTS INTEGRATION --eesayas
+	//DECLARE VARIABLES FOR SOUND EFFECTS INTEGRATION --eesayas 7PF
 	this._jumpBefore = false;
   };
 
@@ -1647,11 +1660,16 @@ function Game_Bullet() {
 	
 	//PLAY LANDING AFTTER JUMP SOUND EFFECTS --eesayas
 	if(this._jumpBefore){
-		var jumpLand =  {name: 'Jump_Land', pan: 0, pitch: 100, volume: 500};
-		AudioManager.playSe(jumpLand);
+		// var jumpLand =  {name: 'Jump_Land', pan: 0, pitch: 100, volume: 500};
+		AudioManager.playSe(actSeLand);
 		this._jumpBefore = false;
+        $gameActors.actor(1).setCharacterImage('!hitdad', 0);
+        $gamePlayer.refresh();
+        // $gameScreen.startShake(2,20,1);
     }
-	
+
+
+
 	this.resetJump();
     if (this._ladder) this.getOffLadder();
     this.updateDamageFall();
@@ -2386,9 +2404,18 @@ function Game_Bullet() {
         }
       }
       if (Input.isPressed('up')) {
-        if (this.isCollideLadder(false)) this.getOnLadder(false);
+        if (this.isCollideLadder(false)) {
+          this.getOnLadder(false);
+          $gameActors.actor(1).setCharacterImage('!hitdad', 0);
+          $gamePlayer.refresh();
+        }
       } else if (Input.isPressed('down')) {
-        if (this.isCollideLadder(true)) this.getOnLadder(true);
+        if (this.isCollideLadder(true)) {
+          this.getOnLadder(true);
+          $gameActors.actor(1).setCharacterImage('!hitdad', 0);
+          $gamePlayer.refresh();
+
+        }
       }
     }
   };
@@ -2433,9 +2460,12 @@ function Game_Bullet() {
       this.resetStopCount();
       this.straighten();
 	  
-	  //PLAY SOUND EFFECTS FROM IMPORTED AUDIO - eesayas
-	  var jumpGrunt =  {name: 'Jump_Grunt', pan: 0, pitch: 100, volume: 75};
-      AudioManager.playSe(jumpGrunt);
+	  //PLAY SOUND EFFECTS FROM IMPORTED AUDIO - eesayas 7PF
+	  // var jumpGrunt =  {name: 'Jump_Grunt', pan: 0, pitch: 100, volume: 75};
+      // AudioManager.playSe(jumpGrunt);
+      $gameActors.actor(1).setCharacterImage('!hitdad', 1);
+      $gamePlayer.refresh();
+      AudioManager.playSe(actSeJump);
 	  this._jumpBefore = true;
     }
   };
