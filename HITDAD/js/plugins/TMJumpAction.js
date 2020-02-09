@@ -1246,6 +1246,8 @@ function Game_Bullet() {
     // this._collideH = 0.75;
     this._collideIds = [];
     this._landingObject = null;
+    this._leftObject = null;
+    this._rightObject = null;
     this._landingRegion = 0;
     this._ladder = false;
     this._lift = false;
@@ -1600,6 +1602,7 @@ function Game_Bullet() {
             if (this.isDashing() && this.checkFlickWeight(character._weight)) {
               character.flick(this);
             }
+            this._leftObject = character;
             this._realX = character._realX + character._collideW + 0.001 + this._collideW;
             this._vx = 0;
           }
@@ -1623,6 +1626,7 @@ function Game_Bullet() {
             if (this.isDashing() && this.checkFlickWeight(character._weight)) {
               character.flick(this);
             }
+            this._rightObject = character;
             this._realX = character._realX - character._collideW - 0.001 - this._collideW;
             this._vx = 0;
           }
@@ -2040,6 +2044,10 @@ function Game_Bullet() {
   Game_Player.prototype.getOnLadder = function(downFlag) {
     this._ladder = true;
     this._landingObject = null;
+    this._leftObject = null;
+    this._rightObject = null;
+    this._leftObject = null;
+    this._rightObject = null;
     this.setDirection(8);
     var lastRealX = this._realX;
     this._realX = Math.floor(this._realX) + 0.5;
@@ -2213,8 +2221,15 @@ function Game_Bullet() {
         this.executeHurl();
       }
     } else {
-      if (Input.isTriggered('pickup') && this.isLanding() && Object.prototype.toString.call(this._landingObject) !== '[object Array]') // 7PF Pickup Implementation
+      if (Input.isTriggered('pickup') && this.isLanding() && ((Object.prototype.toString.call(this._landingObject) !== '[object Array]') || (!!this._leftObject) || (!!this._rightObject))) // 7PF Pickup Implementation
       {
+        if (!!this._rightObject) {
+          this._landingObject = this._rightObject;
+        }
+        if (!!this._leftObject) {
+          this._landingObject = this._leftObject;
+        }
+
         this.executeCarry();
         console.log("Pickup Called");
         // if (this._carryPower >= this._landingObject._weight) {
@@ -2238,10 +2253,15 @@ function Game_Bullet() {
 
   // 持ち上げる
   Game_Player.prototype.executeCarry = function() {
-    this._carryingObject = $gameMap.event(this._landingObject.eventId());
-    this._carryingObject.carry();
+    carrying_object = $gameMap.event(this._landingObject.eventId());
+    if (SPF_ParseNote(carrying_object).npcType != SPF_NPCS.SECURITY_NPC) {
+      this._carryingObject = carrying_object;
+      this._carryingObject.carry();
+      AudioManager.playSe(actSeCarry);
+    }
     this._landingObject = null;
-    AudioManager.playSe(actSeCarry);
+    this._leftObject = null;
+    this._rightObject = null;
   };
 
   // 投げる
