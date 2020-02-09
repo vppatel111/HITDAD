@@ -1667,7 +1667,9 @@ function Game_Bullet() {
         $gamePlayer.refresh();
         // $gameScreen.startShake(2,20,1);
     }
-	
+
+
+
 	this.resetJump();
     if (this._ladder) this.getOffLadder();
     this.updateDamageFall();
@@ -2402,9 +2404,18 @@ function Game_Bullet() {
         }
       }
       if (Input.isPressed('up')) {
-        if (this.isCollideLadder(false)) this.getOnLadder(false);
+        if (this.isCollideLadder(false)) {
+          this.getOnLadder(false);
+          $gameActors.actor(1).setCharacterImage('!hitdad', 0);
+          $gamePlayer.refresh();
+        }
       } else if (Input.isPressed('down')) {
-        if (this.isCollideLadder(true)) this.getOnLadder(true);
+        if (this.isCollideLadder(true)) {
+          this.getOnLadder(true);
+          $gameActors.actor(1).setCharacterImage('!hitdad', 0);
+          $gamePlayer.refresh();
+
+        }
       }
     }
   };

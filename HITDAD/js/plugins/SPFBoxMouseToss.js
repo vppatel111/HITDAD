@@ -23,7 +23,7 @@
         console.log($gameMap);
         var tw = $gameMap.tileWidth();
         console.log(tw);
-        console.log($gameMap.adjustX(10.0));
+        // console.log($gameMap.adjustX(10.0));
         // return Math.round($gameMap.adjustX($gamePlayer._x) * tw);
     };
 

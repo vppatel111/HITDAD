@@ -87,7 +87,7 @@
 
     if (answerKey === "mouseup") {
         document.addEventListener("mouseup", function (event) {
-            if ($gameSwitches.value(varNum) && event.pageX < 250.0 && event.pageY < 80.0) {
+            if ($gameSwitches.value(varNum) && event.pageX < 115.0 && event.pageY < 100.0) {
                 AnswerCall();
             }
         })
