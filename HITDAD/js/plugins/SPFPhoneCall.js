@@ -129,6 +129,7 @@
                         AnswerCall();
                         break;
                     case "End":
+                        $gameSwitches.setValue(11, false);
                         $gameVariables.setValue($gameVariables.value(varNum), 3);
                         AudioManager.playSe(phoneClickSe);
                     default:
@@ -139,6 +140,7 @@
     }
 
     let AnswerCall = function() {
+        $gameSwitches.setValue(11, true); // In Phone Call variable
         $gameSwitches.setValue(varNum, false);
         $gameVariables.setValue($gameVariables.value(varNum), 2);
         $gameTimer.stop();
