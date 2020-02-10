@@ -117,8 +117,9 @@
   SPF_EnemyProjectile.prototype.update = function () {
       SPF_Projectile.prototype.update.call(this);
 
-      if (this.collidePlayer()) {
+      if (this.collidePlayer() && !this._dealtDamage) {
         this.erase();
+        this._dealtDamage = true
         this.killPlayer();
       }
   }
