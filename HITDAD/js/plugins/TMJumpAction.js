@@ -1059,6 +1059,7 @@ function Game_Bullet() {
   // 初期化
   Game_Bullet.prototype.initialize = function() {
     this._opacity = 0;
+    this._dealtDamage = false;
   };
 
   // セットアップ
@@ -3229,8 +3230,8 @@ function Game_Bullet() {
       sprite.y = this.y;
       sprite.z = this.z + 1;
       sprite.setup(battler);
-      this._damages.push(sprite);
-      this.parent.addChild(sprite);
+      // this._damages.push(sprite);
+      // this.parent.addChild(sprite);
       battler.clearDamagePopup();
       battler.clearActionResult();
     }
@@ -3567,7 +3568,7 @@ function Game_Bullet() {
     this._character = character;
     this._battler = this._character.battler();
     Sprite.prototype.initialize.call(this);
-    this.bitmap = new Bitmap(32, 4);
+    this.bitmap = new Bitmap(32, 8);
     this.z = 9;
     this.anchor.x = 0.5;
     this.anchor.y = 1;
@@ -3597,7 +3598,7 @@ function Game_Bullet() {
     if (this._hp === 0) return;
     this.bitmap.fillRect(0, 0, 32, 4, '#000000');
     var w = Math.floor(this._hp / this._mhp * 30);
-    this.bitmap.fillRect(1, 1, w, 2, this._hp === this._mhp ? '#fff060' : '#ffa030');
+    this.bitmap.fillRect(1, 1, w, 4, this._hp === this._mhp ? '#fff060' : '#ffa030');
   };
 
   //-----------------------------------------------------------------------------
