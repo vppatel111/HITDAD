@@ -2291,6 +2291,13 @@ function Game_Bullet() {
     AudioManager.playSe(actSeHurl);
   };
 
+  Game_Player.prototype.dropBox = function() { // 7PF Modify Here To Drop Box
+      this._carryingObject.hurl();
+      this._carryingObject.dash(0, 0);
+      this._carryingObject = null;
+      this._shotDelay = 1;
+  };
+
   // ボタン入力による攻撃
   Game_Player.prototype.attackByInput = function() {
     if (this._shotDelay > 0) {
