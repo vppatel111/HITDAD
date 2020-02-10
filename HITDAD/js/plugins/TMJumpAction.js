@@ -2293,10 +2293,13 @@ function Game_Bullet() {
   };
 
   Game_Player.prototype.dropBox = function() { // 7PF Modify Here To Drop Box
+    if (!!this._carryingObject) {
       this._carryingObject.hurl();
       this._carryingObject.dash(0, 0);
       this._carryingObject = null;
       this._shotDelay = 1;
+    }
+
   };
 
   // ボタン入力による攻撃
