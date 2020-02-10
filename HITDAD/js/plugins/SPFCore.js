@@ -156,8 +156,13 @@ function SPF_ParseNote(event) {
   SPF_Projectile_Sprite.prototype.initialize = function (projectile) {
       Sprite.prototype.initialize.call(this);
 
-      var bitmap = new Bitmap(100, 100);
-      bitmap.drawCircle(25, 25, 15, 'red');
+      //var bitmap = new Bitmap(100, 100);
+      // bitmap.drawCircle(25, 25, 15, 'red');
+      // this.bitmap = bitmap;
+
+      // TODO: Create a custom projectile which can take
+      // custom sprites.
+      var bitmap = ImageManager.loadSystem("bullet");
       this.bitmap = bitmap;
 
       // Bullet keeps track of projectile X & Y in map.
