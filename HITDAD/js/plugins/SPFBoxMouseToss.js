@@ -80,7 +80,7 @@
     }
 
     document.addEventListener("mousedown", function (event) {
-        if (!isEmpty($gamePlayer)) {
+        if (!isEmpty($gamePlayer) && !$gameSwitches.value(11) && !($gameSwitches.value(10) && (event.pageX < 250 || event.pageY < 250)) && event.button === 0) {
             $gamePlayer.executeMouseHurl.call(this, event.pageX);
         }
     });
