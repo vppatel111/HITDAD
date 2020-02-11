@@ -200,7 +200,13 @@ Imported.TMItemShortCut = true;
     }
     this.select(0);
   };
-  
+
+  Window_ShortCut.prototype.select = function(index) {
+    Window_Selectable.prototype.select.call(this, index);
+
+    SPF_CurrentlySelectedItem = this.item();
+  }
+
   // 標準パディングを取得
   Window_ShortCut.prototype.standardPadding = function() {
     return 12;
@@ -269,7 +275,9 @@ Imported.TMItemShortCut = true;
         this.activate();
         if (windowHide) this.open();
       } else {
-        this.deactivate();
+
+        // Optimization: Window only calls this when active.
+        if (this.active) this.deactivate();
         if (windowHide) this.close();
       }
       var index = Graphics.frameCount % slotNumber;

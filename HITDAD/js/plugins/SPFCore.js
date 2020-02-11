@@ -30,6 +30,15 @@ var SPF_NPCS = {
   SECURITY_NPC: "security_npc"
 };
 
+// NOTE: SPF_CurrentlySelectedItem is only updated by the TMItemShortCut plugin
+// however, TMItemShortCut initially returns null if the player has not opened
+// the hotbar.
+
+// ASSUMPTION: I assume that HITDAD by default has ONE pacifier item in
+// the first slot of their inventory. This allows me to assume that this
+// structure is always initialized.
+var SPF_CurrentlySelectedItem = {};
+
 // TODO: Convert this to an object later.
 var SPF_Enemies = [];
 
@@ -65,14 +74,22 @@ function SPF_ParseNote(event) {
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     aliasPluginCommand.call(this, command, args);
 
+    // TODO: Rename this to initialize.
     if (command === 'spf_initializeEnemies()') {
       initializeEnemies();
+      initializePlayer();
     }
   };
 
   function initializeEnemies() {
     var allEvents = $gameMap.events();
     SPF_Enemies = getEnemyEvents(allEvents);
+  }
+
+  // The currently selected item by default is the first in the
+  // player's inventory.
+  function initializePlayer() {
+    SPF_CurrentlySelectedItem = $gameParty.allItems()[0];
   }
 
   function getEnemyEvents(events) {
