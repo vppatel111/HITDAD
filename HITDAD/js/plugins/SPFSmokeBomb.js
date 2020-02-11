@@ -1,26 +1,52 @@
 //=============================================================================
-// SPFPhoneCall
+// SPFSmokeBomb
 // v1.0
 //
-// TODO: Extend off the projectile plugin instead of building a custom implementation.
 // TODO: Drawing entire trajectory is hard so only draw an arrow
 // in the direction of shooting whne mouse down.
 //=============================================================================
 
 /*:
- * @plugindesc Plugin to extend TMJumpAction to allow player to hurl box in the
- * direction of a mouse click. REQUIRES TMJumpAction plugin.
+ * @plugindesc This plugin implements a smoke bomb attack.
  *
  * @author Vishal Patel
  *
- * @help: REQUIRES TMJumpAction plugin.
+ * @help REQUIRES TMJumpAction plugin.
+ * This plugin implements the smoke bomb attack where when a player selects the
+ * item from the hotbar and presses the right mouse button, the gamePlayer will
+ * use an item with "itemID" and shoot a projectile which when it hits the
+ * ground will "explode" and stun all enemies within the radius.
+ *
+ * @param itemID
+ * @type number
+ * @desc Item required to perform attack.
+ * @default 2
+ *
+ * @param gravity
+ * @type number
+ * @desc How fast the item will fall.
+ * @default 0.005
+ *
+ * @param initialVelocity
+ * @type number
+ * @desc The initial speed of the projectile when thrown.
+ * @default 0.20
+ *
+ * @param explosionRadius
+ * @type number
+ * @desc The number of pixels of the explosion.
+ * @default 150
  *
  */
 (function() {
 
-  var GRAVITY = 0.005;                        // Units: m/s^2
-  var INITIAL_VELOCITY = 0.20;                // Initial value = 0.25
-  var EXPLOSION_RADIUS = 150;
+  var parameters = PluginManager.parameters('SPFSmokeBomb');
+
+  var itemID = parseInt(parameters['itemID']);
+  var GRAVITY = parseFloat(parameters['gravity']);
+  var INITIAL_VELOCITY = parseFloat(parameters['initialVelocity']);
+  var EXPLOSION_RADIUS = parseFloat(parameters['explosionRadius']);
+
   var EXPLOSION_RADIUS_TILES = EXPLOSION_RADIUS / 48; // Explosion radius in tiles.
 
   // Calculate the angle between the player and mouse and returns
@@ -32,16 +58,22 @@
 
   }
 
-  // TODO: Ensure this only works on gamemap as otherwise we'll get errors.
   document.addEventListener("mousedown", function (event) {
 
       if ($dataMap) {
 
+        var item = SPF_FindItemById(itemID);
+        if (!SPF_isEmpty(item)) {
           var angle = angleToPlayer(event.pageX, event.pageY, $gamePlayer.screenX(), $gamePlayer.screenY());
           var bomb = new SPF_ProjectileBomb(angle);
 
-          // Draw a nice ol' line instead.
+          // TODO: Draw an arrow indicator for direction of throw.
           //var arrow = new SPF_ArrowSprite();
+
+          // Decrement item after bomb is thrown
+          $gameParty.loseItem(item, 1);
+        }
+
       }
   });
 
@@ -68,7 +100,6 @@
 
     this.setup($gamePlayer.x, $gamePlayer.y - 1, initialVx, initialVy);
 
-    // TODO: Create the projectile bomb extended off the original projectile.
     this._sprite = new SPF_ProjectileBomb_Sprite(this);
 
   };
@@ -131,7 +162,7 @@
     explosion.opacity = 255;
 
     // Draw explosion slightly higher then where it landed.
-    explosion.x = this.screenX();
+    explosion.x = this.screenX() - EXPLOSION_RADIUS;
     explosion.y = this.screenY() - EXPLOSION_RADIUS;
 
     explosion.spawnX = this._x;
@@ -145,7 +176,7 @@
       }
 
       // This ensures the explosion does not move when the screen moves.
-      explosion.x = SPF_MapXToScreenX(this.spawnX);
+      explosion.x = SPF_MapXToScreenX(this.spawnX) - EXPLOSION_RADIUS;
       explosion.y = SPF_MapYToScreenY(this.spawnY) - EXPLOSION_RADIUS;
 
     });
@@ -186,10 +217,7 @@
       var bitmap = new Bitmap(100, 100);
       bitmap.drawCircle(25, 25, 15, 'red');
       this.bitmap = bitmap;
-
-      // Bullet keeps track of projectile X & Y in map.
-      this._bullet = projectile;
-
+      this._bomb = projectile;
       this.visible = true;
       this.opacity = 255;
 
@@ -200,56 +228,13 @@
       Sprite.prototype.update.call(this);
 
       // Update the bullet position
-      this._bullet.update();
+      this._bomb.update();
 
-      this.opacity = this._bullet._opacity;
+      this.opacity = this._bomb._opacity;
 
       // Convert map X/Y into a screen coordinate to draw.
-      this.x = this._bullet.screenX();
-      this.y = this._bullet.screenY();
-  };
-
-  function SPF_ArrowSprite() {
-      this.initialize.apply(this, arguments);
-  }
-
-  SPF_ArrowSprite.prototype = Object.create(Sprite.prototype);
-  SPF_ArrowSprite.prototype.constructor = SPF_ArrowSprite;
-  SPF_ArrowSprite.prototype.initialize = function () {
-      Sprite.prototype.initialize.call(this);
-
-      // I'm stupid, the reason why this doesn't work is because the SPRITE
-      // needs to be in the location of the gameplayer, not the bitmap.
-      var tw = $gameMap.tileWidth();
-      var th = $gameMap.tileHeight();
-
-      var bitmap = new Bitmap(100, 100);
-      bitmap.drawArrow(0, 0, "red");
-
-      this.bitmap = bitmap;
-
-      this.x = Math.round($gameMap.adjustX($gamePlayer.x) * tw);
-      this.y = Math.round($gameMap.adjustY($gamePlayer.y) * th);
-
-      this.visible = true;
-      this.opacity = 255;
-
-      console.log("drwaing arrow @", this.x, this.y);
-
-      SceneManager._scene.addChild(this);
-  };
-
-  SPF_ArrowSprite.prototype.update = function () {
-      Sprite.prototype.update.call(this);
-
-      // Update the bullet position
-      // this._bullet.update();
-      //
-      // this.opacity = this._bullet._opacity;
-      //
-      // // Convert map X/Y into a screen coordinate to draw.
-      // this.x = this._bullet.screenX();
-      // this.y = this._bullet.screenY();
+      this.x = this._bomb.screenX();
+      this.y = this._bomb.screenY();
   };
 
 })();

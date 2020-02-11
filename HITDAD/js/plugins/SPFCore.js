@@ -66,6 +66,20 @@ function SPF_IncapacitateEnemy(enemy) {
   enemy._isStunned = true;
 }
 
+function SPF_FindItemById(idOfItem) {
+
+    var listOfItems = $gameParty.allItems();
+    var itemToReturn = {};
+
+    listOfItems.forEach(function(item) {
+      if (item.id == idOfItem) {
+        itemToReturn = item;
+      }
+    });
+
+    return itemToReturn;
+}
+
 /*
   Use event notes field to keep track of types
   ex) {"npcType": "security_npc"}
@@ -181,14 +195,13 @@ function SPF_ParseNote(event) {
   SPF_Projectile_Sprite.prototype.initialize = function (projectile) {
       Sprite.prototype.initialize.call(this);
 
-      //var bitmap = new Bitmap(100, 100);
-      // bitmap.drawCircle(25, 25, 15, 'red');
-      // this.bitmap = bitmap;
-
-      // TODO: Create a custom projectile which can take
-      // custom sprites.
-      var bitmap = ImageManager.loadSystem("bullet");
+      var bitmap = new Bitmap(100, 100);
+      bitmap.drawCircle(25, 25, 15, 'red');
       this.bitmap = bitmap;
+
+      // TODO: Add the custom bullet sprite into the game.
+      // var bitmap = ImageManager.loadSystem("bullet");
+      // this.bitmap = bitmap;
 
       // Bullet keeps track of projectile X & Y in map.
       this._bullet = projectile;

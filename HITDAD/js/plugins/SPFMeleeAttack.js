@@ -40,18 +40,6 @@
 
   document.addEventListener('keydown', Input.SPFCustomKeypress);
 
-  function findItemById(idOfItem, listOfItems) {
-      var itemToReturn = {};
-
-      listOfItems.forEach(function(item) {
-        if (item.id == idOfItem) {
-          itemToReturn = item;
-        }
-      });
-
-      return itemToReturn;
-  }
-
   function getEnemyCollision(events) {
 
     var enemyEvent = {};
@@ -97,7 +85,7 @@
     // Do nothing if the player didn't collide with any events.
     if (eventsHit.length == 0) return;
 
-    var item = findItemById(itemID, $gameParty.allItems());
+    var item = SPF_FindItemById(itemID);
 
     if (!SPF_isEmpty(item)) {
 
