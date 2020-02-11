@@ -37,8 +37,33 @@ function SPF_Projectile() {
   this.initialize.apply(this, arguments);
 }
 
+// Sprite wrapper that let's us easily change the update
+// behaviour and provides some other handy functions.
+function SPF_Sprite() {
+    this.initialize.apply(this, arguments);
+}
+
 function SPF_isEmpty(obj) {
   return Object.keys(obj).length === 0;
+}
+
+function SPF_MapXToScreenX(mapX) {
+  var tw = $gameMap.tileWidth();
+  return Math.round($gameMap.adjustX(mapX) * tw);
+}
+
+function SPF_MapYToScreenY(mapY) {
+  var th = $gameMap.tileHeight();
+  return Math.round($gameMap.adjustY(mapY) * th);
+}
+
+function SPF_IncapacitateEnemy(enemy) {
+
+  enemy._moveType = 0; // Fixed
+  enemy._walkAnime = false;
+  enemy._stepAnime = false;
+
+  enemy._isStunned = true;
 }
 
 /*
@@ -185,6 +210,34 @@ function SPF_ParseNote(event) {
       // Convert map X/Y into a screen coordinate to draw.
       this.x = this._bullet.screenX();
       this.y = this._bullet.screenY();
+  };
+
+  SPF_Sprite.prototype = Object.create(Sprite.prototype);
+  SPF_Sprite.prototype.constructor = SPF_Sprite;
+  SPF_Sprite.prototype.initialize = function (bitmap) {
+      Sprite.prototype.initialize.call(this);
+  };
+
+  // Set the update callback.
+  SPF_Sprite.prototype.setUpdate = function (updateFunction) {
+      this._update = updateFunction;
+  };
+
+  SPF_Sprite.prototype.show = function () {
+    SceneManager._scene.addChild(this);
+  }
+
+  SPF_Sprite.prototype.remove = function () {
+    SceneManager._scene.removeChild(this);
+  }
+
+  SPF_Sprite.prototype.update = function () {
+      Sprite.prototype.update.call(this);
+
+      if (typeof this._update === "function") {
+        this._update();
+      }
+
   };
 
 })();

@@ -19,7 +19,9 @@
 (function() {
 
   var GRAVITY = 0.005;                        // Units: m/s^2
-  var INITIAL_VELOCITY = 0.20; // Initial value = 0.25
+  var INITIAL_VELOCITY = 0.20;                // Initial value = 0.25
+  var EXPLOSION_RADIUS = 150;
+  var EXPLOSION_RADIUS_TILES = EXPLOSION_RADIUS / 48; // Explosion radius in tiles.
 
   // Calculate the angle between the player and mouse and returns
   // the angle in radians.
@@ -32,7 +34,6 @@
 
   // TODO: Ensure this only works on gamemap as otherwise we'll get errors.
   document.addEventListener("mousedown", function (event) {
-      console.log("mouse clicked at", event.pageX,  " -  ",  event.pageY);
 
       if ($dataMap) {
 
@@ -52,20 +53,18 @@
     return Math.round( num * 100 + Number.EPSILON ) / 100;
   }
 
+  function SPF_DistanceBetweenTwoPoints(x1, y1, x2, y2) {
+    return Math.sqrt( Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2) );
+  }
+
   SPF_ProjectileBomb.prototype.initialize = function(angle) {
     this._opacity = 0;
-
-    // ORIGINAL
-    // vx: 0.20
-    // vy: -0.15
 
     var initialVx = -1 * Math.cos(angle) * INITIAL_VELOCITY;
     var initialVy = -1 * Math.sin(angle) * INITIAL_VELOCITY;
 
     initialVx = SPF_RoundToTwoDecimalPlaces(initialVx);
     initialVy = SPF_RoundToTwoDecimalPlaces(initialVy);
-
-    console.log("projectile motion baby", angle, initialVx, initialVy);
 
     this.setup($gamePlayer.x, $gamePlayer.y - 1, initialVx, initialVy);
 
@@ -111,14 +110,68 @@
 
     if (this.collideMap()) {
        this.erase();
+       this.explode();
     }
 
   }
 
+  SPF_ProjectileBomb.prototype.explode = function () {
+
+    var explosion = new SPF_Sprite();
+    var bitmap = new Bitmap(EXPLOSION_RADIUS * 2,
+                            EXPLOSION_RADIUS * 2);
+
+    bitmap.drawCircle(EXPLOSION_RADIUS,
+                      EXPLOSION_RADIUS,
+                      EXPLOSION_RADIUS, 'red');
+
+    explosion.bitmap = bitmap;
+
+    explosion.visible = true;
+    explosion.opacity = 255;
+
+    // Draw explosion slightly higher then where it landed.
+    explosion.x = this.screenX();
+    explosion.y = this.screenY() - EXPLOSION_RADIUS;
+
+    explosion.spawnX = this._x;
+    explosion.spawnY = this._y;
+
+    // Make the smoke bomb slowly disperse
+    explosion.setUpdate(function() {
+
+      if (explosion.opacity > 0) {
+        explosion.opacity -= 1;
+      }
+
+      // This ensures the explosion does not move when the screen moves.
+      explosion.x = SPF_MapXToScreenX(this.spawnX);
+      explosion.y = SPF_MapYToScreenY(this.spawnY) - EXPLOSION_RADIUS;
+
+    });
+
+    explosion.show();
+
+    // TODO: Stun the enemies caught in the radius of the blast
+    // for a period of time instead of indefinitely.
+    SPF_Enemies.forEach(function(enemy) {
+
+      var distanceToExplosion = SPF_DistanceBetweenTwoPoints(enemy.x, enemy.y,
+                                           explosion.spawnX, explosion.spawnY);
+
+      if (distanceToExplosion < EXPLOSION_RADIUS_TILES) {
+        SPF_IncapacitateEnemy(enemy);
+      }
+
+    });
+
+  }
+
   SPF_ProjectileBomb.prototype.erase = function() {
-    // TODO: Remove the projectile completely instead
-    // of just making it disappear.
     this._opacity = 0;
+
+    // By removing sprite from screen, we won't get updates anymore.
+    SceneManager._scene.removeChild(this._sprite);
   };
 
   function SPF_ProjectileBomb_Sprite() {

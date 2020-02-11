@@ -66,15 +66,6 @@
     return enemyEvent;
   }
 
-  function incapacitateEnemy(enemy) {
-
-    enemy._moveType = 0; // Fixed
-    enemy._walkAnime = false;
-    enemy._stepAnime = false;
-
-    enemy._isStunned = true;
-  }
-
   // Checks collision of player with all events based on the direction they
   // are facing.
   function getEventsInDirectionOfCollision() {
@@ -116,7 +107,7 @@
       // Incapacitate the enemy.
       if (!SPF_isEmpty(enemyHit)) {
         $gameParty.loseItem(item, 1);
-        incapacitateEnemy(enemyHit);
+        SPF_IncapacitateEnemy(enemyHit);
       }
 
     }
