@@ -88,7 +88,7 @@
 
     var item = SPF_FindItemById(itemID);
 
-    if (!SPF_isEmpty(item)) {
+    if (!SPF_isEmpty(item) && SPF_IsItemSelected(item)) {
 
       // Figure out if we hit an enemy.
       var enemyHit = getEnemyCollision(eventsHit);

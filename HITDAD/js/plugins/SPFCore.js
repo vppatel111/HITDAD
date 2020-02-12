@@ -56,6 +56,17 @@ function SPF_isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
 
+function SPF_IsItemSelected(item) {
+
+  if (item &&
+      SPF_CurrentlySelectedItem &&
+      SPF_CurrentlySelectedItem.id == item.id) {
+    return true;
+  }
+
+  return false;
+}
+
 function SPF_MapXToScreenX(mapX) {
   var tw = $gameMap.tileWidth();
   return Math.round($gameMap.adjustX(mapX) * tw);
