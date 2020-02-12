@@ -87,13 +87,13 @@
 
     if (answerKey === "mouseup") {
         document.addEventListener("mouseup", function (event) {
-            if ($gameSwitches.value(varNum) && event.pageX < 115.0 && event.pageY < 100.0) {
+            if ($gameSwitches && $gameSwitches.value(varNum) && event.pageX < 115.0 && event.pageY < 100.0) {
                 AnswerCall();
             }
         })
     } else {
         document.addEventListener('keyup', function (event) {
-            if ($gameSwitches.value(varNum) && event.key === answerKey)
+            if ($gameSwitches && $gameSwitches.value(varNum) && event.key === answerKey)
             {
                     AnswerCall();
             }
