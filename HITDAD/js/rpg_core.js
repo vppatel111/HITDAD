@@ -290,7 +290,7 @@ Utils.generateRuntimeId = function(){
 Utils._supportPassiveEvent = null;
 /**
  * Test this browser support passive event feature
- * 
+ *
  * @static
  * @method isSupportPassiveEvent
  * @return {Boolean} this browser support passive event or not
@@ -1315,6 +1315,45 @@ Bitmap.prototype.drawCircle = function(x, y, radius, color) {
     context.fill();
     context.restore();
     this._setDirty();
+};
+
+function canvas_arrow(context, fromx, fromy, tox, toy) {
+  var headlen = 10; // length of head in pixels
+  var dx = tox - fromx;
+  var dy = toy - fromy;
+  var angle = Math.atan2(dy, dx);
+  context.moveTo(fromx, fromy);
+  context.lineTo(tox, toy);
+  context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+  context.moveTo(tox, toy);
+  context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+}
+
+/**
+ * Draw a bitmap in the shape of a circle
+ *
+ * @method drawArrow
+ * @param {Number} x The x coordinate based on the circle center
+ * @param {Number} y The y coordinate based on the circle center
+ * @param {Number} radius The radius of the circle
+ * @param {String} color The color of the circle in CSS format
+ */
+Bitmap.prototype.drawArrow = function(x, y, color) {
+    var context = this._context;
+    context.save();
+
+    context.fillStyle = color;
+    context.lineWidth = 5;
+
+    context.beginPath();
+
+    canvas_arrow(context, x+30, y+30, x, y);
+
+    context.stroke();
+    context.restore();
+    this._setDirty();
+
+    console.log("Draw bois");
 };
 
 /**

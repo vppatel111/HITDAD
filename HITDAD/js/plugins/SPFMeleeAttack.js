@@ -40,18 +40,6 @@
 
   document.addEventListener('keydown', Input.SPFCustomKeypress);
 
-  function findItemById(idOfItem, listOfItems) {
-      var itemToReturn = {};
-
-      listOfItems.forEach(function(item) {
-        if (item.id == idOfItem) {
-          itemToReturn = item;
-        }
-      });
-
-      return itemToReturn;
-  }
-
   function getEnemyCollision(events) {
 
     var enemyEvent = {};
@@ -64,15 +52,6 @@
     });
 
     return enemyEvent;
-  }
-
-  function incapacitateEnemy(enemy) {
-
-    enemy._moveType = 0; // Fixed
-    enemy._walkAnime = false;
-    enemy._stepAnime = false;
-
-    enemy._isStunned = true;
   }
 
   // Checks collision of player with all events based on the direction they
@@ -106,7 +85,7 @@
     // Do nothing if the player didn't collide with any events.
     if (eventsHit.length == 0) return;
 
-    var item = findItemById(itemID, $gameParty.allItems());
+    var item = SPF_FindItemById(itemID);
 
     if (!SPF_isEmpty(item)) {
 
@@ -116,7 +95,7 @@
       // Incapacitate the enemy.
       if (!SPF_isEmpty(enemyHit)) {
         $gameParty.loseItem(item, 1);
-        incapacitateEnemy(enemyHit);
+        SPF_IncapacitateEnemy(enemyHit);
       }
 
     }
