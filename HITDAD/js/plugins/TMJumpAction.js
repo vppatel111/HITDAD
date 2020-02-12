@@ -283,13 +283,13 @@
  * 初期値: {"volume":90, "pitch":150, "pan":0}
  * @default {"volume":90, "pitch":150, "pan":0}
  *
- * @param landSe
+ * @param landSe                                        // 7PFAudio
  * @desc Sound Effect to be played when landing
  * @require 1
  * @dir audio/se/
  * @type file
  *
- * @param landSeParam
+ * @param landSeParam                                   // 7PFAudio
  * @type string
  * @desc Sound effect when landing
  * @default {"volume":50, "pitch":100, "pan":0}
@@ -615,8 +615,8 @@ function Game_Bullet() {
   var actUseEventSeSwim = JSON.parse(parameters['useEventSeSwim']);
   var actSeJump = JSON.parse(parameters['jumpSeParam'] || '{}');
   actSeJump.name = parameters['jumpSe'] || '';
-  var actSeLand = JSON.parse(parameters['landSeParam'] || '{}');
-  actSeLand.name = parameters['landSe'] || '';
+  var actSeLand = JSON.parse(parameters['landSeParam'] || '{}');        // 7PFAudio
+  actSeLand.name = parameters['landSe'] || '';                               // 7PFAudio
   var actSeDash = JSON.parse(parameters['dashSeParam'] || '{}');
   actSeDash.name = parameters['dashSe'] || '';
   var actSeFlick = JSON.parse(parameters['flickSeParam'] || '{}');
@@ -1666,7 +1666,7 @@ function Game_Bullet() {
 	//PLAY LANDING AFTTER JUMP SOUND EFFECTS --eesayas
 	if(this._jumpBefore){
 		// var jumpLand =  {name: 'Jump_Land', pan: 0, pitch: 100, volume: 500};
-		AudioManager.playSe(actSeLand);
+		AudioManager.playSe(actSeLand);                                                         // 7PFAudio
 		this._jumpBefore = false;
         $gameActors.actor(1).setCharacterImage('!hitdad', 0);
         $gamePlayer.refresh();
