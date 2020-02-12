@@ -42,7 +42,7 @@
 
   var parameters = PluginManager.parameters('SPFSmokeBomb');
 
-  var itemID = parseInt(parameters['itemID']);
+  var ITEM_ID = parseInt(parameters['itemID']);
   var GRAVITY = parseFloat(parameters['gravity']);
   var INITIAL_VELOCITY = parseFloat(parameters['initialVelocity']);
   var EXPLOSION_RADIUS = parseFloat(parameters['explosionRadius']);
@@ -62,8 +62,12 @@
 
       if ($dataMap) {
 
-        var item = SPF_FindItemById(itemID);
-        if (!SPF_isEmpty(item)) {
+        var item = SPF_FindItemById(ITEM_ID);
+
+        if (!SPF_isEmpty(item) &&
+             SPF_IsItemSelected(item) &&
+            !Input._isItemShortCut()) { // Do not fire if hotbar is open.
+
           var angle = angleToPlayer(event.pageX, event.pageY, $gamePlayer.screenX(), $gamePlayer.screenY());
           var bomb = new SPF_ProjectileBomb(angle);
 
