@@ -35,6 +35,7 @@
   Input.SPFCustomKeypress = function(event) {
     if (event.keyCode === attackKey) {  // Q
         PerformAttack();
+        console.log(SPF_CurrentlySelectedItem);
     }
   }
 
