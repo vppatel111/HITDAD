@@ -49,11 +49,12 @@
 
         var item = SPF_FindItemById(ITEM_ID);
 
+        console.log($gamePlayer.isCarrying(), $gameSwitches.value(11));
+
         if (!SPF_isEmpty(item) &&
              SPF_IsItemSelected(item) &&
-            !Input._isItemShortCut() && // Do not fire if hotbar is open.
-            $gamePlayer.isCarrying() && // Do not fire if carrying box.
-            $gameSwitches.value(11)) {  // Do not fire if hotbar is open.
+            !Input._isItemShortCut() &&  // Do not fire if hotbar is open.
+            !$gameSwitches.value(11)) {  // Do not fire if hotbar is open.
 
           chargeAttack();
         }
