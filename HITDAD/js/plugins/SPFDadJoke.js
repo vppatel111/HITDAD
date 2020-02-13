@@ -13,12 +13,29 @@
  *
  * @author Vishal Patel
  *
+ * @help
+ * This plugin implements the dad joke attack where when a player selects
+ * the item from the hotbar, they must press and hold the right mouse button
+ * for N amount of time to "charge up the attack". When the player hits max charge,
+ * we use the item with "itemID" and cause an "explosion" in a radius around
+ * the player and all enemies withing the radius will be stunned.
+ *
+ * @param itemID
+ * @type number
+ * @desc Item required to perform attack.
+ * @default 3
+ *
+ * @param stunRadius
+ * @type number
+ * @desc The number of pixels of the stun effect.
+ * @default 200
+ *
  */
 (function() {
 
-  var ITEM_ID = 3;
-  var STUN_RADIUS = 200;
-
+  var parameters = PluginManager.parameters('SPFDadJoke');
+  var ITEM_ID = parseInt(parameters['itemID']);
+  var STUN_RADIUS = parseFloat(parameters['stunRadius']);
   var STUN_RADIUS_TILES = STUN_RADIUS / 48; // Stun radius in tiles.
 
   var DAD_JOKES = [
@@ -48,13 +65,11 @@
       if ($dataMap) {
 
         var item = SPF_FindItemById(ITEM_ID);
-
-        console.log($gamePlayer.isCarrying(), $gameSwitches.value(11));
+        console.log("Here we gooo!", item, SPF_IsItemSelected(item));
 
         if (!SPF_isEmpty(item) &&
              SPF_IsItemSelected(item) &&
-            !Input._isItemShortCut() &&  // Do not fire if hotbar is open.
-            !$gameSwitches.value(11)) {  // Do not fire if hotbar is open.
+            !Input._isItemShortCut()) { // Do not fire if hotbar is open.
 
           chargeAttack();
         }

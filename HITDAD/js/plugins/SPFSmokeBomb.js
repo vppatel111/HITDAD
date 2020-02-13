@@ -92,8 +92,7 @@
         // call so we don't use item immediately.
         if (!SPF_isEmpty(item) &&
              SPF_IsItemSelected(item) &&
-            !Input._isItemShortCut() &&  // Do not fire if hotbar is open.
-            !$gameSwitches.value(11)) {  // Do not fire if player in call.
+            !Input._isItemShortCut()) {  // Do not fire if hotbar is open.
 
           var angle = angleToPlayer(event.pageX, event.pageY, $gamePlayer.screenX(), $gamePlayer.screenY());
           var bomb = new SPF_ProjectileBomb(angle);
