@@ -2280,9 +2280,9 @@ function Game_Bullet() {
       }
     } else {    // 左右いずれかを押しながら、またはどちらも押さずに投げた
       if (this._direction === 4 || Input.isPressed('left')) {
-        this._carryingObject.dash(-0.07, -0.03)
+        this._carryingObject.dash(-0.08, -0.03)
       } else if (this._direction === 6 || Input.isPressed('right')) { // 7PF Modify
-        this._carryingObject.dash(0.07, -0.03)
+        this._carryingObject.dash(0.08, -0.03)
       } else {
         this._carryingObject.dash(0, 0);
       }
