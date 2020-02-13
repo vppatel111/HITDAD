@@ -38,6 +38,7 @@ var SPF_NPCS = {
 // the first slot of their inventory. This allows me to assume that this
 // structure is always initialized.
 var SPF_CurrentlySelectedItem = {};
+var SPF_CSI = {};
 
 // TODO: Convert this to an object later.
 var SPF_Enemies = [];
@@ -67,10 +68,9 @@ function SPF_DistanceBetweenTwoPoints(x1, y1, x2, y2) {
 // --------------------- End Helper functions -------------------------
 
 function SPF_IsItemSelected(item) {
-
-  if (item &&
-      SPF_CurrentlySelectedItem &&
-      SPF_CurrentlySelectedItem.id == item.id) {
+  if (SPF_CSI && item &&
+      (SPF_CurrentlySelectedItem || SPF_CSI) &&
+      (SPF_CurrentlySelectedItem.id == item.id|| SPF_CSI.id == item.id) ) {
     return true;
   }
 
@@ -88,12 +88,7 @@ function SPF_MapYToScreenY(mapY) {
 }
 
 function SPF_IncapacitateEnemy(enemy) {
-
-  enemy._moveType = 0; // Fixed
-  enemy._walkAnime = false;
-  enemy._stepAnime = false;
-
-  enemy._isStunned = true;
+  $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'A'], true);
 }
 
 function SPF_FindItemById(idOfItem) {

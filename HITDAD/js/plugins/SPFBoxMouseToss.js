@@ -14,15 +14,30 @@
  *
  * @author Mike Greber
  *
+ * @param hurlSe
+ * @desc Sound effect when HitDad throws box
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param hurlSeParam
+ * @type string
+ * @desc: {"volume":90, "pitch":70, "pan":0}
+ * @default {"volume":90, "pitch":70, "pan":0}
  *
  */
 
 (function() {
 
+    let parameters = PluginManager.parameters('SPFBoxMouseToss');
+
+    let actSeHurl = JSON.parse(parameters['hurlSeParam'] || '{}');
+    actSeHurl.name = parameters['hurlSe'] || '';
+
     Game_Player.prototype.executeMouseHurl = function(x) {
         if ($gamePlayer.isCarrying()) {
-            var target = $gamePlayer._carryingObject;
-            var lastRealX = target._realX;
+            let target = $gamePlayer._carryingObject;
+            let lastRealX = target._realX;
             target.collideMapLeft();
             if (lastRealX !== target._realX) {
                 target._realX = lastRealX;
@@ -44,7 +59,7 @@
                 target._realY = lastRealY;
                 return;
             }
-            var targets = target.collideTargets();
+            let targets = target.collideTargets();
             for (var i = 0; i < targets.length; i++) {
                 var character = targets[i];
                 if (!character._through && target.isCollide(character)) return;
@@ -53,6 +68,7 @@
             let xDifference = x - $gamePlayer.screenX();
             $gamePlayer._carryingObject.hurl();
             $gamePlayer._carryingObject.dash(xDifference / 2000 , -0.3 );
+            AudioManager.playSe(actSeHurl);
             $gamePlayer._carryingObject = null;
             $gamePlayer._shotDelay = 1;
         }
@@ -80,8 +96,8 @@
     }
 
     document.addEventListener("mousedown", function (event) {
-
-        if (!isEmpty($gamePlayer) && $gameSwitches && !$gameSwitches.value(11) && !($gameSwitches.value(10) && (event.pageX < 250 || event.pageY < 250)) && event.button === 0) {
+        console.log(SPF_CurrentlySelectedItem);
+        if (!isEmpty($gamePlayer) && $gameSwitches && !$gameSwitches.value(11) && !($gameSwitches.value(10) && (event.pageX < 150 || event.pageY < 150)) && event.button === 0) {
             $gamePlayer.executeMouseHurl.call(this, event.pageX);
         }
     });

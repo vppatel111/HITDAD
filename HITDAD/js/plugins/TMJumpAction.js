@@ -293,7 +293,18 @@
  * @type string
  * @desc Sound effect when landing
  * @default {"volume":50, "pitch":100, "pan":0}
- * 
+ *
+ * @param damagedSe
+ * @desc Sound Effect to be played when hurt
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param damagedSeParam
+ * @type string
+ * @desc Sound effect when landing
+ * @default {"volume":50, "pitch":100, "pan":0}
+ *
  * @param playerBulletsMax
  * @type number
  * @desc プレイヤーの弾の最大数。
@@ -617,6 +628,8 @@ function Game_Bullet() {
   actSeJump.name = parameters['jumpSe'] || '';
   var actSeLand = JSON.parse(parameters['landSeParam'] || '{}');        // 7PFAudio
   actSeLand.name = parameters['landSe'] || '';                               // 7PFAudio
+  var actSeDamaged = JSON.parse(parameters['damagedSeParam'] || '{}');
+  actSeDamaged.name = parameters['damagedSe'] || '';
   var actSeDash = JSON.parse(parameters['dashSeParam'] || '{}');
   actSeDash.name = parameters['dashSe'] || '';
   var actSeFlick = JSON.parse(parameters['flickSeParam'] || '{}');
@@ -1677,7 +1690,7 @@ function Game_Bullet() {
 
 	this.resetJump();
     if (this._ladder) this.getOffLadder();
-    this.updateDamageFall();
+    // this.updateDamageFall();
 
   };
 
@@ -1835,6 +1848,8 @@ function Game_Bullet() {
   // ダメージ後の処理
   Game_CharacterBase.prototype.damaged = function() {
     var battler = this.battler();
+    this.battler().requestEffect('blink');
+    AudioManager.playSe(actSeDamaged);
   //  if (this.isLocking()) {
   //    return;
   //  }
@@ -2280,9 +2295,9 @@ function Game_Bullet() {
       }
     } else {    // 左右いずれかを押しながら、またはどちらも押さずに投げた
       if (this._direction === 4 || Input.isPressed('left')) {
-        this._carryingObject.dash(-0.07, -0.03)
+        this._carryingObject.dash(-0.08, -0.03)
       } else if (this._direction === 6 || Input.isPressed('right')) { // 7PF Modify
-        this._carryingObject.dash(0.07, -0.03)
+        this._carryingObject.dash(0.08, -0.03)
       } else {
         this._carryingObject.dash(0, 0);
       }
