@@ -53,9 +53,19 @@ function SPF_Sprite() {
     this.initialize.apply(this, arguments);
 }
 
+// --------------------- Helper functions ----------------------------
 function SPF_isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
+
+function SPF_RoundToTwoDecimalPlaces(num) {
+  return Math.round( num * 100 + Number.EPSILON ) / 100;
+}
+
+function SPF_DistanceBetweenTwoPoints(x1, y1, x2, y2) {
+  return Math.sqrt( Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2) );
+}
+// --------------------- End Helper functions -------------------------
 
 function SPF_IsItemSelected(item) {
   if (SPF_CSI && item &&
@@ -275,5 +285,14 @@ function SPF_ParseNote(event) {
       }
 
   };
+
+  // SPF_Message.prototype = Object.create(Window_Message.prototype);
+  // SPF_Message.prototype.constructor = SPF_Message;
+  //
+  // SPF_Message.prototype.initialize = function() {
+  //     Window_Message.prototype.initialize.call(this);
+  // }
+  //
+  // SPF_Message.prototype.close
 
 })();

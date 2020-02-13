@@ -88,9 +88,11 @@
 
         var item = SPF_FindItemById(ITEM_ID);
 
+        // TODO: Need a "debounce" time after box is thrown and player opens a
+        // call so we don't use item immediately.
         if (!SPF_isEmpty(item) &&
              SPF_IsItemSelected(item) &&
-            !Input._isItemShortCut()) { // Do not fire if hotbar is open.
+            !Input._isItemShortCut()) {  // Do not fire if hotbar is open.
 
           var angle = angleToPlayer(event.pageX, event.pageY, $gamePlayer.screenX(), $gamePlayer.screenY());
           var bomb = new SPF_ProjectileBomb(angle);
@@ -108,14 +110,6 @@
 
   function SPF_ProjectileBomb() {
     this.initialize.apply(this, arguments);
-  }
-
-  function SPF_RoundToTwoDecimalPlaces(num) {
-    return Math.round( num * 100 + Number.EPSILON ) / 100;
-  }
-
-  function SPF_DistanceBetweenTwoPoints(x1, y1, x2, y2) {
-    return Math.sqrt( Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2) );
   }
 
   SPF_ProjectileBomb.prototype.initialize = function(angle) {
