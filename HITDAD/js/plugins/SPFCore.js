@@ -38,6 +38,7 @@ var SPF_NPCS = {
 // the first slot of their inventory. This allows me to assume that this
 // structure is always initialized.
 var SPF_CurrentlySelectedItem = {};
+var SPF_CSI = {};
 
 // TODO: Convert this to an object later.
 var SPF_Enemies = [];
