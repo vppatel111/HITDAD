@@ -205,6 +205,7 @@ Imported.TMItemShortCut = true;
     Window_Selectable.prototype.select.call(this, index);
 
     SPF_CurrentlySelectedItem = this.item();
+    SPF_CSI = this.item();
   }
 
   // 標準パディングを取得

@@ -80,7 +80,7 @@
     }
 
     document.addEventListener("mousedown", function (event) {
-
+        console.log(SPF_CurrentlySelectedItem);
         if (!isEmpty($gamePlayer) && $gameSwitches && !$gameSwitches.value(11) && !($gameSwitches.value(10) && (event.pageX < 250 || event.pageY < 350)) && event.button === 0) {
             $gamePlayer.executeMouseHurl.call(this, event.pageX);
         }
