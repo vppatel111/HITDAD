@@ -283,13 +283,13 @@
  * 初期値: {"volume":90, "pitch":150, "pan":0}
  * @default {"volume":90, "pitch":150, "pan":0}
  *
- * @param landSe                                        // 7PFAudio
+ * @param landSe
  * @desc Sound Effect to be played when landing
  * @require 1
  * @dir audio/se/
  * @type file
  *
- * @param landSeParam                                   // 7PFAudio
+ * @param landSeParam
  * @type string
  * @desc Sound effect when landing
  * @default {"volume":50, "pitch":100, "pan":0}
@@ -1677,13 +1677,13 @@ function Game_Bullet() {
     this._vy = 0;
 	
 	//PLAY LANDING AFTTER JUMP SOUND EFFECTS --eesayas
-	if(this._jumpBefore){
+	if (this._jumpBefore) {
 		// var jumpLand =  {name: 'Jump_Land', pan: 0, pitch: 100, volume: 500};
-		AudioManager.playSe(actSeLand);                                                         // 7PFAudio
-		this._jumpBefore = false;
-        $gameActors.actor(1).setCharacterImage('!hitdad', 0);
-        $gamePlayer.refresh();
-        // $gameScreen.startShake(2,20,1);
+      AudioManager.playSe(actSeLand);// 7PFAudio
+      this._jumpBefore = false;
+      $gameActors.actor(1).setCharacterImage('!hitdad', 0);
+      $gamePlayer.refresh();
+      console.log("Land");
     }
 
 
