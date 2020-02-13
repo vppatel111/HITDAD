@@ -14,10 +14,25 @@
  *
  * @author Mike Greber
  *
+ * @param hurlSe
+ * @desc Sound effect when HitDad throws box
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param hurlSeParam
+ * @type string
+ * @desc: {"volume":90, "pitch":70, "pan":0}
+ * @default {"volume":90, "pitch":70, "pan":0}
  *
  */
 
 (function() {
+
+    let parameters = PluginManager.parameters('SPFBoxMouseToss');
+
+    let actSeHurl = JSON.parse(parameters['hurlSeParam'] || '{}');
+    actSeHurl.name = parameters['hurlSe'] || '';
 
     Game_Player.prototype.executeMouseHurl = function(x) {
         if ($gamePlayer.isCarrying()) {
@@ -53,6 +68,7 @@
             let xDifference = x - $gamePlayer.screenX();
             $gamePlayer._carryingObject.hurl();
             $gamePlayer._carryingObject.dash(xDifference / 2000 , -0.3 );
+            AudioManager.playSe(actSeHurl);
             $gamePlayer._carryingObject = null;
             $gamePlayer._shotDelay = 1;
         }
