@@ -37,6 +37,26 @@
  * @desc The number of pixels of the explosion.
  * @default 150
  *
+ * @param hurlSe
+ * @desc Sound effect when HitDad throws diaper
+ * @dir audio/se/
+ * @type file
+ *
+ * @param hurlSeParam
+ * @type string
+ * @desc: {"volume":90, "pitch":70, "pan":0}
+ * @default {"volume":90, "pitch":70, "pan":0}
+ *
+ * @param impactSe
+ * @desc Sound effect when HitDad throws diaper
+ * @dir audio/se/
+ * @type file
+ *
+ * @param impactSeParam
+ * @type string
+ * @desc: {"volume":90, "pitch":70, "pan":0}
+ * @default {"volume":90, "pitch":70, "pan":0}
+ *
  */
 (function() {
 
@@ -46,6 +66,10 @@
   var GRAVITY = parseFloat(parameters['gravity']);
   var INITIAL_VELOCITY = parseFloat(parameters['initialVelocity']);
   var EXPLOSION_RADIUS = parseFloat(parameters['explosionRadius']);
+  let HURL_SOUND = JSON.parse(parameters['hurlSeParam'] || '{}');
+  HURL_SOUND.name = parameters['hurlSe'] || '';
+  let IMPACT_SOUND = JSON.parse(parameters['impactSeParam'] || '{}');
+  IMPACT_SOUND.name = parameters['impactSe'] || '';
 
   var EXPLOSION_RADIUS_TILES = EXPLOSION_RADIUS / 48; // Explosion radius in tiles.
 
@@ -60,7 +84,7 @@
 
   document.addEventListener("mousedown", function (event) {
 
-      if ($dataMap) {
+      if ($dataMap && !$gameSwitches.value(11) && event.pageY > 150.0 && event.pageY > 150.0) { // make sure not trying to answer phone or on phone
 
         var item = SPF_FindItemById(ITEM_ID);
 
@@ -76,6 +100,7 @@
 
           // Decrement item after bomb is thrown
           $gameParty.loseItem(item, 1);
+          AudioManager.playSe(HURL_SOUND);
         }
 
       }
@@ -146,6 +171,7 @@
     if (this.collideMap()) {
        this.erase();
        this.explode();
+       AudioManager.playSe(IMPACT_SOUND);
     }
 
   }

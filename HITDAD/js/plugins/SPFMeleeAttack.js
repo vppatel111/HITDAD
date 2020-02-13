@@ -24,18 +24,29 @@
  * @desc Item required to perform attack.
  * @default 1
  *
+ * @param soundEffect
+ * @desc Sound effect for pacifier attack
+ * @default
+ * @dir audio/se/
+ * @type file
  *
+ * @param soundEffectParams
+ * @type string
+ * @desc Parameters for pacifier sound effect ( {"volume":90, "pitch":100, "pan":0} )
+ * @default {"volume":90, "pitch":100, "pan":0}
  */
 (function() {
 
   var parameters = PluginManager.parameters('SPFMeleeAttack');
   var attackKey = parseInt(parameters['keyCode']);
   var itemID = parseInt(parameters['itemID']);
+  let sePacify = JSON.parse(parameters['soundEffectParams'] || '{}');
+  sePacify.name = parameters['soundEffect'] || '';
 
   Input.SPFCustomKeypress = function(event) {
     if (event.keyCode === attackKey) {  // Q
         PerformAttack();
-        console.log(SPF_CurrentlySelectedItem);
+        // console.log(SPF_CurrentlySelectedItem);
     }
   }
 
@@ -97,6 +108,7 @@
       if (!SPF_isEmpty(enemyHit)) {
         $gameParty.loseItem(item, 1);
         SPF_IncapacitateEnemy(enemyHit);
+        AudioManager.playSe(sePacify);
       }
 
     }

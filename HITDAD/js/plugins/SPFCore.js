@@ -60,8 +60,8 @@ function SPF_isEmpty(obj) {
 function SPF_IsItemSelected(item) {
 
   if (item &&
-      SPF_CurrentlySelectedItem &&
-      SPF_CurrentlySelectedItem.id == item.id) {
+      (SPF_CurrentlySelectedItem || SPF_CSI) &&
+      (SPF_CurrentlySelectedItem.id == item.id|| SPF_CSI.id == item.id) ) {
     return true;
   }
 
