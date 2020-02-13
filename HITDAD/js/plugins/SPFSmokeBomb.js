@@ -84,7 +84,7 @@
 
   document.addEventListener("mousedown", function (event) {
 
-      if ($dataMap && !$gameSwitches.value(11) && event.pageY > 150.0 && event.pageY > 150.0) { // make sure not trying to answer phone or on phone
+      if ($dataMap && !$gameSwitches.value(11) && !$gamePlayer.isCarrying() && event.pageY > 150.0 && event.pageY > 150.0) { // make sure not trying to answer phone or on phone or carrying a box
 
         var item = SPF_FindItemById(ITEM_ID);
 
