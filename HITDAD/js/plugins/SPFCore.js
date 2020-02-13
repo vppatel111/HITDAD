@@ -43,6 +43,11 @@ var SPF_CSI = {};
 // TODO: Convert this to an object later.
 var SPF_Enemies = [];
 
+// Checks if on phone or answering phone, takes mouse event as parameter
+function SPF_OnPhone(event) {
+    return ($gameSwitches.value(10) && event.pageY < 150.0 && event.pageY < 150.0) || $gameSwitches.value(11);
+}
+
 function SPF_Projectile() {
   this.initialize.apply(this, arguments);
 }
