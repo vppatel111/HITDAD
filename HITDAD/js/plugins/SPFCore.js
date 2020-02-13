@@ -58,8 +58,7 @@ function SPF_isEmpty(obj) {
 }
 
 function SPF_IsItemSelected(item) {
-
-  if (item &&
+  if (SPF_CSI && item &&
       (SPF_CurrentlySelectedItem || SPF_CSI) &&
       (SPF_CurrentlySelectedItem.id == item.id|| SPF_CSI.id == item.id) ) {
     return true;
@@ -79,12 +78,7 @@ function SPF_MapYToScreenY(mapY) {
 }
 
 function SPF_IncapacitateEnemy(enemy) {
-
-  enemy._moveType = 0; // Fixed
-  enemy._walkAnime = false;
-  enemy._stepAnime = false;
-
-  enemy._isStunned = true;
+  $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'A'], true);
 }
 
 function SPF_FindItemById(idOfItem) {
