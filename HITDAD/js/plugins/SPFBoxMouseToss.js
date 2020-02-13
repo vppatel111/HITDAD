@@ -96,7 +96,7 @@
     }
 
     document.addEventListener("mousedown", function (event) {
-        if (!isEmpty($gamePlayer) && $gameSwitches && !$gameSwitches.value(11) && !($gameSwitches.value(10) && (event.pageX < 150 || event.pageY < 150)) && event.button === 0) {
+        if (!isEmpty($gamePlayer) && $gameSwitches && !SPF_OnPhone(event) && event.button === 0) {
             $gamePlayer.executeMouseHurl.call(this, event.pageX);
         }
     });

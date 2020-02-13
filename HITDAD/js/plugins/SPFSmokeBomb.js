@@ -83,8 +83,9 @@
   }
 
   document.addEventListener("mousedown", function (event) {
-
-      if ($dataMap && !$gameSwitches.value(11) && !$gamePlayer.isCarrying() && event.pageY > 150.0 && event.pageY > 150.0) { // make sure not trying to answer phone or on phone or carrying a box
+    console.log("Smoke Bomb Called, is carrying", $gamePlayer.isCarrying())
+      // make sure not on phone or carrying a box and is left click
+      if ($dataMap && !$gamePlayer.isCarrying() && !SPF_OnPhone(event) && event.button === 0) {
 
         var item = SPF_FindItemById(ITEM_ID);
 

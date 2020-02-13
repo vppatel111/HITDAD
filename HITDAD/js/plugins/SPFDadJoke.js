@@ -61,8 +61,8 @@
   }
 
   document.addEventListener("mousedown", function (event) {
-
-      if ($dataMap) {
+      // make sure not on phone or carrying a box and is left click
+      if ($dataMap && !$gamePlayer.isCarrying() && !SPF_OnPhone(event) && event.button === 0) {
 
         var item = SPF_FindItemById(ITEM_ID);
         console.log("Here we gooo!", item, SPF_IsItemSelected(item));
