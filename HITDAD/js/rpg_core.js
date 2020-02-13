@@ -1329,14 +1329,69 @@ function canvas_arrow(context, fromx, fromy, tox, toy) {
   context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
 }
 
+Bitmap.prototype.resetProgressBar = function (x, y, maxWidth) {
+  var context = this._context;
+  context.save();
+
+  context.fillStyle = "#171814";
+  context.fillRect(x, y, maxWidth, 25);
+
+  context.restore();
+  this._setDirty();
+}
+
+Bitmap.prototype.drawProgressBar = function(x, y, width, hue) {
+  var context = this._context;
+  context.save();
+
+  //this.width = 100;
+  //this.hue = 0;
+
+  // Can insert any hue to make color changing progressbars.
+  context.fillStyle = 'hsla(' + hue + ', 100%, 50%, 1)';
+  context.fillRect(x, y, width, 25);
+
+  var grad = context.createLinearGradient(0, 0, 0, 180);
+  grad.addColorStop(0, "transparent");
+  grad.addColorStop(1, "rgba(0,0,0,0.8)");
+
+  context.fillStyle = grad;
+  context.fillRect(x, y, width, 25);
+
+  context.restore();
+  this._setDirty();
+}
+
+// Bitmap.prototype.updateProgressBar(bar, counter) {
+//   //reset();
+//   counter++
+//
+//   bar.hue += 0.7;
+//
+//   bar.widths += 2;
+//   if (bar.widths > 350) {
+//     if (counter > 215) {
+//       //reset();
+//       bar.hue = 0;
+//       bar.widths = 0;
+//       counter = 0;
+//     } else {
+//       bar.hue = 126;
+//       bar.widths = 351;
+//       bar.draw();
+//     }
+//   } else {
+//     bar.draw();
+//   }
+// }
+
 /**
- * Draw a bitmap in the shape of a circle
+ * Draw a bitmap in the shape of an arrows
  *
  * @method drawArrow
- * @param {Number} x The x coordinate based on the circle center
- * @param {Number} y The y coordinate based on the circle center
- * @param {Number} radius The radius of the circle
- * @param {String} color The color of the circle in CSS format
+ * @param {Number} x The starting x coordinate
+ * @param {Number} y The starting y coordinate
+ * @param {String} color The color of the arrow in CSS format
  */
 Bitmap.prototype.drawArrow = function(x, y, color) {
     var context = this._context;
@@ -1352,8 +1407,6 @@ Bitmap.prototype.drawArrow = function(x, y, color) {
     context.stroke();
     context.restore();
     this._setDirty();
-
-    console.log("Draw bois");
 };
 
 /**

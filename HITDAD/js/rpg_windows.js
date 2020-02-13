@@ -140,6 +140,7 @@ Window_Base.prototype.open = function() {
 };
 
 Window_Base.prototype.close = function() {
+
     if (!this.isClosed()) {
         this._closing = true;
     }
