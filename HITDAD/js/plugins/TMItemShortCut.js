@@ -155,7 +155,11 @@ Imported.TMItemShortCut = true;
     _Game_Interpreter_pluginCommand.call(this, command, args);
     if (command === 'setItemSC') {
       $gameParty.setShortCut(+args[0], +args[1]);
+    } else if (command === "initializeItems")
+    {
+      SPF_CSI = $gameParty.items(0)[0]; // To initialize the weapon so SPF_CSI contains the first weapon
     }
+
   };
 
   //-----------------------------------------------------------------------------
@@ -199,13 +203,15 @@ Imported.TMItemShortCut = true;
       this.hide();
     }
     this.select(0);
+    this.select($gameParty._shortCut[this.index()]);
+
   };
 
   Window_ShortCut.prototype.select = function(index) {
     Window_Selectable.prototype.select.call(this, index);
 
     SPF_CurrentlySelectedItem = this.item();
-    SPF_CSI = this.item();
+    SPF_CSI = this.item();                                  // Needed a shorter variable name to use it in HUDMaker plugin.
   }
 
   // 標準パディングを取得
