@@ -22,9 +22,9 @@
             return;
         }
 
-        if (event.button === 2) {
+        if (event.button === 2) { // Right Click
             $gamePlayer.SPF_HurlBox(event.pageX);
-        } else if (event.button === 0) {
+        } else if (event.button === 0) { // Left Click
             if ($gameSwitches.value(10) && event.pageX < 150.0 && event.pageY < 150.0) {
                 $gamePlayer.AnswerCall();
             } else {
