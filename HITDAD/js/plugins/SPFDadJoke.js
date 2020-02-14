@@ -72,6 +72,12 @@
       }
   }
 
+  // Returns # of characters * 10px width.
+  function getDadJokeTextLength(currentJokeIndex) {
+    var joke = DAD_JOKES[currentJokeIndex];
+    return joke.text.length * 10;
+  }
+
   document.addEventListener("mouseup", function (event) {
       // Only call if this item is equipped
       if ($dataMap &&  SPF_CSI && SPF_CSI.id === ITEM_ID) {
@@ -98,9 +104,10 @@
     bitmap.resetProgressBar(25, 25, CHARGE_TIME*2);
     currentJokeIndex = 0;
 
-    var jokeBitmap = new Bitmap(200, 200);
-    jokeBitmap.clearRect(0, 20, 200, 20);
-    jokeBitmap.drawText(DAD_JOKES[currentJokeIndex].text, 0, 20, 200, 20, "center");
+    var jokeBitmap = new Bitmap(200, 500);
+    jokeBitmap.clearRect(0, 20, 500, 20);
+    jokeBitmap.drawText(DAD_JOKES[currentJokeIndex].text, 0, 20,
+                        getDadJokeTextLength[currentJokeIndex], 20, "center");
     jokeAnimation.bitmap = jokeBitmap;
     jokeAnimation.x = 300;
     jokeAnimation.y = 600;
@@ -125,8 +132,9 @@
 
       // Display the next part of the dad joke.
       if (attackCharge >= DAD_JOKES[currentJokeIndex].charge) {
-        jokeBitmap.clearRect(0, 20, 200, 20);
-        jokeBitmap.drawText(DAD_JOKES[currentJokeIndex].text, 0, 20, 200, 20, "center");
+        jokeBitmap.clearRect(0, 20, 500, 20);
+        jokeBitmap.drawText(DAD_JOKES[currentJokeIndex].text, 0, 20,
+                            getDadJokeTextLength[currentJokeIndex], 20, "center");
         // currentJokeIndex += 1;
       }
 
