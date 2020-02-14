@@ -33,6 +33,21 @@
  * @desc The number of pixels of the stun effect.
  * @default 200
  *
+ * @param chargeTime
+ * @type number
+ * @desc The number of frames it takes to charge the dad joke attack.
+ * @default 100
+ *
+ * @param characterWidth
+ * @type number
+ * @desc The width of each character in the font.
+ * @default 20
+ *
+ * @param textHeight
+ * @type number
+ * @desc The height of each character in the font.
+ * @default 50
+ *
  */
 (function() {
 
@@ -40,7 +55,9 @@
   var ITEM_ID = parseInt(parameters['itemID']);
   var STUN_RADIUS = parseFloat(parameters['stunRadius']);
   var STUN_RADIUS_TILES = STUN_RADIUS / 48; // Stun radius in tiles.
-  var CHARGE_TIME = 50;
+  var CHARGE_TIME = parseInt(parameters['chargeTime']);
+  var CHARACTER_WIDTH = parseInt(parameters['characterWidth']);
+  var TEXT_HEIGHT = parseInt(parameters['textHeight']);
 
   var DAD_JOKES = [
                     {
@@ -48,7 +65,7 @@
                       "text": "Just been fired from a job as an interrogator..."
                     },
                     {
-                      "charge": 25,
+                      "charge": 50,
                       "text": "I suppose I should have asked why..."
                     }
                   ];
@@ -75,7 +92,7 @@
   // Returns # of characters * 10px width.
   function getDadJokeTextLength(currentJokeIndex) {
     var joke = DAD_JOKES[currentJokeIndex];
-    return joke.text.length * 10;
+    return joke.text.length * CHARACTER_WIDTH;
   }
 
   document.addEventListener("mouseup", function (event) {
@@ -104,18 +121,23 @@
     bitmap.resetProgressBar(25, 25, CHARGE_TIME*2);
     currentJokeIndex = 0;
 
-    var jokeBitmap = new Bitmap(200, 500);
-    jokeBitmap.clearRect(0, 20, 500, 20);
+    var jokeLength = getDadJokeTextLength(currentJokeIndex);
+
+    // new Bitmap(width, height);
+    var jokeBitmap = new Bitmap(jokeLength, 200);
+    jokeBitmap.clearRect(0, 0, jokeLength, TEXT_HEIGHT);
     jokeBitmap.drawText(DAD_JOKES[currentJokeIndex].text, 0, 20,
-                        getDadJokeTextLength[currentJokeIndex], 20, "center");
+                        jokeLength, 20, "center");
     jokeAnimation.bitmap = jokeBitmap;
-    jokeAnimation.x = 300;
-    jokeAnimation.y = 600;
+    jokeAnimation.x = 0;
+    jokeAnimation.y = 525;
     jokeAnimation.show();
 
     currentJokeIndex += 1;
 
     chargeAnimation.bitmap = bitmap;
+    chargeAnimation.x = 345;
+    chargeAnimation.y = 480;
     chargeAnimation.setUpdate(function() {
       attackCharge += 1;
 
@@ -132,9 +154,10 @@
 
       // Display the next part of the dad joke.
       if (attackCharge >= DAD_JOKES[currentJokeIndex].charge) {
-        jokeBitmap.clearRect(0, 20, 500, 20);
+        jokeBitmap.clearRect(0, 0, jokeLength, TEXT_HEIGHT);
         jokeBitmap.drawText(DAD_JOKES[currentJokeIndex].text, 0, 20,
-                            getDadJokeTextLength[currentJokeIndex], 20, "center");
+                            jokeLength, 20, "center");
+        // TODO: Implement longer than 2 sentence jokes.
         // currentJokeIndex += 1;
       }
 
@@ -196,7 +219,7 @@
     });
 
     // Decrement item after bomb is thrown
-    // ASSUMPTION: Item is not empty because we check item before chargeAttack()
+    // ASSUMPTION: Item is not empty because we check item before ChargeDadJoke()
     // therefore it should still be defined.
     var item = SPF_FindItemById(ITEM_ID);
     $gameParty.loseItem(item, 1);
