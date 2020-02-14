@@ -79,7 +79,7 @@
 
   document.addEventListener("mouseup", function (event) {
       // Only call if this item is equipped
-      if ($dataMap && SPF_CSI.id === ITEM_ID) {
+      if ($dataMap &&  SPF_CSI && SPF_CSI.id === ITEM_ID) {
         // Reset the current charge if player release mouse button.
         attackCharge = 0;
         if (chargeAnimation) {
