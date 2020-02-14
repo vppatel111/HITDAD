@@ -17,5 +17,6 @@ var $plugins =
 {"name":"SPFDadJoke","status":true,"description":"This plugin implements the dad joke attack.","parameters":{"itemID":"3","stunRadius":"200"}},
 {"name":"SPFBoxMouseToss","status":true,"description":"Plugin to extend TMJumpAction to allow player to hurl box in the\r\ndirection of a mouse click. REQUIRES TMJumpAction plugin.","parameters":{"hurlSe":"throw_item2","hurlSeParam":"{\"volume\":30, \"pitch\":60, \"pan\":0}"}},
 {"name":"SPFMouseMechanics","status":true,"description":"Plugin to extend TMJumpAction to allow player to hurl box in the\r\ndirection of a mouse click. REQUIRES TMJumpAction plugin.","parameters":{"hurlSe":"","hurlSeParam":"{\"volume\":90, \"pitch\":70, \"pan\":0}"}},
+{"name":"SPFCheckPoint","status":true,"description":"This plugin is to implement checkpoints so item inventory and position are\r\nreset upon dying.","parameters":{}},
 {"name":"YEP_SaveEventLocations","status":true,"description":"Enable specified maps to memorize the locations of events\nwhen leaving and loading them upon reentering the map.","parameters":{}}
 ];
