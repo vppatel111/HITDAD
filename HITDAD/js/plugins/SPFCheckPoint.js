@@ -12,71 +12,79 @@
  *
  * Plugin Commands
  *========================================================================================
+ * CheckPoint            - Will record player position and inventory, call on level entry
+ * RefillItems           - Call when re-spawning to refill inventory to checkpoint amounts
  *========================================================================================
  *
  *
  * @author Mike Greber
  *
- * @param eventCollapse
- * @type boolean
- * @desc イベント戦闘不能時に崩壊エフェクトを使う。
- * 初期値: ON ( false = OFF 無効 / true = ON 有効 )
- * @default true
  *
  *
  */
 (function() {
-    let parameters = PluginManager.parameters('SPFCheckPoint');
-    // let answerKey = parameters['key'] || "mouseup";
-    // let varNum = parseInt(parameters["varNum"] || 10)
-    // let ringDuration = parseInt(parameters["ringDuration"] || 8)
-    // let ringTone = JSON.parse(parameters['ringtoneParams'] || '{}');
-    // ringTone.name = parameters['ringtone'] || '';
-    // let phoneClickSe = JSON.parse(parameters['phoneClickParams'] || '{}');
-    // phoneClickSe.name = parameters['phoneClickSound'] || '';
 
-    let itemsAtCheckpoint = {};
+    let itemsAtCheckpoint = [];
+
     let xPosition = 0;
     let yPosition = 0;
-    let mapId = "";
+
     var Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function (command, args) {
         Game_Interpreter_pluginCommand.call( this, command, args )
         {
-
-            if ( command === 'CheckPoint' ) {
-                checkPoint();
-                if (args && args.length > 1)
-                {
-                    xPosition = args[0];
-                    yPosition = args[1];
-                    mapId = $gameMap._mapId;
-                    console.log("Set respawn position to", xPosition, yPosition, mapId);
-                }
-            } else if (command === "Respawn") {
-                refillItems();
-                reSpawnPlayer();
+            switch(command) {
+                case "CheckPoint":
+                    checkPoint();
+                    if (args && args.length > 1)
+                    {
+                        xPosition = args[0];
+                        yPosition = args[1];
+                        $gameVariables.setValue(6,args[0]);
+                        $gameVariables.setValue(7,args[1]);
+                        $gameVariables.setValue(5, $gameMap._mapId);
+                        console.log("Set respawn position to", $gameVariables.value(5),$gameVariables.value(6),$gameVariables.value(7));
+                    }
+                    break;
+                case "Respawn":
+                    reSpawnPlayer();
+                    break;
+                case "RefillItems":
+                    reFillItems();
+                    break;
             }
-
 
         }
     }
 
     function checkPoint() {
-        const items = $gameParty.allItems();
+        let items = $gameParty.allItems();
 
         for (let i = 0; i < items.length; ++i)
         {
             itemsAtCheckpoint[i] = $gameParty.numItems(items[i]);
         }
+        $gameVariables[100] = itemsAtCheckpoint;
     }
-    function refillItems() {
-        const items = $gameParty.allItems();
+    function reFillItems() {
+        // let items = $gameParty.allItems();
+        //
+        // for (let i = 0; i < items.length; ++i)
+        // {
+        //     let difference = itemsAtCheckpoint ? itemsAtCheckpoint[i] - $gameParty.numItems(items[i]) : 0;
+        //     console.log(itemsAtCheckpoint[i], $gameParty.numItems(items[i]), difference, itemsAtCheckpoint.length);
+        //     if (difference > 0)
+        //     {
+        //         console.log("Topping up", items[i].name);
+        //         $gameParty.gainItem($dataItems[items[i].id], difference);
+        //     }
+        // }
+        let items = $gameParty.allItems();
 
         for (let i = 0; i < items.length; ++i)
         {
-            let difference = itemsAtCheckpoint[i] - $gameParty.numItems(items[i]);
-            console.log(itemsAtCheckpoint[i], $gameParty.numItems(items[i]));
+            let difference = $gameVariables[100] ? $gameVariables[100][i] - $gameParty.numItems(items[i]) : 0;
+            console.log($gameVariables[100][i], $gameParty.numItems(items[i]), difference, $gameVariables[100].length);
             if (difference > 0)
             {
                 console.log("Topping up", items[i].name);
@@ -84,12 +92,19 @@
             }
         }
     }
+
     function reSpawnPlayer()
     {
-        if (xPosition && yPosition) {
-            console.log("Respawning at", xPosition, yPosition);
-            $gamePlayer.reserveTransfer(mapId, xPosition, yPosition, 6, 0);
-        }
+        // if (xPosition && yPosition) {
+        //     // console.log("Respawning at", xPosition, yPosition);
+        //     // $gameParty.members().forEach(function(m) {
+        //     //     m.recoverAll();
+        //     // });
+        //     // $gameActors.actor(1).recoverAll();
+        //     // $gameActors.actor(1).removeState(1);
+        //     // $gamePlayer.reserveTransfer($gameMap.mapId(), xPosition, yPosition);
+        //     // $gamePlayer.performTransfer();
+        // }
     }
 
 })();
