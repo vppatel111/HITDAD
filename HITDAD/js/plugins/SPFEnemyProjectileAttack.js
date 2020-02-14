@@ -26,12 +26,22 @@
  * @param bulletDamage
  * @type number
  * @desc When the player gets hit, this is the amount of damage they'll take.
- * @default 500
+ * @default 150
  *
  * @param bulletSpeed
  * @type number
  * @desc The speed of the bullet.
  * @default 0.1
+ *
+ * @param shootSe
+ * @desc Sound effect when enemy guard shoots a bullet.
+ * @dir audio/se/
+ * @type file
+ *
+ * @param shootSeParam
+ * @type string
+ * @desc: {"volume":90, "pitch":70, "pan":0}
+ * @default {"volume":90, "pitch":70, "pan":0}
  *
  */
 (function() {
@@ -41,6 +51,9 @@
   var ENEMY_RANGE = parseInt(parameters['enemyDetectionRange']);
   var BULLET_DAMAGE = parseInt(parameters['bulletDamage']);
   var BULLET_SPEED = parseFloat(parameters['bulletSpeed']);
+
+  let SHOOT_SOUND = JSON.parse(parameters['shootSeParam'] || '{}');
+  SHOOT_SOUND.name = parameters['shootSe'] || '';
 
   var aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
@@ -97,10 +110,11 @@
       SPF_Projectile.prototype.initialize.call(this);
   }
 
-  // TODO: Change collider based on actual hitbox of HITDAD.
   SPF_EnemyProjectile.prototype.isCollidedWithPlayerCharacters = function(x, y) {
+    // Deal damage if bullet hits HITDAD's body.
     return $gamePlayer.x == x &&
-           $gamePlayer.y == y + 1; // Deal damage if projectile hits his face.
+           ($gamePlayer.y == y ||
+            $gamePlayer.y == y + 1);
   }
 
   SPF_EnemyProjectile.prototype.collidePlayer = function() {
@@ -140,6 +154,8 @@
         } else {
           bullet.setup(enemy.x, enemy.y - 1, BULLET_SPEED);
         }
+
+        AudioManager.playSe(SHOOT_SOUND);
 
       }
 
