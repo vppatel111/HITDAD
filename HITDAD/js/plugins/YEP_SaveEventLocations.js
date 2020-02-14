@@ -205,7 +205,18 @@ Yanfly.SEL.Game_Interpreter_pluginCommand =
     Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
   Yanfly.SEL.Game_Interpreter_pluginCommand.call(this, command, args)
-	if (command === 'ResetAllEventLocations') $gameMap.resetAllEventLocations();
+	if (command === 'ResetAllEventLocations') {
+		$gameMap.resetAllEventLocations();
+	}
+	else if (command === 'ResetEventLocation') {
+		if (!this.isLoadLocation()) return;
+		let x = $gameSystem.getSavedEventX($gameMap.mapId(), args[0]);
+		let y = $gameSystem.getSavedEventY($gameMap.mapId(), args[0]);
+		this.setPosition(x, y);
+		let dir = $gameSystem.getSavedEventDir($gameMap.mapId(), args[0]);
+		this.setDirection(dir);
+	}
+
 };
 
 //=============================================================================
