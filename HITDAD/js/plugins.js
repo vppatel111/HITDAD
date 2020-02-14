@@ -16,5 +16,6 @@ var $plugins =
 {"name":"SPFSmokeBomb","status":true,"description":"This plugin implements a smoke bomb attack.","parameters":{"itemID":"2","gravity":"0.005","initialVelocity":"0.20","explosionRadius":"150","hurlSe":"throw_item2","hurlSeParam":"{\"volume\":40, \"pitch\":95, \"pan\":0}","impactSe":"Jump_Land","impactSeParam":"{\"volume\":100, \"pitch\":70, \"pan\":0}"}},
 {"name":"SPFDadJoke","status":true,"description":"This plugin implements the dad joke attack.","parameters":{"itemID":"3","stunRadius":"200"}},
 {"name":"SPFBoxMouseToss","status":true,"description":"Plugin to extend TMJumpAction to allow player to hurl box in the\r\ndirection of a mouse click. REQUIRES TMJumpAction plugin.","parameters":{"hurlSe":"throw_item2","hurlSeParam":"{\"volume\":30, \"pitch\":60, \"pan\":0}"}},
-{"name":"SPFMouseMechanics","status":true,"description":"Plugin to extend TMJumpAction to allow player to hurl box in the\r\ndirection of a mouse click. REQUIRES TMJumpAction plugin.","parameters":{"hurlSe":"","hurlSeParam":"{\"volume\":90, \"pitch\":70, \"pan\":0}"}}
+{"name":"SPFMouseMechanics","status":true,"description":"Plugin to extend TMJumpAction to allow player to hurl box in the\r\ndirection of a mouse click. REQUIRES TMJumpAction plugin.","parameters":{"hurlSe":"","hurlSeParam":"{\"volume\":90, \"pitch\":70, \"pan\":0}"}},
+{"name":"YEP_SaveEventLocations","status":true,"description":"Enable specified maps to memorize the locations of events\nwhen leaving and loading them upon reentering the map.","parameters":{}}
 ];
