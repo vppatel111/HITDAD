@@ -34,8 +34,9 @@
     let actSeHurl = JSON.parse(parameters['hurlSeParam'] || '{}');
     actSeHurl.name = parameters['hurlSe'] || '';
 
-    Game_Player.prototype.executeMouseHurl = function(x) {
+    Game_Player.prototype.SPF_HurlBox = function(mouseX) {
         if ($gamePlayer.isCarrying()) {
+            console.log("Is Carrying");
             let target = $gamePlayer._carryingObject;
             let lastRealX = target._realX;
             target.collideMapLeft();
@@ -65,12 +66,25 @@
                 if (!character._through && target.isCollide(character)) return;
             }
 
-            let xDifference = x - $gamePlayer.screenX();
+            let xDifference = mouseX - $gamePlayer.screenX();
             $gamePlayer._carryingObject.hurl();
             $gamePlayer._carryingObject.dash(xDifference / 2000 , -0.3 );
             AudioManager.playSe(actSeHurl);
             $gamePlayer._carryingObject = null;
             $gamePlayer._shotDelay = 1;
+        } else {
+            if ( $gamePlayer.isLanding() && ((Object.prototype.toString.call($gamePlayer._landingObject) !== '[object Array]') || (!!$gamePlayer._leftObject) || (!!$gamePlayer._rightObject))) // 7PF Pickup Implementation
+            {
+                if (!!$gamePlayer._rightObject) {
+                    $gamePlayer._landingObject = $gamePlayer._rightObject;
+                }
+                if (!!$gamePlayer._leftObject) {
+                    $gamePlayer._landingObject = $gamePlayer._leftObject;
+                }
+                $gamePlayer.executeCarry();
+                console.log("Pickup Called");
+            }
+
         }
     };
 
@@ -91,14 +105,15 @@
    //      return Math.min(Math.max(min, val), max);
    //  }
 
-    function isEmpty(val){
-        return (val === undefined || val == null || val.length <= 0);
-    }
-
-    document.addEventListener("mousedown", function (event) {
-        if (!isEmpty($gamePlayer) && $gameSwitches && !SPF_OnPhone(event) && event.button === 0) {
-            $gamePlayer.executeMouseHurl.call(this, event.pageX);
-        }
-    });
+    // function isEmpty(val){
+    //     return (val === undefined || val == null || val.length <= 0);
+    // }
+    //
+    // document.addEventListener("mousedown", function (event) {
+    //     console.log(event.button);
+    //     if (!isEmpty($gamePlayer) && $gameSwitches && !SPF_OnPhone(event) && event.button === 2) {
+    //         SPF_HurlBox(event.pageX);
+    //     }
+    // });
 
 })();

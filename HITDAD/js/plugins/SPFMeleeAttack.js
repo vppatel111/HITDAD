@@ -114,4 +114,30 @@
 
   }
 
+  Game_Player.prototype.SPF_MeleeAttack = function() {
+
+    // Check collision between all targets.
+    let eventsHit = getEventsInDirectionOfCollision();
+
+    // Do nothing if the player didn't collide with any events.
+    if (eventsHit.length === 0) return;
+
+    let item = SPF_FindItemById(itemID);
+
+    if (!SPF_isEmpty(item) && SPF_IsItemSelected(item)) {
+
+      // Figure out if we hit an enemy.
+      var enemyHit = getEnemyCollision(eventsHit);
+
+      // Incapacitate the enemy.
+      if (!SPF_isEmpty(enemyHit)) {
+        $gameParty.loseItem(item, 1);
+        SPF_IncapacitateEnemy(enemyHit);
+        AudioManager.playSe(sePacify);
+      }
+
+    }
+
+  }
+
 })();

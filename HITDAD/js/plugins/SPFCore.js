@@ -73,7 +73,7 @@ function SPF_DistanceBetweenTwoPoints(x1, y1, x2, y2) {
 // --------------------- End Helper functions -------------------------
 
 function SPF_IsItemSelected(item) {
-  if (SPF_CSI && item &&
+  if (item &&
       (SPF_CurrentlySelectedItem || SPF_CSI) &&
       (SPF_CurrentlySelectedItem.id == item.id|| SPF_CSI.id == item.id) ) {
     return true;

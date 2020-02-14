@@ -60,26 +60,26 @@
       }
   }
 
-  document.addEventListener("mousedown", function (event) {
-      // make sure not on phone or carrying a box and is left click
-      if ($dataMap && !$gamePlayer.isCarrying() && !SPF_OnPhone(event) && event.button === 0) {
-
-        var item = SPF_FindItemById(ITEM_ID);
-        console.log("Here we gooo!", item, SPF_IsItemSelected(item));
-
-        if (!SPF_isEmpty(item) &&
-             SPF_IsItemSelected(item) &&
-            !Input._isItemShortCut()) { // Do not fire if hotbar is open.
-
-          chargeAttack();
-        }
-
-      }
-  });
+  // document.addEventListener("mousedown", function (event) {
+  //     // make sure not on phone or carrying a box and is left click
+  //     if ($dataMap && !$gamePlayer.isCarrying() && !SPF_OnPhone(event) && event.button === 0 && false) {
+  //
+  //       var item = SPF_FindItemById(ITEM_ID);
+  //       console.log("Here we gooo!", item, SPF_IsItemSelected(item));
+  //
+  //       if (!SPF_isEmpty(item) &&
+  //            SPF_IsItemSelected(item) &&
+  //           !Input._isItemShortCut()) { // Do not fire if hotbar is open.
+  //
+  //         chargeAttack();
+  //       }
+  //
+  //     }
+  // });
 
   document.addEventListener("mouseup", function (event) {
-
-      if ($dataMap) {
+      // Only call if this item is equipped
+      if ($dataMap &&  SPF_CSI && SPF_CSI.id === ITEM_ID) {
         // Reset the current charge if player release mouse button.
         attackCharge = 0;
         if (chargeAnimation) {
@@ -125,6 +125,41 @@
 
     // TODO: Print a joke.
 
+  }
+
+  Game_Player.prototype.DadJoke = function() {
+    progressBar = new SPF_Sprite();
+
+    // TODO:
+    // Following the character with the progress bar is hard;
+    // maybe put this above the selected item hotbar.
+    var bitmap = new Bitmap(200, 200);
+
+    // 50 * 2 is the max lenth of the progress bar => attackCharge @ full * 2
+    bitmap.resetProgressBar(25, 25, 50*2);
+    progressBar.bitmap = bitmap;
+
+    chargeAnimation = new SPF_Sprite();
+    chargeAnimation.setUpdate(function() {
+      attackCharge += 1;
+
+      // Draw green progress bar at twice the length of charge and
+      // with the color green.
+      progressBar.bitmap.drawProgressBar(25, 25, attackCharge * 2, 125);
+
+      if (attackCharge >= 50) {
+        stunEnemiesInRadius();
+        attackCharge = 0;
+        chargeAnimation.remove();
+        progressBar.remove();
+      }
+
+    });
+
+    progressBar.show();
+    chargeAnimation.show();
+
+    // TODO: Print a joke.
   }
 
   function stunEnemiesInRadius() {
