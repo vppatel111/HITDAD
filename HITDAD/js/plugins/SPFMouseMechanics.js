@@ -28,7 +28,12 @@
             if ($gameSwitches.value(10) && event.pageX < 150.0 && event.pageY < 150.0) {
                 $gamePlayer.AnswerCall();
             } else {
-                if (!$gameSwitches.value(11) && SPF_CSI && $gameParty.numItems(SPF_CSI) && !Input._isItemShortCut()) {
+
+                if (!$gameSwitches.value(11) &&
+                     SPF_CSI &&
+                     $gameParty.numItems(SPF_CSI) &&
+                    !Input._isItemShortCut()) {
+
                     switch (SPF_CSI.id) {
                         case 1:
                             $gamePlayer.SPF_MeleeAttack();
@@ -37,7 +42,7 @@
                             $gamePlayer.DiaperBomb(event);
                             break;
                         case 3:
-                            $gamePlayer.DadJoke();
+                            $gamePlayer.ChargeDadJoke();
                             break;
                     }
                 }

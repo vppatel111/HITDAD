@@ -1317,18 +1317,6 @@ Bitmap.prototype.drawCircle = function(x, y, radius, color) {
     this._setDirty();
 };
 
-function canvas_arrow(context, fromx, fromy, tox, toy) {
-  var headlen = 10; // length of head in pixels
-  var dx = tox - fromx;
-  var dy = toy - fromy;
-  var angle = Math.atan2(dy, dx);
-  context.moveTo(fromx, fromy);
-  context.lineTo(tox, toy);
-  context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
-  context.moveTo(tox, toy);
-  context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
-}
-
 Bitmap.prototype.resetProgressBar = function (x, y, maxWidth) {
   var context = this._context;
   context.save();
@@ -1344,9 +1332,6 @@ Bitmap.prototype.drawProgressBar = function(x, y, width, hue) {
   var context = this._context;
   context.save();
 
-  //this.width = 100;
-  //this.hue = 0;
-
   // Can insert any hue to make color changing progressbars.
   context.fillStyle = 'hsla(' + hue + ', 100%, 50%, 1)';
   context.fillRect(x, y, width, 25);
@@ -1361,29 +1346,6 @@ Bitmap.prototype.drawProgressBar = function(x, y, width, hue) {
   context.restore();
   this._setDirty();
 }
-
-// Bitmap.prototype.updateProgressBar(bar, counter) {
-//   //reset();
-//   counter++
-//
-//   bar.hue += 0.7;
-//
-//   bar.widths += 2;
-//   if (bar.widths > 350) {
-//     if (counter > 215) {
-//       //reset();
-//       bar.hue = 0;
-//       bar.widths = 0;
-//       counter = 0;
-//     } else {
-//       bar.hue = 126;
-//       bar.widths = 351;
-//       bar.draw();
-//     }
-//   } else {
-//     bar.draw();
-//   }
-// }
 
 /**
  * Draw a bitmap in the shape of an arrows
@@ -1408,6 +1370,18 @@ Bitmap.prototype.drawArrow = function(x, y, color) {
     context.restore();
     this._setDirty();
 };
+
+function canvas_arrow(context, fromx, fromy, tox, toy) {
+  var headlen = 10; // length of head in pixels
+  var dx = tox - fromx;
+  var dy = toy - fromy;
+  var angle = Math.atan2(dy, dx);
+  context.moveTo(fromx, fromy);
+  context.lineTo(tox, toy);
+  context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+  context.moveTo(tox, toy);
+  context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+}
 
 /**
  * Draws the outline text to the bitmap.
