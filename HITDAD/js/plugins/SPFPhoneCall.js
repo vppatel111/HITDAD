@@ -85,20 +85,20 @@
     let phoneClickSe = JSON.parse(parameters['phoneClickParams'] || '{}');
     phoneClickSe.name = parameters['phoneClickSound'] || '';
 
-    if (answerKey === "mouseup") {
-        document.addEventListener("mouseup", function (event) {
-            if ($gameSwitches && $gameSwitches.value(varNum) && event.pageX < 150.0 && event.pageY < 150.0) {
-                AnswerCall();
-            }
-        })
-    } else {
-        document.addEventListener('keyup', function (event) {
-            if ($gameSwitches && $gameSwitches.value(varNum) && event.key === answerKey)
-            {
-                    AnswerCall();
-            }
-        }, false);
-    }
+    // if (answerKey === "mouseup") {
+    //     document.addEventListener("mouseup", function (event) {
+    //         if ($gameSwitches && $gameSwitches.value(varNum) && event.pageX < 150.0 && event.pageY < 150.0) {
+    //             $gamePlayer.AnswerCall();
+    //         }
+    //     })
+    // } else {
+    //     document.addEventListener('keyup', function (event) {
+    //         if ($gameSwitches && $gameSwitches.value(varNum) && event.key === answerKey)
+    //         {
+    //                 $gamePlayer.AnswerCall();
+    //         }
+    //     }, false);
+    // }
 
 
     var Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
@@ -126,7 +126,7 @@
                         }
                         break;
                     case "Answer":
-                        AnswerCall();
+                        $gamePlayer.AnswerCall();
                         break;
                     case "End":
                         $gameSwitches.setValue(11, false);
@@ -138,14 +138,14 @@
             }
         }
     }
-
-    let AnswerCall = function() {
-        $gameSwitches.setValue(11, true); // In Phone Call variable
-        $gameSwitches.setValue(varNum, false);
-        $gameVariables.setValue($gameVariables.value(varNum), 2);
-        $gameTimer.stop();
-        AudioManager.playSe(phoneClickSe);
-        AudioManager.stopBgs(ringTone);
+    Game_Player.prototype.AnswerCall = function()
+    {
+            $gameSwitches.setValue(11, true); // In Phone Call variable
+            $gameSwitches.setValue(varNum, false);
+            $gameVariables.setValue($gameVariables.value(varNum), 2);
+            $gameTimer.stop();
+            AudioManager.playSe(phoneClickSe);
+            AudioManager.stopBgs(ringTone);
     }
 
 })();

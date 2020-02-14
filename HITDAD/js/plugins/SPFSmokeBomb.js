@@ -82,32 +82,44 @@
 
   }
 
-  document.addEventListener("mousedown", function (event) {
-    console.log("Smoke Bomb Called, is carrying", $gamePlayer.isCarrying())
-      // make sure not on phone or carrying a box and is left click
-      if ($dataMap && !$gamePlayer.isCarrying() && !SPF_OnPhone(event) && event.button === 0) {
+  // document.addEventListener("mousedown", function (event) {
+  //
+  //     // make sure not on phone or carrying a box and is left click
+  //     if ($dataMap && $gamePlayer && !$gamePlayer.isCarrying() && !SPF_OnPhone(event) && event.button === 0) {
+  //
+  //       var item = SPF_FindItemById(ITEM_ID);
+  //
+  //       // TODO: Need a "debounce" time after box is thrown and player opens a
+  //       // call so we don't use item immediately.
+  //       if (!SPF_isEmpty(item) &&
+  //            SPF_IsItemSelected(item) &&
+  //           !Input._isItemShortCut()) {  // Do not fire if hotbar is open.
+  //
+  //         var angle = angleToPlayer(event.pageX, event.pageY, $gamePlayer.screenX(), $gamePlayer.screenY());
+  //         var bomb = new SPF_ProjectileBomb(angle);
+  //
+  //         // TODO: Draw an arrow indicator for direction of throw.
+  //         //var arrow = new SPF_ArrowSprite();
+  //
+  //         // Decrement item after bomb is thrown
+  //         $gameParty.loseItem(item, 1);
+  //         AudioManager.playSe(HURL_SOUND);
+  //       }
+  //
+  //     }
+  // });
 
-        var item = SPF_FindItemById(ITEM_ID);
+  Game_Player.prototype.DiaperBomb = function(event) {
+    let angle = angleToPlayer(event.pageX, event.pageY, $gamePlayer.screenX(), $gamePlayer.screenY());
+    let bomb = new SPF_ProjectileBomb(angle);
 
-        // TODO: Need a "debounce" time after box is thrown and player opens a
-        // call so we don't use item immediately.
-        if (!SPF_isEmpty(item) &&
-             SPF_IsItemSelected(item) &&
-            !Input._isItemShortCut()) {  // Do not fire if hotbar is open.
+    // TODO: Draw an arrow indicator for direction of throw.
+    //var arrow = new SPF_ArrowSprite();
 
-          var angle = angleToPlayer(event.pageX, event.pageY, $gamePlayer.screenX(), $gamePlayer.screenY());
-          var bomb = new SPF_ProjectileBomb(angle);
-
-          // TODO: Draw an arrow indicator for direction of throw.
-          //var arrow = new SPF_ArrowSprite();
-
-          // Decrement item after bomb is thrown
-          $gameParty.loseItem(item, 1);
-          AudioManager.playSe(HURL_SOUND);
-        }
-
-      }
-  });
+    // Decrement item after bomb is thrown
+    $gameParty.loseItem(SPF_CSI, 1);
+    AudioManager.playSe(HURL_SOUND);
+  }
 
   function SPF_ProjectileBomb() {
     this.initialize.apply(this, arguments);
