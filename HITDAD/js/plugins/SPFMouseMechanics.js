@@ -21,7 +21,6 @@
         if (!$gameSwitches || !$gamePlayer) {
             return;
         }
-
         if (event.button === 2) { // Right Click
             $gamePlayer.SPF_HurlBox(event.pageX);
         } else if (event.button === 0) { // Left Click
