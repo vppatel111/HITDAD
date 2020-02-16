@@ -3,9 +3,12 @@
 // v1.0
 //
 // TODO:
-// - Add plugin parameters.
 // - Implement actual telling of dad jokes while charging attack
 // - Change "explosion" effect?
+// - ALMOST WORKS, increase the width, might need to specify a width
+// per object to print each joke correctly.
+// - ALSO increase the time to cast dad joke to be able to read joke.
+// - ALSO center the text in the middle.
 //=============================================================================
 
 /*:
@@ -30,6 +33,21 @@
  * @desc The number of pixels of the stun effect.
  * @default 200
  *
+ * @param chargeTime
+ * @type number
+ * @desc The number of frames it takes to charge the dad joke attack.
+ * @default 100
+ *
+ * @param characterWidth
+ * @type number
+ * @desc The width of each character in the font.
+ * @default 20
+ *
+ * @param textHeight
+ * @type number
+ * @desc The height of each character in the font.
+ * @default 50
+ *
  */
 (function() {
 
@@ -37,17 +55,28 @@
   var ITEM_ID = parseInt(parameters['itemID']);
   var STUN_RADIUS = parseFloat(parameters['stunRadius']);
   var STUN_RADIUS_TILES = STUN_RADIUS / 48; // Stun radius in tiles.
+  var CHARGE_TIME = parseInt(parameters['chargeTime']);
+  var CHARACTER_WIDTH = parseInt(parameters['characterWidth']);
+  var TEXT_HEIGHT = parseInt(parameters['textHeight']);
 
   var DAD_JOKES = [
-                    ["Just been fired from a job as an interrogator...",
-                     "I suppose I should have asked why..."]
+                    {
+                      "charge": 0,
+                      "text": "Just been fired from a job as an interrogator..."
+                    },
+                    {
+                      "charge": 50,
+                      "text": "I suppose I should have asked why..."
+                    }
                   ];
-  var dadJokeIndex = 0; // Keep track of which jokes have already been told.
 
-  var chargeAnimation;
-  var progressBar;
+  var dadJokeIndex = 0; // Keep track of which jokes have already been told.
+  var currentJokeIndex = 0;
 
   var attackCharge = 0;
+
+  var chargeAnimation;
+  var jokeAnimation;
 
   function getDadJoke() {
       var joke = DAD_JOKES[dadJokeIndex];
@@ -60,22 +89,11 @@
       }
   }
 
-  // document.addEventListener("mousedown", function (event) {
-  //     // make sure not on phone or carrying a box and is left click
-  //     if ($dataMap && !$gamePlayer.isCarrying() && !SPF_OnPhone(event) && event.button === 0 && false) {
-  //
-  //       var item = SPF_FindItemById(ITEM_ID);
-  //       console.log("Here we gooo!", item, SPF_IsItemSelected(item));
-  //
-  //       if (!SPF_isEmpty(item) &&
-  //            SPF_IsItemSelected(item) &&
-  //           !Input._isItemShortCut()) { // Do not fire if hotbar is open.
-  //
-  //         chargeAttack();
-  //       }
-  //
-  //     }
-  // });
+  // Returns # of characters * 10px width.
+  function getDadJokeTextLength(currentJokeIndex) {
+    var joke = DAD_JOKES[currentJokeIndex];
+    return joke.text.length * CHARACTER_WIDTH;
+  }
 
   document.addEventListener("mouseup", function (event) {
       // Only call if this item is equipped
@@ -84,15 +102,15 @@
         attackCharge = 0;
         if (chargeAnimation) {
           chargeAnimation.remove();
-          progressBar.remove();
+          jokeAnimation.remove();
         }
       }
 
   });
 
-  function chargeAttack() {
-
-    progressBar = new SPF_Sprite();
+  Game_Player.prototype.ChargeDadJoke = function() {
+    chargeAnimation = new SPF_Sprite();
+    jokeAnimation = new SPF_Sprite();
 
     // TODO:
     // Following the character with the progress bar is hard;
@@ -100,66 +118,53 @@
     var bitmap = new Bitmap(200, 200);
 
     // 50 * 2 is the max lenth of the progress bar => attackCharge @ full * 2
-    bitmap.resetProgressBar(25, 25, 50*2);
-    progressBar.bitmap = bitmap;
+    bitmap.resetProgressBar(25, 25, CHARGE_TIME*2);
+    currentJokeIndex = 0;
 
-    chargeAnimation = new SPF_Sprite();
+    var jokeLength = getDadJokeTextLength(currentJokeIndex);
+
+    // new Bitmap(width, height);
+    var jokeBitmap = new Bitmap(jokeLength, 200);
+    jokeBitmap.clearRect(0, 0, jokeLength, TEXT_HEIGHT);
+    jokeBitmap.drawText(DAD_JOKES[currentJokeIndex].text, 0, 20,
+                        jokeLength, 20, "center");
+    jokeAnimation.bitmap = jokeBitmap;
+    jokeAnimation.x = 0;
+    jokeAnimation.y = 525;
+    jokeAnimation.show();
+
+    currentJokeIndex += 1;
+
+    chargeAnimation.bitmap = bitmap;
+    chargeAnimation.x = 345;
+    chargeAnimation.y = 480;
     chargeAnimation.setUpdate(function() {
       attackCharge += 1;
 
       // Draw green progress bar at twice the length of charge and
       // with the color green.
-      progressBar.bitmap.drawProgressBar(25, 25, attackCharge * 2, 125);
+      this.bitmap.drawProgressBar(25, 25, attackCharge * 2, 125);
 
-      if (attackCharge >= 50) {
-          stunEnemiesInRadius();
-          attackCharge = 0;
-          chargeAnimation.remove();
-          progressBar.remove();
-      }
-
-    });
-
-    progressBar.show();
-    chargeAnimation.show();
-
-    // TODO: Print a joke.
-
-  }
-
-  Game_Player.prototype.DadJoke = function() {
-    progressBar = new SPF_Sprite();
-
-    // TODO:
-    // Following the character with the progress bar is hard;
-    // maybe put this above the selected item hotbar.
-    var bitmap = new Bitmap(200, 200);
-
-    // 50 * 2 is the max lenth of the progress bar => attackCharge @ full * 2
-    bitmap.resetProgressBar(25, 25, 50*2);
-    progressBar.bitmap = bitmap;
-
-    chargeAnimation = new SPF_Sprite();
-    chargeAnimation.setUpdate(function() {
-      attackCharge += 1;
-
-      // Draw green progress bar at twice the length of charge and
-      // with the color green.
-      progressBar.bitmap.drawProgressBar(25, 25, attackCharge * 2, 125);
-
-      if (attackCharge >= 50) {
+      if (attackCharge >= CHARGE_TIME) {
         stunEnemiesInRadius();
         attackCharge = 0;
         chargeAnimation.remove();
-        progressBar.remove();
+        jokeAnimation.remove();
+      }
+
+      // Display the next part of the dad joke.
+      if (attackCharge >= DAD_JOKES[currentJokeIndex].charge) {
+        jokeBitmap.clearRect(0, 0, jokeLength, TEXT_HEIGHT);
+        jokeBitmap.drawText(DAD_JOKES[currentJokeIndex].text, 0, 20,
+                            jokeLength, 20, "center");
+        // TODO: Implement longer than 2 sentence jokes.
+        // currentJokeIndex += 1;
       }
 
     });
 
-    progressBar.show();
     chargeAnimation.show();
 
-    // TODO: Print a joke.
   }
 
   function stunEnemiesInRadius() {
@@ -214,7 +219,7 @@
     });
 
     // Decrement item after bomb is thrown
-    // ASSUMPTION: Item is not empty because we check item before chargeAttack()
+    // ASSUMPTION: Item is not empty because we check item before ChargeDadJoke()
     // therefore it should still be defined.
     var item = SPF_FindItemById(ITEM_ID);
     $gameParty.loseItem(item, 1);
