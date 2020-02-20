@@ -43,6 +43,25 @@ var SPF_CSI = {};
 // TODO: Convert this to an object later.
 var SPF_Enemies = [];
 
+// Defines a rectanglular hitbox for HITDAD units are in tiles.
+// The (x, y) coordinates define the top left corner of hitbox.
+// In this case, define a 2 block high hitbox that starts at head
+// and extends down to legs.
+var HIT_DAD_HITBOX = {x: -0.5, y: -2, width: 1, height: 2};
+
+function SPF_CollidedWithPlayerCharacter(x, y, collider) {
+  var point_l1 = {x: $gamePlayer._realX + HIT_DAD_HITBOX.x,
+                  y: $gamePlayer._realY + HIT_DAD_HITBOX.y};
+  var point_l2 = {x: x + collider.x,
+                  y: y + collider.y};
+
+  var point_r1 = {x: $gamePlayer._realX + HIT_DAD_HITBOX.x + HIT_DAD_HITBOX.width,
+                  y: $gamePlayer._realY + HIT_DAD_HITBOX.y + HIT_DAD_HITBOX.height};
+  var point_r2 = {x: x + collider.x + collider.width,
+                  y: y + collider.y + collider.height};
+  return SPF_DoesRectanglesOverlap(point_l1, point_r1, point_l2, point_r2);
+}
+
 // Checks if on phone or answering phone, takes mouse event as parameter
 function SPF_OnPhone(event) {
     return ($gameSwitches.value(10) && event.pageY < 150.0 && event.pageY < 150.0) || $gameSwitches.value(11);
@@ -70,7 +89,39 @@ function SPF_RoundToTwoDecimalPlaces(num) {
 function SPF_DistanceBetweenTwoPoints(x1, y1, x2, y2) {
   return Math.sqrt( Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2) );
 }
+
+// Returns true if 2 rectangles overlap.
+// Where l1, l2 is the top left corners of rectangle 1 and 2 respectively and
+// r1, r2 is the bottom right corners of rectangle 1 and 2 respectively.
+// Credit to: https://www.geeksforgeeks.org/find-two-rectangles-overlap/
+function SPF_DoesRectanglesOverlap(point_l1, point_r1, point_l2, point_r2) {
+
+  // If one rectangle is on left side of other
+  if (point_l1.x > point_r2.x || point_l2.x > point_r1.x)
+      return false;
+
+  // If one rectangle is above other
+  if (point_l1.y > point_r2.y || point_l2.y > point_r1.y)
+      return false;
+
+  console.log("Point l1", point_l1);
+  console.log("Point l2", point_l2);
+  console.log("Point r1", point_r1);
+  console.log("Point r2", point_r2);
+  return true;
+
+}
 // --------------------- End Helper functions -------------------------
+
+function SPF_LoadIconOntoBitmap(sourceBitmap, iconIndex) {
+  var bitmap = ImageManager.loadSystem('IconSet');
+  var pw = Window_Base._iconWidth;
+  var ph = Window_Base._iconHeight;
+  var sx = iconIndex % 16 * pw;
+  var sy = Math.floor(iconIndex / 16) * ph;
+
+  sourceBitmap.blt(bitmap, sx, sy, pw, ph, 0, 0);
+}
 
 function SPF_IsItemSelected(item) {
   if (item &&
@@ -219,9 +270,8 @@ function SPF_ParseNote(event) {
   }
 
   SPF_Projectile.prototype.erase = function() {
-    // TODO: Remove the projectile completely instead
-    // of just making it disappear.
     this._opacity = 0;
+    SceneManager._scene.removeChild(this._sprite);
   };
 
   function SPF_Projectile_Sprite() {
@@ -233,13 +283,15 @@ function SPF_ParseNote(event) {
   SPF_Projectile_Sprite.prototype.initialize = function (projectile) {
       Sprite.prototype.initialize.call(this);
 
-      var bitmap = new Bitmap(100, 100);
-      bitmap.drawCircle(25, 25, 15, 'red');
+      var bitmap = ImageManager.loadSystem("BulletIcon");
       this.bitmap = bitmap;
-
-      // TODO: Add the custom bullet sprite into the game.
-      // var bitmap = ImageManager.loadSystem("bullet");
-      // this.bitmap = bitmap;
+      // if (bitmap) {
+      //   this.bitmap = bitmap;
+      // } else {
+      //   var bitmap = new Bitmap(100, 100);
+      //   bitmap.drawCircle(25, 25, 15, 'red');
+      //   this.bitmap = bitmap;
+      // }
 
       // Bullet keeps track of projectile X & Y in map.
       this._bullet = projectile;

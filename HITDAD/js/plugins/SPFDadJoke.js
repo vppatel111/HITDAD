@@ -112,9 +112,6 @@
     chargeAnimation = new SPF_Sprite();
     jokeAnimation = new SPF_Sprite();
 
-    // TODO:
-    // Following the character with the progress bar is hard;
-    // maybe put this above the selected item hotbar.
     var bitmap = new Bitmap(200, 200);
 
     // 50 * 2 is the max lenth of the progress bar => attackCharge @ full * 2

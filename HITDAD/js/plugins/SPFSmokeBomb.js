@@ -89,8 +89,6 @@
     // TODO: Draw an arrow indicator for direction of throw.
     //var arrow = new SPF_ArrowSprite();
 
-    console.log(SPF_FindItemById(ITEM_ID));
-
     // Decrement item after bomb is thrown
     //$gameParty.loseItem(SPF_CSI, 1);
     AudioManager.playSe(HURL_SOUND);
@@ -226,8 +224,11 @@
   SPF_ProjectileBomb_Sprite.prototype.initialize = function (projectile) {
       Sprite.prototype.initialize.call(this);
 
+      var item = SPF_FindItemById(ITEM_ID);
+
       var bitmap = new Bitmap(100, 100);
-      bitmap.drawCircle(25, 25, 15, 'red');
+      SPF_LoadIconOntoBitmap(bitmap, item.iconIndex);
+
       this.bitmap = bitmap;
       this._bomb = projectile;
       this.visible = true;
