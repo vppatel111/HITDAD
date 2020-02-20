@@ -55,6 +55,12 @@
   let SHOOT_SOUND = JSON.parse(parameters['shootSeParam'] || '{}');
   SHOOT_SOUND.name = parameters['shootSe'] || '';
 
+  var DEBUG = false;
+
+  // Defines a rectanglular collider for the bullet where each dimension is given
+  // in tiles. The (x,y) coordinates define the top-left corner of the rectangle.
+  var bulletCollider = {x: 0, y: 0.18, width: 1, height: 0.56};
+
   var aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     aliasPluginCommand.call(this, command, args);
@@ -110,21 +116,15 @@
       SPF_Projectile.prototype.initialize.call(this);
   }
 
-  SPF_EnemyProjectile.prototype.isCollidedWithPlayerCharacters = function(x, y) {
-    // Deal damage if bullet hits HITDAD's body.
-    return $gamePlayer.x == x &&
-           ($gamePlayer.y == y ||
-            $gamePlayer.y == y + 1);
-  }
-
   SPF_EnemyProjectile.prototype.collidePlayer = function() {
-    var x = Math.floor(this._x);
-    var y = Math.floor(this._y);
 
-    return this.isCollidedWithPlayerCharacters(x, y);
+    // console.log(this._x, $gamePlayer.x, $gamePlayer._realX,
+    //             SPF_CollidedWithPlayerCharacter(this._x, this._y, bulletCollider));
+
+    return SPF_CollidedWithPlayerCharacter(this._x, this._y, bulletCollider);
   }
 
-  SPF_EnemyProjectile.prototype.killPlayer = function() {
+  SPF_EnemyProjectile.prototype.hurtPlayer = function() {
     $gamePlayer.battler().gainHp(-1 * BULLET_DAMAGE); // Damage the player.
   }
 
@@ -134,7 +134,7 @@
       if (this.collidePlayer() && !this._dealtDamage) {
         this.erase();
         this._dealtDamage = true
-        this.killPlayer();
+        this.hurtPlayer();
       }
   }
 
@@ -147,6 +147,13 @@
           !enemy._isStunned) {
 
         var bullet = new SPF_EnemyProjectile();
+
+        if (DEBUG) {
+          var getColliderPoints = function() {
+            return SPF_GetColliderPoints(bullet._x, bullet._y, bulletCollider);
+          }
+          SPF_DrawCollider("Bullet", getColliderPoints, bulletCollider);
+        }
 
         // Shoot the projectile in that direction.
         if (enemy.direction() == DIRECTION.LEFT) {

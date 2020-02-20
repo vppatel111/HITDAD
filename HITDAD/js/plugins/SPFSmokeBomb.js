@@ -82,33 +82,6 @@
 
   }
 
-  // document.addEventListener("mousedown", function (event) {
-  //
-  //     // make sure not on phone or carrying a box and is left click
-  //     if ($dataMap && $gamePlayer && !$gamePlayer.isCarrying() && !SPF_OnPhone(event) && event.button === 0) {
-  //
-  //       var item = SPF_FindItemById(ITEM_ID);
-  //
-  //       // TODO: Need a "debounce" time after box is thrown and player opens a
-  //       // call so we don't use item immediately.
-  //       if (!SPF_isEmpty(item) &&
-  //            SPF_IsItemSelected(item) &&
-  //           !Input._isItemShortCut()) {  // Do not fire if hotbar is open.
-  //
-  //         var angle = angleToPlayer(event.pageX, event.pageY, $gamePlayer.screenX(), $gamePlayer.screenY());
-  //         var bomb = new SPF_ProjectileBomb(angle);
-  //
-  //         // TODO: Draw an arrow indicator for direction of throw.
-  //         //var arrow = new SPF_ArrowSprite();
-  //
-  //         // Decrement item after bomb is thrown
-  //         $gameParty.loseItem(item, 1);
-  //         AudioManager.playSe(HURL_SOUND);
-  //       }
-  //
-  //     }
-  // });
-
   Game_Player.prototype.DiaperBomb = function(event) {
     let angle = angleToPlayer(event.pageX, event.pageY, $gamePlayer.screenX(), $gamePlayer.screenY());
     let bomb = new SPF_ProjectileBomb(angle);
@@ -117,7 +90,7 @@
     //var arrow = new SPF_ArrowSprite();
 
     // Decrement item after bomb is thrown
-    $gameParty.loseItem(SPF_CSI, 1);
+    //$gameParty.loseItem(SPF_CSI, 1);
     AudioManager.playSe(HURL_SOUND);
   }
 
@@ -251,8 +224,11 @@
   SPF_ProjectileBomb_Sprite.prototype.initialize = function (projectile) {
       Sprite.prototype.initialize.call(this);
 
+      var item = SPF_FindItemById(ITEM_ID);
+
       var bitmap = new Bitmap(100, 100);
-      bitmap.drawCircle(25, 25, 15, 'red');
+      SPF_LoadIconOntoBitmap(bitmap, item.iconIndex);
+
       this.bitmap = bitmap;
       this._bomb = projectile;
       this.visible = true;
