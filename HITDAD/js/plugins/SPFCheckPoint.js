@@ -64,33 +64,33 @@
         {
             itemsAtCheckpoint[i] = $gameParty.numItems(items[i]);
         }
-        $gameVariables[100] = itemsAtCheckpoint;
+        // $gameVariables[100] = itemsAtCheckpoint;
     }
     function reFillItems() {
-        // let items = $gameParty.allItems();
-        //
-        // for (let i = 0; i < items.length; ++i)
-        // {
-        //     let difference = itemsAtCheckpoint ? itemsAtCheckpoint[i] - $gameParty.numItems(items[i]) : 0;
-        //     console.log(itemsAtCheckpoint[i], $gameParty.numItems(items[i]), difference, itemsAtCheckpoint.length);
-        //     if (difference > 0)
-        //     {
-        //         console.log("Topping up", items[i].name);
-        //         $gameParty.gainItem($dataItems[items[i].id], difference);
-        //     }
-        // }
         let items = $gameParty.allItems();
 
         for (let i = 0; i < items.length; ++i)
         {
-            let difference = $gameVariables[100] ? $gameVariables[100][i] - $gameParty.numItems(items[i]) : 0;
-            console.log($gameVariables[100][i], $gameParty.numItems(items[i]), difference, $gameVariables[100].length);
+            let difference = itemsAtCheckpoint ? itemsAtCheckpoint[i] - $gameParty.numItems(items[i]) : 0;
+            console.log(itemsAtCheckpoint[i], $gameParty.numItems(items[i]), difference, itemsAtCheckpoint.length);
             if (difference > 0)
             {
                 console.log("Topping up", items[i].name);
                 $gameParty.gainItem($dataItems[items[i].id], difference);
             }
         }
+        // let items = $gameParty.allItems();
+        //
+        // for (let i = 0; i < items.length; ++i)
+        // {
+        //     let difference = $gameVariables[100] ? $gameVariables[100][i] - $gameParty.numItems(items[i]) : 0;
+        //     console.log($gameVariables[100][i], $gameParty.numItems(items[i]), difference, $gameVariables[100].length);
+        //     if (difference > 0)
+        //     {
+        //         console.log("Topping up", items[i].name);
+        //         $gameParty.gainItem($dataItems[items[i].id], difference);
+        //     }
+        // }
     }
 
     function reSpawnPlayer()
