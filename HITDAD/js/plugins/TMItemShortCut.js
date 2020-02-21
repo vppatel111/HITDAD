@@ -58,8 +58,8 @@
  *
  * @param windowHide
  * @type boolean
- * @desc 操作中以外はショートカットウィンドウを隠す。
- * 初期値: ON（ false = OFF 隠さない / true = ON 隠す ）
+ * @desc Changes whether the hotbar is always visible:
+ * (false = always visible / true = only visible when shortcut key is pressed）
  * @default true
  *
  * @help
@@ -107,8 +107,10 @@ Imported.TMItemShortCut = true;
 
   Input.keyMapper[shortCutKey.charCodeAt()] = 'shortCut';
 
+  // The item shortcut button is always disabled, use number keys
+  // to select different items.
   Input._isItemShortCut = function() {
-    return this.isPressed('shortCut');
+    return false; //this.isPressed('shortCut');
   };
 
   //-----------------------------------------------------------------------------
@@ -142,7 +144,10 @@ Imported.TMItemShortCut = true;
   // 移動が可能かどうかを返す
   var _Game_Player_canMove = Game_Player.prototype.canMove;
   Game_Player.prototype.canMove = function() {
-    if (Input._isItemShortCut()) return false;
+
+    // Uncomment if player should not move while hotbar is open.
+    //if (Input._isItemShortCut()) return false;
+
     return _Game_Player_canMove.call(this);
   };
 
@@ -206,6 +211,24 @@ Imported.TMItemShortCut = true;
     this.select($gameParty._shortCut[this.index()]);
 
   };
+
+  // Remove ability to move cursor using movement keys.
+  // Replace with using number keys to select items.
+  Window_ShortCut.prototype.processCursorMove = function() {
+    var lastIndex = this.index();
+    if (Input.isRepeated('item1')) {
+      this.select(0);
+    }
+    if (Input.isRepeated('item2')) {
+      this.select(1);
+    }
+    if (Input.isRepeated('item3')) {
+      this.select(2);
+    }
+    if (this.index() !== lastIndex) {
+        SoundManager.playCursor();
+    }
+  }
 
   Window_ShortCut.prototype.select = function(index) {
     Window_Selectable.prototype.select.call(this, index);
@@ -277,7 +300,11 @@ Imported.TMItemShortCut = true;
         this.y = $gamePlayer.screenY() - 64 - this.height;
         this.y = this.y.clamp(0, Graphics.height - this.height);
       }
-      if (!$gameMap.isEventRunning() && !$gameMessage.isBusy() &&
+
+      // Makes the hotbar active when an blocking event is not running
+      // and a game message is not being displayed.
+      if (!$gameMap.isEventRunning() &&
+          !$gameMessage.isBusy() &&
           Input._isItemShortCut()) {
         this.activate();
         if (windowHide) this.open();
@@ -297,8 +324,7 @@ Imported.TMItemShortCut = true;
     }
   };
 
-  Window_ShortCut.prototype.playOkSound = function() {
-  };
+  Window_ShortCut.prototype.playOkSound = function() { };
 
   //-----------------------------------------------------------------------------
   // Scene_Map
