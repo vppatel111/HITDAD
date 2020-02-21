@@ -90,7 +90,7 @@
     //var arrow = new SPF_ArrowSprite();
 
     // Decrement item after bomb is thrown
-    //$gameParty.loseItem(SPF_CSI, 1);
+    $gameParty.loseItem(SPF_CSI, 1);
     AudioManager.playSe(HURL_SOUND);
   }
 
