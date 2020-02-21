@@ -26,7 +26,8 @@
         if (event.button === 2) { // Right Click
             $gamePlayer.SPF_HurlBox(event.pageX);
         } else if (event.button === 0) { // Left Click
-            if ($gameSwitches.value(10) && event.pageX < 250.0 && event.pageY < 250.0) {
+            
+            if ($gameSwitches.value(10) && event.pageX < 200.0 && event.pageY < 200.0) {
                 $gamePlayer.AnswerCall();
             } else {
 
