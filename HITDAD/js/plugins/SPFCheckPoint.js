@@ -13,7 +13,9 @@
  * Plugin Commands
  *========================================================================================
  * CheckPoint            - Will record player position and inventory, call on level entry
- * RefillItems           - Call when re-spawning to refill inventory to checkpoint amounts
+ * TopUpItems            - Refill inventory to checkpoint amounts
+ * TopUpItems 2 3 0      - Refill inventory to the specified amounts
+ * GainItems 3 0 1       - Gain the specified amounts
  *========================================================================================
  *
  *
@@ -49,11 +51,21 @@
                 case "Respawn":
                     reSpawnPlayer();
                     break;
-                case "RefillItems":
+                case "TopUpItems":
+                    if (args && args.length > 0)
+                    {
+                        for (let i = 0; i < args.length; ++i)
+                        {
+
+                            itemsAtCheckpoint[i] = parseInt(args[i]);
+                        }
+                    }
                     reFillItems();
                     break;
+                case "GainItems":
+                    GainItems(args);
+                    break;
             }
-
         }
     }
 
@@ -64,15 +76,33 @@
         {
             itemsAtCheckpoint[i] = $gameParty.numItems(items[i]);
         }
-        // $gameVariables[100] = itemsAtCheckpoint;
     }
+
+    function GainItems(args)
+    {
+        let items = $gameParty.allItems();
+
+        // let length = Math.min(items.length, args.length);
+        console.log(items);
+        for (let i = 0; i < args.length; ++i)
+        {
+            if (args[i] > 0)
+            {
+                console.log("Adding", args[i], items[i].name);
+                $gameParty.gainItem($dataItems[items[i].id], parseInt(args[i]));
+            }
+        }
+    }
+
     function reFillItems() {
         let items = $gameParty.allItems();
 
-        for (let i = 0; i < items.length; ++i)
+        let length = Math.min(items.length, itemsAtCheckpoint.length);
+
+        for (let i = 0; i < length; ++i)
         {
             let difference = itemsAtCheckpoint ? itemsAtCheckpoint[i] - $gameParty.numItems(items[i]) : 0;
-            console.log(itemsAtCheckpoint[i], $gameParty.numItems(items[i]), difference, itemsAtCheckpoint.length);
+            console.log(itemsAtCheckpoint[i], $gameParty.numItems(items[i]), difference);
             if (difference > 0)
             {
                 console.log("Topping up", items[i].name);

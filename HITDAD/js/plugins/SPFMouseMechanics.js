@@ -1,5 +1,5 @@
 //=============================================================================
-// SPFPhoneCall
+// SPFMouseMechanics
 // v1.0
 //=============================================================================
 
@@ -18,13 +18,15 @@
 
     document.addEventListener("mousedown", function (event) {
 
+
         if (!$gameSwitches || !$gamePlayer) {
             return;
         }
+
         if (event.button === 2) { // Right Click
             $gamePlayer.SPF_HurlBox(event.pageX);
         } else if (event.button === 0) { // Left Click
-            if ($gameSwitches.value(10) && event.pageX < 150.0 && event.pageY < 150.0) {
+            if ($gameSwitches.value(10) && event.pageX < 250.0 && event.pageY < 250.0) {
                 $gamePlayer.AnswerCall();
             } else {
 
