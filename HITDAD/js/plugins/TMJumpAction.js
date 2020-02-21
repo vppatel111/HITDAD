@@ -1319,10 +1319,12 @@ function Game_Bullet() {
   Game_CharacterBase.prototype.isLanding = function() {
     return this._landingObject !== null;
   };
-
-  // Game_CharacterBase.prototype.isFalling = function() {
-  //   return this._landingObject === null;
-  // };
+  // SPF Fall Detection
+  Game_CharacterBase.prototype.SPF_StartFalling = function() {
+    $gameActors.actor(1).setCharacterImage('!hitdad', 1);
+    this._isFalling = true;
+    $gamePlayer.refresh();
+  };
 
   // およぎ状態判定
   Game_CharacterBase.prototype.isSwimming = function() {
@@ -1433,9 +1435,7 @@ function Game_Bullet() {
       } else {
         if (this._vy > 0) {
           if (!this._isFalling && this._vy > 0.05) {
-            $gameActors.actor(1).setCharacterImage('!hitdad', 1);
-            this._isFalling = true; // 7PF Fall Detection
-            $gamePlayer.refresh();
+            this.SPF_StartFalling();
           }
           this.collideMapDown();
           this.collideCharacterDown();
@@ -2519,13 +2519,7 @@ function Game_Bullet() {
       this._vy = this.isSwimming() ? -this._swimJump : -this._jumpSpeed;
       this.resetStopCount();
       this.straighten();
-	  
-	  //PLAY SOUND EFFECTS FROM IMPORTED AUDIO - eesayas 7PF
-	  // var jumpGrunt =  {name: 'Jump_Grunt', pan: 0, pitch: 100, volume: 75};
-      // AudioManager.playSe(jumpGrunt);
-      $gameActors.actor(1).setCharacterImage('!hitdad', 1);
-      this._isFalling = true;
-      $gamePlayer.refresh();
+      this.SPF_StartFalling();
       AudioManager.playSe(actSeJump);
     }
   };
