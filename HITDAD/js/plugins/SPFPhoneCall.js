@@ -114,6 +114,7 @@
                         $gameVariables.setValue(varNum, parseInt(args[1]) + 10);
                         $gameVariables.setValue($gameVariables.value(varNum), 1);
                         $gameTimer.start(ringDuration * 60);
+
                         AudioManager.playBgs(ringTone);
                         break;
                     case "Ring":

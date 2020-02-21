@@ -1292,7 +1292,7 @@ function Game_Bullet() {
 	
 	
 	//DECLARE VARIABLES FOR SOUND EFFECTS INTEGRATION --eesayas 7PF
-	this._jumpBefore = false;
+	this._isFalling = false;
   };
 
   // バトラーの取得
@@ -1319,6 +1319,10 @@ function Game_Bullet() {
   Game_CharacterBase.prototype.isLanding = function() {
     return this._landingObject !== null;
   };
+
+  // Game_CharacterBase.prototype.isFalling = function() {
+  //   return this._landingObject === null;
+  // };
 
   // およぎ状態判定
   Game_CharacterBase.prototype.isSwimming = function() {
@@ -1421,12 +1425,18 @@ function Game_Bullet() {
       this._x = Math.floor(this._realX);
     }
     if (this._vy !== 0) {
+
       this._landingObject = null;
       this._realY += this._vy;
       if (this._through) {
         this._realY = this._realY.clamp(0, $gameMap.height());
       } else {
         if (this._vy > 0) {
+          if (!this._isFalling && this._vy > 0.05) {
+            $gameActors.actor(1).setCharacterImage('!hitdad', 1);
+            this._isFalling = true; // 7PF Fall Detection
+            $gamePlayer.refresh();
+          }
           this.collideMapDown();
           this.collideCharacterDown();
         } else {
@@ -1677,10 +1687,10 @@ function Game_Bullet() {
     this._vy = 0;
 	
 	//PLAY LANDING AFTTER JUMP SOUND EFFECTS --eesayas
-	if (this._jumpBefore) {
+	if (this._isFalling) {
 		// var jumpLand =  {name: 'Jump_Land', pan: 0, pitch: 100, volume: 500};
       AudioManager.playSe(actSeLand);// 7PFAudio
-      this._jumpBefore = false;
+      this._isFalling = false;
       $gameActors.actor(1).setCharacterImage('!hitdad', 0);
       $gamePlayer.refresh();
       console.log("Land");
@@ -2058,6 +2068,7 @@ function Game_Bullet() {
 
   // はしごにつかまる
   Game_Player.prototype.getOnLadder = function(downFlag) {
+    this._isFalling = false;
     this._ladder = true;
     this._landingObject = null;
     this._leftObject = null;
@@ -2468,6 +2479,9 @@ function Game_Bullet() {
 
   // ボタン入力によるジャンプ処理
   Game_Player.prototype.jumpByInput = function() {
+    if (this._isFalling) {          // 7PF Prevent Double Jump
+      return;
+    }
     if (this._jumpInput > 0) {
       this._jumpInput--;
       if (Input.isPressed('jump')) {
@@ -2510,9 +2524,9 @@ function Game_Bullet() {
 	  // var jumpGrunt =  {name: 'Jump_Grunt', pan: 0, pitch: 100, volume: 75};
       // AudioManager.playSe(jumpGrunt);
       $gameActors.actor(1).setCharacterImage('!hitdad', 1);
+      this._isFalling = true;
       $gamePlayer.refresh();
       AudioManager.playSe(actSeJump);
-	  this._jumpBefore = true;
     }
   };
 

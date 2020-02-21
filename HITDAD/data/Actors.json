@@ -1,4 +1,4 @@
 [
 null,
-{"id":1,"battlerName":"","characterIndex":0,"characterName":"!hitdad","classId":1,"equips":[],"faceIndex":0,"faceName":"HITDAD_Portrait_SET","traits":[],"initialLevel":1,"maxLevel":99,"name":"HITDAD","nickname":"","note":"<w:0.3><h:1.9>","profile":""}
+{"id":1,"battlerName":"","characterIndex":0,"characterName":"!hitdad","classId":1,"equips":[],"faceIndex":0,"faceName":"HITDAD_Portrait_SET","traits":[],"initialLevel":1,"maxLevel":99,"name":"HITDAD","nickname":"","note":"<w:0.3><h:1.9><move_speed:0.1><jump_speed:0.225><gravity:0.0098>","profile":""}
 ]
