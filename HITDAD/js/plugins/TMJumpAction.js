@@ -1432,9 +1432,10 @@ function Game_Bullet() {
         this._realY = this._realY.clamp(0, $gameMap.height());
       } else {
         if (this._vy > 0) {
-
-          if (this._vy > 0.1) {
+          if (!this._isFalling && this._vy > 0.05) {
+            $gameActors.actor(1).setCharacterImage('!hitdad', 1);
             this._isFalling = true; // 7PF Fall Detection
+            $gamePlayer.refresh();
           }
           this.collideMapDown();
           this.collideCharacterDown();
@@ -2478,6 +2479,9 @@ function Game_Bullet() {
 
   // ボタン入力によるジャンプ処理
   Game_Player.prototype.jumpByInput = function() {
+    if (this._isFalling) {          // 7PF Prevent Double Jump
+      return;
+    }
     if (this._jumpInput > 0) {
       this._jumpInput--;
       if (Input.isPressed('jump')) {
@@ -2520,9 +2524,9 @@ function Game_Bullet() {
 	  // var jumpGrunt =  {name: 'Jump_Grunt', pan: 0, pitch: 100, volume: 75};
       // AudioManager.playSe(jumpGrunt);
       $gameActors.actor(1).setCharacterImage('!hitdad', 1);
+      this._isFalling = true;
       $gamePlayer.refresh();
       AudioManager.playSe(actSeJump);
-	  this._isFalling = true;
     }
   };
 
