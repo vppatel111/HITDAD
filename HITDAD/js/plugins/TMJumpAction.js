@@ -1259,7 +1259,9 @@ function Game_Bullet() {
     this._collideH = 0.75;
     // this._collideH = 0.75;
     this._collideIds = [];
+    this._touchingObject = null;
     this._landingObject = null;
+    this._topObject = null;       // SPF variable for pickup box above
     this._leftObject = null;
     this._rightObject = null;
     this._landingRegion = 0;
@@ -1319,11 +1321,16 @@ function Game_Bullet() {
   Game_CharacterBase.prototype.isLanding = function() {
     return this._landingObject !== null;
   };
+
   // SPF Fall Detection
   Game_CharacterBase.prototype.SPF_StartFalling = function() {
-    $gameActors.actor(1).setCharacterImage('!hitdad', 1);
     this._isFalling = true;
-    $gamePlayer.refresh();
+
+    if (this === $gamePlayer) {
+      $gameActors.actor(1).setCharacterImage('!hitdad', 1);
+      $gamePlayer.refresh();
+    }
+
   };
 
   // およぎ状態判定
@@ -1585,6 +1592,7 @@ function Game_Bullet() {
             this._jumpInput = 0;
           }
         }
+        this._topObject = character;
       }
     }
   };
@@ -1607,6 +1615,7 @@ function Game_Bullet() {
             this.getLand(character._realY - character._collideH - 0.001);
           }
         }
+        character._topObject = this;
       }
     }
   };
@@ -1686,14 +1695,13 @@ function Game_Bullet() {
     this._realY = y;
     this._vy = 0;
 	
-	//PLAY LANDING AFTTER JUMP SOUND EFFECTS --eesayas
+	//PLAY LANDING SOUND --eesayas
 	if (this._isFalling) {
 		// var jumpLand =  {name: 'Jump_Land', pan: 0, pitch: 100, volume: 500};
       AudioManager.playSe(actSeLand);// 7PFAudio
       this._isFalling = false;
       $gameActors.actor(1).setCharacterImage('!hitdad', 0);
       $gamePlayer.refresh();
-      console.log("Land");
     }
 
 
@@ -2279,16 +2287,14 @@ function Game_Bullet() {
   };
 
   // 持ち上げる
-  Game_Player.prototype.executeCarry = function() {
-    carrying_object = $gameMap.event(this._landingObject.eventId());
-    if (SPF_ParseNote(carrying_object).npcType != SPF_NPCS.SECURITY_NPC) {
-      this._carryingObject = carrying_object;
+  Game_Player.prototype.executeCarry = function(object) {
+    if (typeof object.eventId !== "function") return;
+    let event = $gameMap.event(object.eventId());
+    if (SPF_ParseNote(event).npcType !== SPF_NPCS.SECURITY_NPC) {
+      this._carryingObject = object;
       this._carryingObject.carry();
       AudioManager.playSe(actSeCarry);
     }
-    this._landingObject = null;
-    this._leftObject = null;
-    this._rightObject = null;
   };
 
   // 投げる
