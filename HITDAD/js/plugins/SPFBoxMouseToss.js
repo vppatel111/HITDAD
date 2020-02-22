@@ -25,6 +25,16 @@
  * @desc: {"volume":90, "pitch":70, "pan":0}
  * @default {"volume":90, "pitch":70, "pan":0}
  *
+ * @param carrySe
+ * @desc Sound effect when HitDad throws box
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param carrySeParam
+ * @type string
+ * @desc: {"volume":90, "pitch":70, "pan":0}
+ * @default {"volume":90, "pitch":70, "pan":0}
  */
 
 (function() {
@@ -34,9 +44,11 @@
     let actSeHurl = JSON.parse(parameters['hurlSeParam'] || '{}');
     actSeHurl.name = parameters['hurlSe'] || '';
 
+    let actSeCarry = JSON.parse(parameters['carrySeParam'] || '{}');
+    actSeCarry.name = parameters['carrySe'] || '';
+
     Game_Player.prototype.SPF_HurlBox = function(mouseX) {
         if ($gamePlayer.isCarrying()) {
-            console.log("Is Carrying");
             let target = $gamePlayer._carryingObject;
             let lastRealX = target._realX;
             target.collideMapLeft();
@@ -49,7 +61,7 @@
                 target._realX = lastRealX;
                 return;
             }
-            var lastRealY = target._realY;
+            let lastRealY = target._realY;
             target.collideMapUp();
             if (lastRealY !== target._realY) {
                 target._realY = lastRealY;
@@ -61,59 +73,61 @@
                 return;
             }
             let targets = target.collideTargets();
-            for (var i = 0; i < targets.length; i++) {
-                var character = targets[i];
+            for (let i = 0; i < targets.length; i++) {
+                let character = targets[i];
                 if (!character._through && target.isCollide(character)) return;
             }
 
-            let xDifference = mouseX - $gamePlayer.screenX();
+            let xDifference = (mouseX - $gamePlayer.screenX());
             $gamePlayer._carryingObject.hurl();
             $gamePlayer._carryingObject.dash(xDifference / 2000 , -0.3 );
-            AudioManager.playSe(actSeHurl);
             $gamePlayer._carryingObject = null;
             $gamePlayer._shotDelay = 1;
+            AudioManager.playSe(actSeHurl);
+
         } else {
-            if ( $gamePlayer.isLanding() && ((Object.prototype.toString.call($gamePlayer._landingObject) !== '[object Array]') || (!!$gamePlayer._leftObject) || (!!$gamePlayer._rightObject))) // 7PF Pickup Implementation
-            {
-                if (!!$gamePlayer._rightObject) {
-                    $gamePlayer._landingObject = $gamePlayer._rightObject;
+
+                let objectToCarry = null;
+
+                if ($gamePlayer._topObject)
+                {
+                    objectToCarry = $gamePlayer._topObject;
+                    $gamePlayer._topObject = null;
+
+                } else if ((Object.prototype.toString.call($gamePlayer._landingObject) !== '[object Array]'))
+                {
+                    objectToCarry = $gamePlayer._landingObject;
+                    $gamePlayer._landingObject = null;
+
+                } else if ($gamePlayer._rightObject)
+                {
+                    objectToCarry = $gamePlayer._rightObject;
+                    $gamePlayer._rightObject = null;
+
+                } else if ($gamePlayer._leftObject)
+                {
+                    objectToCarry = $gamePlayer._leftObject;
+                    $gamePlayer._leftObject = null;
                 }
-                if (!!$gamePlayer._leftObject) {
-                    $gamePlayer._landingObject = $gamePlayer._leftObject;
+
+                if (objectToCarry)
+                {
+                    executeCarry(objectToCarry);
                 }
-                $gamePlayer.executeCarry();
-                console.log("Pickup Called");
-            }
 
         }
     };
 
+    function executeCarry(object) {
+        if (typeof object.eventId !== "function") return;
 
-   //  function toRadians(angle) {
-   //      return angle * Math.PI / 180;
-   //  }
-   //
-   //
-   // function calculateVelocity(x,y) {
-   //      let g = 0.015;
-   //      let radians = toRadians(65);
-   //      let velocity =  x / (Math.cos(radians) * Math.sqrt(((-2 * y)/g) + ((2 * Math.sin(radians) * g) / (Math.cos(radians)))));
-   //      return velocity;
-   // }
-   //
-   //  Math.clamp = function(val, min, max){
-   //      return Math.min(Math.max(min, val), max);
-   //  }
+        let event = $gameMap.event(object.eventId());
 
-    // function isEmpty(val){
-    //     return (val === undefined || val == null || val.length <= 0);
-    // }
-    //
-    // document.addEventListener("mousedown", function (event) {
-    //     console.log(event.button);
-    //     if (!isEmpty($gamePlayer) && $gameSwitches && !SPF_OnPhone(event) && event.button === 2) {
-    //         SPF_HurlBox(event.pageX);
-    //     }
-    // });
+        if (SPF_ParseNote(event).npcType !== SPF_NPCS.SECURITY_NPC) {
+            $gamePlayer._carryingObject = object;
+            $gamePlayer._carryingObject.carry();
+            AudioManager.playSe(actSeCarry);
+        }
+    }
 
 })();
