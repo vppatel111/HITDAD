@@ -40,8 +40,8 @@
                     checkPoint();
                     if (args && args.length > 1)
                     {
-                        xPosition = args[0];
-                        yPosition = args[1];
+                        $gamePlayer._savedX = args[0];
+                        $gamePlayer._savedY = args[1];
                         $gameVariables.setValue(6,args[0]);
                         $gameVariables.setValue(7,args[1]);
                         $gameVariables.setValue(5, $gameMap._mapId);

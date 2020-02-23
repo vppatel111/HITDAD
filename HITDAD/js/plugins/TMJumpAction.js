@@ -1264,6 +1264,9 @@ function Game_Bullet() {
     this._topObject = null;       // SPF variable for pickup box above
     this._leftObject = null;
     this._rightObject = null;
+    this._canPickup = false;
+    this._instantDeath = false;
+    this._boxReset = false;
     this._landingRegion = 0;
     this._ladder = false;
     this._lift = false;
@@ -1616,9 +1619,21 @@ function Game_Bullet() {
           }
         }
         character._topObject = this;
+        this.checkHitEvent(character);
       }
     }
   };
+
+  Game_CharacterBase.prototype.checkHitEvent = function(object) {
+    if (this === $gamePlayer && object._instantDeath) {
+      $gameActors.actor(1).addState(1);
+    } else if (this._canPickup && object._boxReset) {
+        if (typeof this.resetPosition === "function"){
+          this.resetPosition();
+        }
+      }
+  }
+
 
   // キャラクターとの衝突判定（左方向）
   Game_CharacterBase.prototype.collideCharacterLeft = function() {
@@ -2027,6 +2042,7 @@ function Game_Bullet() {
     this._shotSeVolume = 0;
     this._shotSePitch = 0;
     this._carryingObject = null;
+
   };
 
   // 画面中央の X 座標
@@ -2136,15 +2152,15 @@ function Game_Bullet() {
 
   // 入力の処理
   Game_Player.prototype.updateInput = function() {
-    this.carryByInput();
-    if (this.isCarrying()) this._shotDelay = 1;
-    this.attackByInput();
-    this.changeByInput();
+    // this.carryByInput();
+    // if (this.isCarrying()) this._shotDelay = 1;
+    // this.attackByInput();
+    // this.changeByInput();
     this.moveByInput();
     this.jumpByInput();
-    this.dashByInput();
-    this.guardByInput();
-    this.triggerButtonAction();
+    // this.dashByInput();
+    // this.guardByInput();
+    // this.triggerButtonAction();
   };
 
   // 重力の処理
@@ -2222,57 +2238,57 @@ function Game_Bullet() {
   };
 
   // ボタン操作による持ち上げ（投げ）
-  Game_Player.prototype.carryByInput = function() {
-    if (this.isCarrying()) {
-      if (Input.isTriggered('pickup')) {
-        var target = this._carryingObject;
-        var lastRealX = target._realX;
-        target.collideMapLeft();
-        if (lastRealX !== target._realX) {
-          target._realX = lastRealX;
-          return;
-        }
-        target.collideMapRight();
-        if (lastRealX !== target._realX) {
-          target._realX = lastRealX;
-          return;
-        }
-        var lastRealY = target._realY;
-        target.collideMapUp();
-        if (lastRealY !== target._realY) {
-          target._realY = lastRealY;
-          return;
-        }
-        target.collideMapDown();
-        if (lastRealY !== target._realY) {
-          target._realY = lastRealY;
-          return;
-        }
-        var targets = target.collideTargets();
-        for (var i = 0; i < targets.length; i++) {
-          var character = targets[i];
-          if (!character._through && target.isCollide(character)) return;
-        }
-        this.executeHurl();
-      }
-    } else {
-      if (Input.isTriggered('pickup') && this.isLanding() && ((Object.prototype.toString.call(this._landingObject) !== '[object Array]') || (!!this._leftObject) || (!!this._rightObject))) // 7PF Pickup Implementation
-      {
-        if (!!this._rightObject) {
-          this._landingObject = this._rightObject;
-        }
-        if (!!this._leftObject) {
-          this._landingObject = this._leftObject;
-        }
-
-        this.executeCarry();
-        console.log("Pickup Called");
+  // Game_Player.prototype.carryByInput = function() {
+    // if (this.isCarrying()) {
+    //   if (Input.isTriggered('pickup')) {
+    //     var target = this._carryingObject;
+    //     var lastRealX = target._realX;
+    //     target.collideMapLeft();
+    //     if (lastRealX !== target._realX) {
+    //       target._realX = lastRealX;
+    //       return;
+    //     }
+    //     target.collideMapRight();
+    //     if (lastRealX !== target._realX) {
+    //       target._realX = lastRealX;
+    //       return;
+    //     }
+    //     var lastRealY = target._realY;
+    //     target.collideMapUp();
+    //     if (lastRealY !== target._realY) {
+    //       target._realY = lastRealY;
+    //       return;
+    //     }
+    //     target.collideMapDown();
+    //     if (lastRealY !== target._realY) {
+    //       target._realY = lastRealY;
+    //       return;
+    //     }
+    //     var targets = target.collideTargets();
+    //     for (var i = 0; i < targets.length; i++) {
+    //       var character = targets[i];
+    //       if (!character._through && target.isCollide(character)) return;
+    //     }
+    //     this.executeHurl();
+    //   }
+    // } else {
+    //   if (Input.isTriggered('pickup') && this.isLanding() && ((Object.prototype.toString.call(this._landingObject) !== '[object Array]') || (!!this._leftObject) || (!!this._rightObject))) // 7PF Pickup Implementation
+    //   {
+    //     if (!!this._rightObject) {
+    //       this._landingObject = this._rightObject;
+    //     }
+    //     if (!!this._leftObject) {
+    //       this._landingObject = this._leftObject;
+    //     }
+    //
+    //     this.executeCarry();
+    //     console.log("Pickup Called");
         // if (this._carryPower >= this._landingObject._weight) {
         //
         // } else {
         //   this._shotDelay = 1;
         // }
-      }
+      // }
       // if (Input.isTriggered('pickup') &&
       //     this.isLanding() &&
       //     Object.prototype.toString.call(this._landingObject) !== '[object Array]') {
@@ -2283,8 +2299,8 @@ function Game_Bullet() {
       //     this._shotDelay = 1;
       //   }
       // }
-    }
-  };
+    // }
+  // };
 
   // 持ち上げる
   Game_Player.prototype.executeCarry = function(object) {
@@ -2325,11 +2341,11 @@ function Game_Bullet() {
   };
 
   Game_Player.prototype.dropBox = function() { // 7PF Modify Here To Drop Box
-    if (!!this._carryingObject) {
+    if (this._carryingObject) {
       this._carryingObject.hurl();
-      this._carryingObject.dash(0, 0);
+      // this._carryingObject.dash(0, 0);
       this._carryingObject = null;
-      this._shotDelay = 1;
+      // this._shotDelay = 1;
     }
 
   };
@@ -2698,6 +2714,8 @@ function Game_Bullet() {
       this._weight = +(data.meta['weight'] || 0);
       this._carryPower = +(data.meta['carry_power'] || 0);
       this._gravity = +(data.meta['gravity'] || 0.0045);
+      // this._canPickup = +(data.meta['can_pickup'] || false);
+      // this._boxReset = +(data.meta['box_reset'] || false);
       this._dashSpeedX = +(data.meta['dash_speed_x'] || 0.14);
       this._dashSpeedY = +(data.meta['dash_speed_y'] || 0.03);
       this._dashCountTime = +(data.meta['dash_count'] || 15);
@@ -2728,6 +2746,8 @@ function Game_Bullet() {
           if (obj.meta['mulch_jump']) this._mulchJump += +obj.meta['mulch_jump'];
           if (obj.meta['weight']) this._weight += +obj.meta['weight'];
           if (obj.meta['carry_power']) this._carryPower += +obj.meta['carry_power'];
+          // if (obj.meta['can_pickup']) this._canPickup += +obj.meta['can_pickup'];
+          // if (obj.meta['box_reset']) this._boxReset += +obj.meta['box_reset'];
           if (obj.meta['gravity']) this._gravity += +obj.meta['gravity'];
           if (obj.meta['dash_speed_x']) this._dashSpeedX += +obj.meta['dash_speed_x'];
           if (obj.meta['dash_speed_y']) this._dashSpeedY += +obj.meta['dash_speed_y'];
@@ -2746,6 +2766,9 @@ function Game_Bullet() {
           if (obj.meta['shot_delay']) this._shotDelayTime += +obj.meta['shot_delay'];
         }
       }
+
+      this._canPickup = actor.loadTagBool('can_pickup');
+      this._boxReset = actor.loadTagBool('box_reset');
       this._wallJump = actor.loadTagBool('wall_jump');
       this._shotType = +actor.loadTagString('shot_type', 1);
       this._shotIndex = +actor.loadTagString('shot_index', 0);
@@ -2804,6 +2827,7 @@ function Game_Bullet() {
     this._battler = null;
     this._deadSelfSwitch = null;
     this._commentParams = {};
+
   };
 
   // バトラーの取得
@@ -2837,6 +2861,13 @@ function Game_Bullet() {
       this._weight         = +this.loadTagParam('weight') || 0;
       this._deadSelfSwitch = this.loadTagParam('dead');
       this._repopTimer     = +this.loadTagParam('repop') || 0;
+      this._canPickup = this.loadTagParam('can_pickup') || 0;
+      this._boxReset = this.loadTagParam('box_reset') || 0;
+      this._instantDeath = this.loadTagParam('death') || 0;
+      this._startX = this.x;
+      this._startY = this.y;
+      this._resetting = false;
+      if (this._canPickup) console.log("Start Positions", this._startX, this._startY);
       if (this._repopTimer > 0) {
         this._repopCount = this._repopTimer;
       }
@@ -2846,6 +2877,10 @@ function Game_Bullet() {
       this.setupBattler();
     }
   };
+
+  Game_Event.prototype.resetPosition = function() {
+    this.setPosition(this._startX, this._startY - 2);
+  }
 
   // バトラーのセットアップ
   Game_Event.prototype.setupBattler = function() {

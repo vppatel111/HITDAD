@@ -2,7 +2,7 @@
 null,
 {"id":1,"expanded":false,"name":"MAP001","order":1,"parentId":0,"scrollX":2457,"scrollY":1444.5},
 {"id":2,"expanded":false,"name":"MAP002","order":2,"parentId":1,"scrollX":2457,"scrollY":1444.5},
-{"id":3,"expanded":false,"name":"Level 1","order":3,"parentId":0,"scrollX":2806.285714285714,"scrollY":1536},
-{"id":4,"expanded":false,"name":"IntroCutScene","order":4,"parentId":0,"scrollX":2806.285714285714,"scrollY":1536},
-{"id":5,"expanded":false,"name":"Tutorial","order":5,"parentId":0,"scrollX":2806.285714285714,"scrollY":1536}
+{"id":3,"expanded":false,"name":"Level 1","order":3,"parentId":0,"scrollX":2455.5,"scrollY":1344},
+{"id":4,"expanded":false,"name":"IntroCutScene","order":4,"parentId":0,"scrollX":2455.5,"scrollY":1344},
+{"id":5,"expanded":false,"name":"Tutorial","order":5,"parentId":0,"scrollX":2455.5,"scrollY":1344}
 ]
