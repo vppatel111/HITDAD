@@ -1614,11 +1614,11 @@ function Game_Bullet() {
             character._vy = this._vy;
           } else {
             this._landingObject = character;
+            character._topObject = this;
             this._landingRegion = -1;
             this.getLand(character._realY - character._collideH - 0.001);
           }
         }
-        character._topObject = this;
         this.checkHitEvent(character);
       }
     }
@@ -2343,11 +2343,11 @@ function Game_Bullet() {
   Game_Player.prototype.dropBox = function() { // 7PF Modify Here To Drop Box
     if (this._carryingObject) {
       this._carryingObject.hurl();
+    }
+      this._topObject = null;
       // this._carryingObject.dash(0, 0);
       this._carryingObject = null;
       // this._shotDelay = 1;
-    }
-
   };
 
   // ボタン入力による攻撃
