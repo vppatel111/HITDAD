@@ -146,11 +146,11 @@ function SPF_IncapacitateEnemy(enemy) {
   $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'A'], true);
 }
 
-// TODO: Go to all security guard NPCs and add self switch B for "stunned".
 // Stun duration is in units of frames.
 function SPF_StunEnemy(enemy, stunDuration) {
   $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'B'], true);
   enemy.stunTimer = new SPF_Timer();
+  enemy._isStunned = true;
 
   var stunTimerAnimation = new SPF_Sprite();
   stunTimerAnimation.bitmap = new Bitmap(200, 200);
@@ -181,6 +181,7 @@ function SPF_StunEnemy(enemy, stunDuration) {
 
 function SPF_UnstunEnemy(enemy) {
   $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'B'], false);
+  enemy._isStunned = false;
   enemy.stunTimer = {};
 }
 
