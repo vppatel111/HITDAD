@@ -40,7 +40,6 @@ var SPF_NPCS = {
 var SPF_CurrentlySelectedItem = {};
 var SPF_CSI = {};
 
-// TODO: Convert this to an object later.
 var SPF_Enemies = [];
 
 // Defines a rectanglular hitbox for HITDAD units are in tiles.
@@ -152,9 +151,32 @@ function SPF_IncapacitateEnemy(enemy) {
 function SPF_StunEnemy(enemy, stunDuration) {
   $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'B'], true);
   enemy.stunTimer = new SPF_Timer();
-  enemy.stunTimer.start(stunDuration, function () {
-    SPF_UnstunEnemy(enemy);
-  });
+
+  var stunTimerAnimation = new SPF_Sprite();
+  stunTimerAnimation.bitmap = new Bitmap(200, 200);
+
+  // Draw a full progress bar.
+  stunTimerAnimation.bitmap.resetProgressBar(25, 25, 100);
+  stunTimerAnimation.bitmap.drawProgressBar(25, 25, 100, 125);
+
+  // Position just above enemy head.
+  stunTimerAnimation.x = SPF_MapXToScreenX(enemy._x) - 50;
+  stunTimerAnimation.y = SPF_MapYToScreenY(enemy._y) - 100;
+
+  enemy.stunTimer.start(stunDuration,
+    function () { //onExpire
+      SPF_UnstunEnemy(enemy);
+      stunTimerAnimation.remove();
+    },
+    function() { // onTick
+      stunTimerAnimation.bitmap.resetProgressBar(25, 25, 100);
+      stunTimerAnimation.bitmap.drawProgressBar(25, 25, this.getAsProgress(), 125);
+
+      stunTimerAnimation.x = SPF_MapXToScreenX(enemy._x) - 50;
+      stunTimerAnimation.y = SPF_MapYToScreenY(enemy._y) - 100;
+    });
+
+    stunTimerAnimation.show();
 }
 
 function SPF_UnstunEnemy(enemy) {
@@ -372,6 +394,8 @@ function SPF_ParseNote(event) {
   SPF_Timer.prototype.initialize = function () {
       Game_Timer.prototype.initialize.call(this);
 
+      this._initialCount = 0;
+
       //HACK: Piggyback off of sprite to update our timer.
       //TODO: Allow the user to pass in a sprite that the timer will be going on
       // so we are not creating extra sprites.
@@ -380,6 +404,7 @@ function SPF_ParseNote(event) {
       this._sceneElement.setUpdate(function() {
         if (self._working && self._frames > 0) {
               self._frames--;
+              if (self.onTick) { self.onTick() };
               if (self._frames === 0) {
                   self.onExpire();
 
@@ -394,10 +419,18 @@ function SPF_ParseNote(event) {
   // TODO: Use check for isInDialog() to avoid updating enemies when player
   // is doing things.
 
-  SPF_Timer.prototype.start = function(count, onExpireCallback) {
+  SPF_Timer.prototype.start = function(count, onExpireCallback, onTick) {
     Game_Timer.prototype.start.call(this, count);
     // Change the onExpire to call our custom function
     this.onExpire = onExpireCallback;
+    if (onTick) { this.onTick = onTick; }
+    this._initialCount = count;
+  }
+
+  // Returns the time left as a number from 100-0, useful for using in a
+  // progress bar element.
+  SPF_Timer.prototype.getAsProgress = function() {
+      return Math.round( (this._frames / this._initialCount) * 100);
   }
 
 })();
