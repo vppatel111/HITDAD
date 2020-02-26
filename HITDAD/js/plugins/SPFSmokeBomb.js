@@ -37,6 +37,11 @@
  * @desc The number of pixels of the explosion.
  * @default 150
  *
+ * @param stunDuration
+ * @type number
+ * @desc The number of frames the enemies are stunned when hit.
+ * @default 250
+ *
  * @param hurlSe
  * @desc Sound effect when HitDad throws diaper
  * @dir audio/se/
@@ -66,6 +71,8 @@
   var GRAVITY = parseFloat(parameters['gravity']);
   var INITIAL_VELOCITY = parseFloat(parameters['initialVelocity']);
   var EXPLOSION_RADIUS = parseFloat(parameters['explosionRadius']);
+  var STUN_DURATION = parseInt(parameters['stunDuration']);
+
   let HURL_SOUND = JSON.parse(parameters['hurlSeParam'] || '{}');
   HURL_SOUND.name = parameters['hurlSe'] || '';
   let IMPACT_SOUND = JSON.parse(parameters['impactSeParam'] || '{}');
@@ -193,15 +200,13 @@
 
     explosion.show();
 
-    // TODO: Stun the enemies caught in the radius of the blast
-    // for a period of time instead of indefinitely.
     SPF_Enemies.forEach(function(enemy) {
 
       var distanceToExplosion = SPF_DistanceBetweenTwoPoints(enemy.x, enemy.y,
                                            explosion.spawnX, explosion.spawnY);
 
       if (distanceToExplosion < EXPLOSION_RADIUS_TILES) {
-        SPF_IncapacitateEnemy(enemy);
+        SPF_StunEnemy(enemy, STUN_DURATION);
       }
 
     });

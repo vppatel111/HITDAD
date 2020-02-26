@@ -3,12 +3,10 @@
 // v1.0
 //
 // TODO:
-// - Implement actual telling of dad jokes while charging attack
 // - Change "explosion" effect?
 // - ALMOST WORKS, increase the width, might need to specify a width
 // per object to print each joke correctly.
 // - ALSO increase the time to cast dad joke to be able to read joke.
-// - ALSO center the text in the middle.
 //=============================================================================
 
 /*:
@@ -33,6 +31,11 @@
  * @desc The number of pixels of the stun effect.
  * @default 200
  *
+ * @param stunDuration
+ * @type number
+ * @desc The number of frames the enemies are stunned when hit.
+ * @default 250
+ *
  * @param chargeTime
  * @type number
  * @desc The number of frames it takes to charge the dad joke attack.
@@ -55,6 +58,7 @@
   var ITEM_ID = parseInt(parameters['itemID']);
   var STUN_RADIUS = parseFloat(parameters['stunRadius']);
   var STUN_RADIUS_TILES = STUN_RADIUS / 48; // Stun radius in tiles.
+  var STUN_DURATION = parseInt(parameters['stunDuration']);
   var CHARGE_TIME = parseInt(parameters['chargeTime']);
   var CHARACTER_WIDTH = parseInt(parameters['characterWidth']);
   var TEXT_HEIGHT = parseInt(parameters['textHeight']);
@@ -202,15 +206,13 @@
 
     explosion.show();
 
-    // TODO: Stun the enemies caught in the radius of the blast
-    // for a period of time instead of indefinitely.
     SPF_Enemies.forEach(function(enemy) {
 
       var distanceToExplosion = SPF_DistanceBetweenTwoPoints(enemy.x, enemy.y,
                                            explosion.spawnX, explosion.spawnY);
 
       if (distanceToExplosion < STUN_RADIUS_TILES) {
-        SPF_IncapacitateEnemy(enemy);
+        SPF_StunEnemy(enemy, STUN_DURATION);
       }
 
     });
