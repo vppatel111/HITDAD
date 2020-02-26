@@ -101,6 +101,8 @@ Imported.TMItemShortCut = true;
   var backgroundType = +(parameters['backgroundType'] || 0);
   var windowHide = JSON.parse(parameters['windowHide']);
 
+  var showHotbar = true;
+
   //-----------------------------------------------------------------------------
   // Input
   //
@@ -160,9 +162,12 @@ Imported.TMItemShortCut = true;
     _Game_Interpreter_pluginCommand.call(this, command, args);
     if (command === 'setItemSC') {
       $gameParty.setShortCut(+args[0], +args[1]);
-    } else if (command === "initializeItems")
-    {
+    } else if (command === "initializeItems") {
       SPF_CSI = $gameParty.items(0)[0]; // To initialize the weapon so SPF_CSI contains the first weapon
+    } else if (command === "TMItemShortCut_ShowHotbar") {
+      showHotbar = true;
+    } else if (command === "TMItemShortCut_HideHotbar") {
+      showHotbar = false;
     }
 
   };
@@ -234,7 +239,7 @@ Imported.TMItemShortCut = true;
     Window_Selectable.prototype.select.call(this, index);
 
     SPF_CurrentlySelectedItem = this.item();
-    SPF_CSI = this.item();                                  // Needed a shorter variable name to use it in HUDMaker plugin.
+    SPF_CSI = this.item(); // Needed a shorter variable name to use it in HUDMaker plugin.
   }
 
   // 標準パディングを取得
@@ -305,15 +310,22 @@ Imported.TMItemShortCut = true;
       // and a game message is not being displayed.
       if (!$gameMap.isEventRunning() &&
           !$gameMessage.isBusy() &&
-          Input._isItemShortCut()) {
-        this.activate();
-        if (windowHide) this.open();
+          showHotbar) {
+
+          this.open();
+
+        //this.activate();
+        //if (windowHide) this.open();
+
       } else {
 
+        this.close();
+
         // Optimization: Window only calls this when active.
-        if (this.active) this.deactivate();
-        if (windowHide) this.close();
+        // if (this.active) this.deactivate();
+        // if (windowHide) this.close();
       }
+
       var index = Graphics.frameCount % slotNumber;
       var item = $dataItems[$gameParty._shortCut[index]];
       var id = item ? item.id : 0;
