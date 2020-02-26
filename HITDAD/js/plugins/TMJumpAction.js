@@ -1297,7 +1297,7 @@ function Game_Bullet() {
 	
 	
 	//DECLARE VARIABLES FOR SOUND EFFECTS INTEGRATION --eesayas 7PF
-	this._isFalling = false;
+    this._isFalling = false;
   };
 
   // バトラーの取得
@@ -2618,6 +2618,11 @@ function Game_Bullet() {
     if (this._realSteps >= 1) {
       if (this.isNormal()) {
         $gameParty.increaseSteps();
+
+        //[AUDIO] play walking steps
+        if(!this._isFalling && !this._ladder){
+          AudioManager.playSe({name: "walking_step_v2", pitch: 100, volume: 100, pan: 0});
+        }
         if (this.actor()) this.actor().onPlayerWalk();
       }
       this._realSteps = 0;
