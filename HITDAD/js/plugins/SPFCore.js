@@ -40,7 +40,6 @@ var SPF_NPCS = {
 var SPF_CurrentlySelectedItem = {};
 var SPF_CSI = {};
 
-// TODO: Convert this to an object later.
 var SPF_Enemies = [];
 
 // Defines a rectanglular hitbox for HITDAD units are in tiles.
@@ -77,6 +76,10 @@ function SPF_Sprite() {
     this.initialize.apply(this, arguments);
 }
 
+function SPF_Timer() {
+  this.initialize.apply(this, arguments);
+}
+
 // --------------------- Helper functions ----------------------------
 function SPF_isEmpty(obj) {
   return Object.keys(obj).length === 0;
@@ -104,10 +107,6 @@ function SPF_DoesRectanglesOverlap(point_l1, point_r1, point_l2, point_r2) {
   if (point_l1.y > point_r2.y || point_l2.y > point_r1.y)
       return false;
 
-  console.log("Point l1", point_l1);
-  console.log("Point l2", point_l2);
-  console.log("Point r1", point_r1);
-  console.log("Point r2", point_r2);
   return true;
 
 }
@@ -145,6 +144,45 @@ function SPF_MapYToScreenY(mapY) {
 
 function SPF_IncapacitateEnemy(enemy) {
   $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'A'], true);
+}
+
+// Stun duration is in units of frames.
+function SPF_StunEnemy(enemy, stunDuration) {
+  $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'B'], true);
+  enemy.stunTimer = new SPF_Timer();
+  enemy._isStunned = true;
+
+  var stunTimerAnimation = new SPF_Sprite();
+  stunTimerAnimation.bitmap = new Bitmap(200, 200);
+
+  // Draw a full progress bar.
+  stunTimerAnimation.bitmap.resetProgressBar(25, 25, 100);
+  stunTimerAnimation.bitmap.drawProgressBar(25, 25, 100, 125);
+
+  // Position just above enemy head.
+  stunTimerAnimation.x = SPF_MapXToScreenX(enemy._x) - 50;
+  stunTimerAnimation.y = SPF_MapYToScreenY(enemy._y) - 100;
+
+  enemy.stunTimer.start(stunDuration,
+    function () { //onExpire
+      SPF_UnstunEnemy(enemy);
+      stunTimerAnimation.remove();
+    },
+    function() { // onTick
+      stunTimerAnimation.bitmap.resetProgressBar(25, 25, 100);
+      stunTimerAnimation.bitmap.drawProgressBar(25, 25, this.getAsProgress(), 125);
+
+      stunTimerAnimation.x = SPF_MapXToScreenX(enemy._x) - 50;
+      stunTimerAnimation.y = SPF_MapYToScreenY(enemy._y) - 100;
+    });
+
+    stunTimerAnimation.show();
+}
+
+function SPF_UnstunEnemy(enemy) {
+  $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'B'], false);
+  enemy._isStunned = false;
+  enemy.stunTimer = {};
 }
 
 function SPF_FindItemById(idOfItem) {
@@ -351,5 +389,49 @@ function SPF_ParseNote(event) {
   // }
   //
   // SPF_Message.prototype.close
+
+  SPF_Timer.prototype = Object.create(Game_Timer.prototype);
+  SPF_Timer.prototype.constructor = SPF_Timer;
+  SPF_Timer.prototype.initialize = function () {
+      Game_Timer.prototype.initialize.call(this);
+
+      this._initialCount = 0;
+
+      //HACK: Piggyback off of sprite to update our timer.
+      //TODO: Allow the user to pass in a sprite that the timer will be going on
+      // so we are not creating extra sprites.
+      var self = this; // Use SPF_Timer in SPF_Sprite.
+      this._sceneElement = new SPF_Sprite();
+      this._sceneElement.setUpdate(function() {
+        if (self._working && self._frames > 0) {
+              self._frames--;
+              if (self.onTick) { self.onTick() };
+              if (self._frames === 0) {
+                  self.onExpire();
+
+                  // Remove from scene when timer
+                  SceneManager._scene.removeChild(this);
+              }
+          }
+      });
+      this._sceneElement.show();
+  };
+
+  // TODO: Use check for isInDialog() to avoid updating enemies when player
+  // is doing things.
+
+  SPF_Timer.prototype.start = function(count, onExpireCallback, onTick) {
+    Game_Timer.prototype.start.call(this, count);
+    // Change the onExpire to call our custom function
+    this.onExpire = onExpireCallback;
+    if (onTick) { this.onTick = onTick; }
+    this._initialCount = count;
+  }
+
+  // Returns the time left as a number from 100-0, useful for using in a
+  // progress bar element.
+  SPF_Timer.prototype.getAsProgress = function() {
+      return Math.round( (this._frames / this._initialCount) * 100);
+  }
 
 })();
