@@ -1712,14 +1712,15 @@ function Game_Bullet() {
 	
 	//PLAY LANDING SOUND --eesayas
 	if (this._isFalling) {
-		// var jumpLand =  {name: 'Jump_Land', pan: 0, pitch: 100, volume: 500};
-      AudioManager.playSe(actSeLand);// 7PFAudio
       this._isFalling = false;
-      $gameActors.actor(1).setCharacterImage('!hitdad', 0);
-      $gamePlayer.refresh();
+      if (this === $gamePlayer) {
+        $gameActors.actor(1).setCharacterImage('!hitdad', 0);
+        $gamePlayer.refresh();
+      }
+      if (!$gameSwitches.value(12) && this._canPickup || this === $gamePlayer) {
+        AudioManager.playSe(actSeLand);
+      }
     }
-
-
 
 	this.resetJump();
     if (this._ladder) this.getOffLadder();
