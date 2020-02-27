@@ -114,8 +114,8 @@
 
   SPF_EnemyProjectile.prototype = Object.create(SPF_Projectile.prototype);
   SPF_EnemyProjectile.prototype.constructor = SPF_EnemyProjectile;
-  SPF_EnemyProjectile.prototype.initialize = function () {
-      SPF_Projectile.prototype.initialize.call(this);
+  SPF_EnemyProjectile.prototype.initialize = function (directionX) {
+      SPF_Projectile.prototype.initialize.call(this, directionX);
   }
 
   SPF_EnemyProjectile.prototype.collidePlayer = function() {
@@ -153,7 +153,7 @@
           isLookingInDirectionOfPlayer(enemy) &&
           !enemy._isStunned) {
 
-        var bullet = new SPF_EnemyProjectile();
+        var bullet = new SPF_EnemyProjectile(enemy.direction());
 
         if (DEBUG) {
           var getColliderPoints = function() {
@@ -166,7 +166,8 @@
         if (enemy.direction() == DIRECTION.LEFT) {
           bullet.setup(enemy.x, enemy.y - 1, -1 * BULLET_SPEED);
         } else {
-          bullet.setup(enemy.x, enemy.y - 1, BULLET_SPEED);
+          // Spawn bullet on right of enemy if going right.
+          bullet.setup(enemy.x + 1, enemy.y - 1, BULLET_SPEED);
         }
 
         AudioManager.playSe(SHOOT_SOUND);
