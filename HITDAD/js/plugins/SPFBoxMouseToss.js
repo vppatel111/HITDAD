@@ -97,25 +97,20 @@
                 {
                     objectToCarry = $gamePlayer._topObject;
                     $gamePlayer._topObject = null;
-                    console.log("Top Object Grabed")
 
                 } else if ((Object.prototype.toString.call($gamePlayer._landingObject) !== '[object Array]'))
                 {
                     objectToCarry = $gamePlayer._landingObject;
                     $gamePlayer._landingObject = null;
-                    console.log("Land Object Grabed")
 
                 } else if ($gamePlayer._rightObject)
                 {
                     objectToCarry = $gamePlayer._rightObject;
                     $gamePlayer._rightObject = null;
-                    console.log("Right Object Grabed")
-
                 } else if ($gamePlayer._leftObject)
                 {
                     objectToCarry = $gamePlayer._leftObject;
                     $gamePlayer._leftObject = null;
-                    console.log("Left Object Grabed")
                 }
 
                 if (objectToCarry)
