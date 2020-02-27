@@ -56,8 +56,7 @@
     var enemyEvent = {};
     events.forEach(function(event) {
 
-      var eventJSON = SPF_ParseNote(event);
-      if (eventJSON.npcType == SPF_NPCS.SECURITY_NPC) {
+      if (event._npcType === SPF_NPCS.NORMAL_GUARD) {
         enemyEvent = event;
       }
     });
