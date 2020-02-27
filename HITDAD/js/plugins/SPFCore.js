@@ -19,7 +19,7 @@
  * @author Vishal Patel
  */
 
-var DEBUG = true;
+var DEBUG = false;
 
 // These global variables are shared across ALL plugins.
 // Be VERY careful with these to avoid conflicts.
