@@ -117,11 +117,14 @@
   }
 
   SPF_EnemyProjectile.prototype.collidePlayer = function() {
-
-    // console.log(this._x, $gamePlayer.x, $gamePlayer._realX,
-    //             SPF_CollidedWithPlayerCharacter(this._x, this._y, bulletCollider));
-
     return SPF_CollidedWithPlayerCharacter(this._x, this._y, bulletCollider);
+  }
+
+  // There are 3 types of box, 1x1, 1x2 and 3x1.
+  // TODO: Implement this for 3x1 boxes.
+  SPF_EnemyProjectile.prototype.collideBoxes = function() {
+    return SPF_CollidedWithBoxes(this._x, this._y, bulletCollider) //||
+           //SPF_CollidedWithBoxes(this._x, this._y, bulletCollider);
   }
 
   SPF_EnemyProjectile.prototype.hurtPlayer = function() {
@@ -135,6 +138,8 @@
         this.erase();
         this._dealtDamage = true
         this.hurtPlayer();
+      } else if (this.collideBoxes()) {
+        this.erase();
       }
   }
 

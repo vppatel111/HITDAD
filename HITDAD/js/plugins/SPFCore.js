@@ -19,6 +19,8 @@
  * @author Vishal Patel
  */
 
+var DEBUG = true;
+
 // These global variables are shared across ALL plugins.
 // Be VERY careful with these to avoid conflicts.
 var DIRECTION = {
@@ -59,6 +61,55 @@ function SPF_CollidedWithPlayerCharacter(x, y, collider) {
   var point_r2 = {x: x + collider.x + collider.width,
                   y: y + collider.y + collider.height};
   return SPF_DoesRectanglesOverlap(point_l1, point_r1, point_l2, point_r2);
+}
+
+// TODO: Determine what we collided into was really a box.
+// Each box needs a collider on it.
+function SPF_CollidedWithBoxes(x, y, collider) {
+
+  //console.log(x, y, collider);
+
+  // Get all events on a specific tile.
+  var boxesAtLocation = $gameMap.eventsXy(Math.floor(x), Math.floor(y));
+
+  var collidedWithBoxes = false;
+  boxesAtLocation.forEach(function(event) {
+
+    console.log(event);
+
+    // If it has collideH and collideW colliders, then we can collide with it.
+    // HACK: Also check if "canCarry" which indidica
+    if (event._collideH && event._collideW) {
+
+      // Actual width is always half the real width => due to TMJumpAction.
+      var BOX_HITBOX = {x: 0, y: 0, width: event._collideW * 2,
+                                    height: event._collideH};
+
+      if (DEBUG) { // Draw a collider on impact.
+        var getColliderPoints = function() {
+          return SPF_GetColliderPoints(event._x, event._y, BOX_HITBOX);
+        }
+        SPF_DrawCollider("Box", getColliderPoints, BOX_HITBOX);
+      }
+
+      var point_l1 = {x: event._x + BOX_HITBOX.x,
+                      y: event._y + BOX_HITBOX.y};
+      var point_l2 = {x: x + collider.x,
+                      y: y + collider.y};
+
+      var point_r1 = {x: event._x + BOX_HITBOX.x + BOX_HITBOX.width,
+                      y: event._y + BOX_HITBOX.y + BOX_HITBOX.height};
+      var point_r2 = {x: x + collider.x + collider.width,
+                      y: y + collider.y + collider.height};
+      if (SPF_DoesRectanglesOverlap(point_l1, point_r1, point_l2, point_r2)) {
+        collidedWithBoxes = true;
+      }
+    }
+
+  });
+
+  return collidedWithBoxes;
+
 }
 
 // Checks if on phone or answering phone, takes mouse event as parameter
