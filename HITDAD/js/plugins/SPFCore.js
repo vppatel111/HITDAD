@@ -29,7 +29,11 @@ var DIRECTION = {
 };
 
 var SPF_NPCS = {
-  NORMAL_GUARD: 1
+
+    NORMAL_GUARD: 1,
+    MASKED_GUARD: 2,
+    DEAF_GUARD: 3
+
 };
 
 var BOX_TYPE = {
@@ -78,8 +82,6 @@ function SPF_CollidedWithBoxes(x, y, collider, boxCollider) {
 
   var collidedWithBoxes = false;
   boxesAtLocation.forEach(function(event) {
-
-    console.log(event);
 
     // HACK: If it has collideH and collideW colliders and
     // has property "can_pickup", its very likely its a box.
@@ -300,7 +302,9 @@ function SPF_ParseNote(event) {
     var enemyEvents = [];
     events.forEach(function(event) {
 
-        if (event._npcType === SPF_NPCS.NORMAL_GUARD) {
+        // if (event._npcType === SPF_NPCS.NORMAL_GUARD) {
+        if (event._npcType) {
+
         enemyEvents.push(event);
       }
 

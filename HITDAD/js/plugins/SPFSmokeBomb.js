@@ -205,7 +205,8 @@
       var distanceToExplosion = SPF_DistanceBetweenTwoPoints(enemy.x, enemy.y,
                                            explosion.spawnX, explosion.spawnY);
 
-      if (distanceToExplosion < EXPLOSION_RADIUS_TILES) {
+      if (distanceToExplosion < EXPLOSION_RADIUS_TILES &&
+          enemy._npcType !== SPF_NPCS.MASKED_GUARD) {
         SPF_StunEnemy(enemy, STUN_DURATION);
       }
 
