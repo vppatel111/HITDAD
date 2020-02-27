@@ -123,8 +123,8 @@
   // There are 3 types of box, 1x1, 1x2 and 3x1.
   // TODO: Implement this for 3x1 boxes.
   SPF_EnemyProjectile.prototype.collideBoxes = function() {
-    return SPF_CollidedWithBoxes(this._x, this._y, bulletCollider) //||
-           //SPF_CollidedWithBoxes(this._x, this._y, bulletCollider);
+    return SPF_CollidedWithBoxes(this._x, this._y, bulletCollider, BOX_TYPE.ONE_BY_ONE) ||
+           SPF_CollidedWithBoxes(this._x, this._y + 1, bulletCollider, BOX_TYPE.ONE_BY_TWO);
   }
 
   SPF_EnemyProjectile.prototype.hurtPlayer = function() {

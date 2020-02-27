@@ -32,6 +32,12 @@ var SPF_NPCS = {
   SECURITY_NPC: "security_npc"
 };
 
+var BOX_TYPE = {
+  ONE_BY_ONE: {x: 0,  y: 0, width: 1, height: 1},
+  ONE_BY_TWO: {x: 0,  y: -1, width: 1, height: 2},
+  THREE_BY_ONE: {x: -1, y: 0, width: 3, height: 1},
+};
+
 // NOTE: SPF_CurrentlySelectedItem is only updated by the TMItemShortCut plugin
 // however, TMItemShortCut initially returns null if the player has not opened
 // the hotbar.
@@ -65,7 +71,7 @@ function SPF_CollidedWithPlayerCharacter(x, y, collider) {
 
 // TODO: Determine what we collided into was really a box.
 // Each box needs a collider on it.
-function SPF_CollidedWithBoxes(x, y, collider) {
+function SPF_CollidedWithBoxes(x, y, collider, boxCollider) {
 
   //console.log(x, y, collider);
 
@@ -77,13 +83,12 @@ function SPF_CollidedWithBoxes(x, y, collider) {
 
     console.log(event);
 
-    // If it has collideH and collideW colliders, then we can collide with it.
-    // HACK: Also check if "canCarry" which indidica
-    if (event._collideH && event._collideW) {
+    // HACK: If it has collideH and collideW colliders and
+    // has property "can_pickup", its very likely its a box.
+    if (event._collideH && event._collideW && event._canPickup) {
 
       // Actual width is always half the real width => due to TMJumpAction.
-      var BOX_HITBOX = {x: 0, y: 0, width: event._collideW * 2,
-                                    height: event._collideH};
+      var BOX_HITBOX = boxCollider;
 
       if (DEBUG) { // Draw a collider on impact.
         var getColliderPoints = function() {
