@@ -83,6 +83,10 @@
             $gamePlayer._carryingObject.dash(xDifference / 2000 , -0.3 );
             $gamePlayer._carryingObject = null;
             $gamePlayer._shotDelay = 1;
+            $gamePlayer._landingObject = null;
+            $gamePlayer._topObject = null;
+            $gamePlayer._rightObject = null;
+            $gamePlayer._leftObject = null;
             AudioManager.playSe(actSeHurl);
 
         } else {
