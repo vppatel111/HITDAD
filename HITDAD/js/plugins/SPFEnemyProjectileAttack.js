@@ -114,8 +114,8 @@
 
   SPF_EnemyProjectile.prototype = Object.create(SPF_Projectile.prototype);
   SPF_EnemyProjectile.prototype.constructor = SPF_EnemyProjectile;
-  SPF_EnemyProjectile.prototype.initialize = function () {
-      SPF_Projectile.prototype.initialize.call(this);
+  SPF_EnemyProjectile.prototype.initialize = function (directionX) {
+      SPF_Projectile.prototype.initialize.call(this, directionX);
   }
 
   SPF_EnemyProjectile.prototype.collidePlayer = function() {
@@ -153,7 +153,7 @@
           isLookingInDirectionOfPlayer(enemy) &&
           !enemy._isStunned) {
 
-        var bullet = new SPF_EnemyProjectile();
+        var bullet = new SPF_EnemyProjectile(enemy.direction());
 
         if (DEBUG) {
           var getColliderPoints = function() {

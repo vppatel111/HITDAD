@@ -73,8 +73,6 @@ function SPF_CollidedWithPlayerCharacter(x, y, collider) {
 // Each box needs a collider on it.
 function SPF_CollidedWithBoxes(x, y, collider, boxCollider) {
 
-  //console.log(x, y, collider);
-
   // Get all events on a specific tile.
   var boxesAtLocation = $gameMap.eventsXy(Math.floor(x), Math.floor(y));
 
@@ -311,14 +309,17 @@ function SPF_ParseNote(event) {
     return enemyEvents;
   }
 
-  SPF_Projectile.prototype.initialize = function(override_projectile) {
+  SPF_Projectile.prototype.initialize = function(directionX) {
     this._opacity = 0;
     this.setup($gamePlayer.x, $gamePlayer.y - 1, 0.01);
 
-    // If an override of SPF_Projectile is passed in use that, otherwise
-    // use default SPF_Projectile object.
-    this._sprite = new SPF_Projectile_Sprite(override_projectile ||
-                                             this);
+    // Default sprite direction is left, flip sprite if moving in the other
+    // direction.
+    this._sprite = new SPF_Projectile_Sprite(this);
+
+    if (directionX && directionX == DIRECTION.RIGHT) {
+      this._sprite.scale.x = -1;
+    }
 
   };
 
