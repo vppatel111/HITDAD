@@ -294,6 +294,16 @@
  * @desc Sound effect when landing
  * @default {"volume":50, "pitch":100, "pan":0}
  *
+ * @param walkSe
+ * @desc Walking sound effect
+ * @dir audio/se/
+ * @type file
+ *
+ * @param walkSeParam
+ * @type string
+ * @desc Sound effect when landing
+ * @default {"volume":100, "pitch":100, "pan":0}
+ *
  * @param damagedSe
  * @desc Sound Effect to be played when hurt
  * @require 1
@@ -628,6 +638,8 @@ function Game_Bullet() {
   actSeJump.name = parameters['jumpSe'] || '';
   var actSeLand = JSON.parse(parameters['landSeParam'] || '{}');        // 7PFAudio
   actSeLand.name = parameters['landSe'] || '';                               // 7PFAudio
+  var actSeWalk = JSON.parse(parameters['walkSeParam'] || '{}');        // 7PFAudio
+  actSeWalk.name = parameters['walkSe'] || '';                               // 7PFAudio
   var actSeDamaged = JSON.parse(parameters['damagedSeParam'] || '{}');
   actSeDamaged.name = parameters['damagedSe'] || '';
   var actSeDash = JSON.parse(parameters['dashSeParam'] || '{}');
@@ -1589,13 +1601,15 @@ function Game_Bullet() {
             character._vy = this._vy;
             character._landingObject = this;
             character.resetJump();
+            this._topObject = null;
           } else {
+            this._topObject = character;
             this._realY = character._realY + this._collideH + 0.001;
             this._vy = 0;
             this._jumpInput = 0;
           }
         }
-        this._topObject = character;
+
       }
     }
   };
@@ -1612,6 +1626,7 @@ function Game_Bullet() {
             character._realY = this._realY + character._collideH + 0.001;
             character._jumpInput = 0;
             character._vy = this._vy;
+            character._topObject = null;
           } else {
             this._landingObject = character;
             character._topObject = this;
@@ -1646,6 +1661,7 @@ function Game_Bullet() {
           if (this._lift || this._ladder) {
             character._realX = this._realX - this._collideW - 0.001 - character._collideW;
             character._vx = this._vx;
+            this._leftObject = null;
           } else {
             if (this.isDashing() && this.checkFlickWeight(character._weight)) {
               character.flick(this);
@@ -1670,6 +1686,7 @@ function Game_Bullet() {
           if (this._lift || this._ladder) {
             character._realX = this._realX + this._collideW + 0.001 + character._collideW;
             character._vx = this._vx;
+            this._rightObject = null;
           } else {
             if (this.isDashing() && this.checkFlickWeight(character._weight)) {
               character.flick(this);
@@ -2345,10 +2362,11 @@ function Game_Bullet() {
     if (this._carryingObject) {
       this._carryingObject.hurl();
     }
-      this._topObject = null;
-      // this._carryingObject.dash(0, 0);
-      this._carryingObject = null;
-      // this._shotDelay = 1;
+    this._carryingObject = null;
+    this._landingObject = null;
+    this._topObject = null;
+    this._rightObject = null;
+    this._leftObject = null;
   };
 
   // ボタン入力による攻撃
@@ -2621,7 +2639,7 @@ function Game_Bullet() {
 
         //[AUDIO] play walking steps
         if(!this._isFalling && !this._ladder){
-          AudioManager.playSe({name: "walking_step_v2", pitch: 100, volume: 100, pan: 0});
+          AudioManager.playSe(actSeWalk);
         }
         if (this.actor()) this.actor().onPlayerWalk();
       }
