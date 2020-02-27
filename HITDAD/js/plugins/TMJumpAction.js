@@ -1277,6 +1277,8 @@ function Game_Bullet() {
     this._leftObject = null;
     this._rightObject = null;
     this._canPickup = false;
+    this._npcType = "";
+    this._detectionRange = 5;
     this._instantDeath = false;
     this._boxReset = false;
     this._landingRegion = 0;
@@ -2738,8 +2740,7 @@ function Game_Bullet() {
       this._weight = +(data.meta['weight'] || 0);
       this._carryPower = +(data.meta['carry_power'] || 0);
       this._gravity = +(data.meta['gravity'] || 0.0045);
-      // this._canPickup = +(data.meta['can_pickup'] || false);
-      // this._boxReset = +(data.meta['box_reset'] || false);
+      this._detectionRange = +(data.meta['range'] || 5);
       this._dashSpeedX = +(data.meta['dash_speed_x'] || 0.14);
       this._dashSpeedY = +(data.meta['dash_speed_y'] || 0.03);
       this._dashCountTime = +(data.meta['dash_count'] || 15);
@@ -2770,8 +2771,7 @@ function Game_Bullet() {
           if (obj.meta['mulch_jump']) this._mulchJump += +obj.meta['mulch_jump'];
           if (obj.meta['weight']) this._weight += +obj.meta['weight'];
           if (obj.meta['carry_power']) this._carryPower += +obj.meta['carry_power'];
-          // if (obj.meta['can_pickup']) this._canPickup += +obj.meta['can_pickup'];
-          // if (obj.meta['box_reset']) this._boxReset += +obj.meta['box_reset'];
+          if (obj.meta['range']) this._detectionRange += +obj.meta['range'];
           if (obj.meta['gravity']) this._gravity += +obj.meta['gravity'];
           if (obj.meta['dash_speed_x']) this._dashSpeedX += +obj.meta['dash_speed_x'];
           if (obj.meta['dash_speed_y']) this._dashSpeedY += +obj.meta['dash_speed_y'];
@@ -2885,6 +2885,8 @@ function Game_Bullet() {
       this._weight         = +this.loadTagParam('weight') || 0;
       this._deadSelfSwitch = this.loadTagParam('dead');
       this._repopTimer     = +this.loadTagParam('repop') || 0;
+      this._detectionRange = +this.loadTagParam('range');
+      this._npcType = +this.loadTagParam('npc_type');
       this._canPickup = this.loadTagParam('can_pickup') || 0;
       this._boxReset = this.loadTagParam('box_reset') || 0;
       this._instantDeath = this.loadTagParam('death') || 0;
