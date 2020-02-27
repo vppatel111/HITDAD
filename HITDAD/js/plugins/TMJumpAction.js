@@ -1630,8 +1630,13 @@ function Game_Bullet() {
             character._vy = this._vy;
             character._topObject = null;
           } else {
+            if (character === $gamePlayer) {
+              $gamePlayer._topObject = this;
+            } else {
+              $gamePlayer._topObject = null;
+            }
             this._landingObject = character;
-            character._topObject = this;
+
             this._landingRegion = -1;
             this.getLand(character._realY - character._collideH - 0.001);
           }
@@ -2893,7 +2898,7 @@ function Game_Bullet() {
       this._startX = this.x;
       this._startY = this.y;
       this._resetting = false;
-      if (this._canPickup) console.log("Start Positions", this._startX, this._startY);
+      // if (this._canPickup) console.log("Start Positions", this._startX, this._startY);
       if (this._repopTimer > 0) {
         this._repopCount = this._repopTimer;
       }

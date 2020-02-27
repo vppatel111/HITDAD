@@ -85,8 +85,6 @@ function SPF_CollidedWithBoxes(x, y, collider, boxCollider) {
   var collidedWithBoxes = false;
   boxesAtLocation.forEach(function(event) {
 
-    console.log(event);
-
     // HACK: If it has collideH and collideW colliders and
     // has property "can_pickup", its very likely its a box.
     if (event._collideH && event._collideW && event._canPickup) {
