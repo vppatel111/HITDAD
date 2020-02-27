@@ -166,7 +166,8 @@
         if (enemy.direction() == DIRECTION.LEFT) {
           bullet.setup(enemy.x, enemy.y - 1, -1 * BULLET_SPEED);
         } else {
-          bullet.setup(enemy.x, enemy.y - 1, BULLET_SPEED);
+          // Spawn bullet on right of enemy if going right.
+          bullet.setup(enemy.x + 1, enemy.y - 1, BULLET_SPEED);
         }
 
         AudioManager.playSe(SHOOT_SOUND);
