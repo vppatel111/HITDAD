@@ -96,7 +96,9 @@
     var distanceX = Math.abs(event.x - $gamePlayer.x);
     var distanceY = Math.abs(event.y - $gamePlayer.y);
 
-    if (distanceX <= ENEMY_RANGE &&
+    let range = event._detectionRange ? event._detectionRange : ENEMY_RANGE;
+    // if (distanceX <= ENEMY_RANGE &&
+    if (distanceX <= range &&
         distanceY <= 1) {
       return true;
     }

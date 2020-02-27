@@ -302,11 +302,7 @@ function SPF_ParseNote(event) {
     var enemyEvents = [];
     events.forEach(function(event) {
 
-      var eventJSON = SPF_ParseNote(event);
-
-      if (!SPF_isEmpty(eventJSON) &&
-          eventJSON.npcType == SPF_NPCS.SECURITY_NPC) {
-
+        if (event._npcType === 1) { // <npc_type:1> is normal guard
         enemyEvents.push(event);
       }
 
