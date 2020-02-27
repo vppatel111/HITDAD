@@ -2326,7 +2326,7 @@ function Game_Bullet() {
   Game_Player.prototype.executeCarry = function(object) {
     if (typeof object.eventId !== "function") return;
     let event = $gameMap.event(object.eventId());
-    if (SPF_ParseNote(event).npcType !== SPF_NPCS.SECURITY_NPC) {
+    if (event._npcType !== SPF_NPCS.NORMAL_GUARD) {
       this._carryingObject = object;
       this._carryingObject.carry();
       AudioManager.playSe(actSeCarry);
