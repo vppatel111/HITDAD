@@ -27,7 +27,7 @@ var DIRECTION = {
 };
 
 var SPF_NPCS = {
-  SECURITY_NPC: "security_npc"
+  NORMAL_GUARD: 1
 };
 
 // NOTE: SPF_CurrentlySelectedItem is only updated by the TMItemShortCut plugin
@@ -246,7 +246,7 @@ function SPF_ParseNote(event) {
     var enemyEvents = [];
     events.forEach(function(event) {
 
-        if (event._npcType === 1) { // <npc_type:1> is normal guard
+        if (event._npcType === SPF_NPCS.NORMAL_GUARD) {
         enemyEvents.push(event);
       }
 
