@@ -1317,6 +1317,35 @@ Bitmap.prototype.drawCircle = function(x, y, radius, color) {
     this._setDirty();
 };
 
+/**
+ * Draw a bitmap in the shape of a circle with feathered edges
+ *
+ * @method drawCircle
+ * @param {Number} x The x coordinate based on the circle center
+ * @param {Number} y The y coordinate based on the circle center
+ * @param {Number} radius The radius of the circle
+ * @param {String} color The color of the circle in CSS format
+ */
+Bitmap.prototype.drawExplosion = function(x, y, radius, color) {
+    var context = this._context;
+    context.save();
+
+    var gradient = context.createRadialGradient(x, y,
+                                            Math.floor(radius/4),
+                                            x, y,
+                                            radius);
+    gradient.addColorStop(0, "rgba(255,255,255,0.8)");
+    gradient.addColorStop(1, "rgba(255,255,255,0.2)");
+
+    context.fillStyle = gradient;
+    context.beginPath();
+    context.arc(x, y, radius, 0, Math.PI * 2, false);
+    context.fill();
+
+    context.restore();
+    this._setDirty();
+};
+
 Bitmap.prototype.resetProgressBar = function (x, y, maxWidth) {
   var context = this._context;
   context.save();

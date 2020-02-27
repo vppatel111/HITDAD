@@ -169,9 +169,9 @@
     var bitmap = new Bitmap(EXPLOSION_RADIUS * 2,
                             EXPLOSION_RADIUS * 2);
 
-    bitmap.drawCircle(EXPLOSION_RADIUS,
-                      EXPLOSION_RADIUS,
-                      EXPLOSION_RADIUS, 'red');
+    bitmap.drawExplosion(EXPLOSION_RADIUS,
+                        EXPLOSION_RADIUS,
+                        EXPLOSION_RADIUS, 'white');
 
     explosion.bitmap = bitmap;
 
