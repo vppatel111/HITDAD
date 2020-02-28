@@ -197,15 +197,20 @@ function SPF_MapYToScreenY(mapY) {
   return Math.round($gameMap.adjustY(mapY) * th);
 }
 
+function SPF_IsEnemyStunned(enemy) {
+  return $gameSelfSwitches.value([$gameMap._mapId, enemy.eventId(), 'B']);
+}
+
+function SPF_IsEnemyPacified(enemy) {
+  return $gameSelfSwitches.value([$gameMap._mapId, enemy.eventId(), 'A']);
+}
+
 function SPF_IncapacitateEnemy(enemy) {
   $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'A'], true);
 }
 
 // Stun duration is in units of frames.
 function SPF_StunEnemy(enemy, stunDuration) {
-  $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'B'], true);
-  enemy.stunTimer = new SPF_Timer();
-  // enemy._isStunned = true;
 
   var stunTimerAnimation = new SPF_Sprite();
   stunTimerAnimation.bitmap = new Bitmap(200, 200);
@@ -218,20 +223,33 @@ function SPF_StunEnemy(enemy, stunDuration) {
   stunTimerAnimation.x = SPF_MapXToScreenX(enemy._x) - 50;
   stunTimerAnimation.y = SPF_MapYToScreenY(enemy._y) - 100;
 
-  enemy.stunTimer.start(stunDuration,
-    function () { //onExpire
-      SPF_UnstunEnemy(enemy);
-      stunTimerAnimation.remove();
-    },
-    function() { // onTick
-      stunTimerAnimation.bitmap.resetProgressBar(25, 25, 100);
-      stunTimerAnimation.bitmap.drawProgressBar(25, 25, this.getAsProgress(), 125);
+  if (SPF_IsEnemyStunned(enemy) && enemy.stunTimer) {
 
-      stunTimerAnimation.x = SPF_MapXToScreenX(enemy._x) - 50;
-      stunTimerAnimation.y = SPF_MapYToScreenY(enemy._y) - 100;
-    });
+    // Only update stun duration if new stun duration is longer
+    // then remaining stun duration.
+    if (enemy.stunTimer._frames < stunDuration) {
+      enemy.stunTimer.resetTimerFrames(stunDuration);
+    }
 
-    stunTimerAnimation.show();
+  } else {
+    $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'B'], true);
+    enemy.stunTimer = new SPF_Timer();
+    enemy.stunTimer.start(stunDuration,
+      function () { //onExpire
+        SPF_UnstunEnemy(enemy);
+        stunTimerAnimation.remove();
+      },
+      function() { // onTick
+        stunTimerAnimation.bitmap.resetProgressBar(25, 25, 100);
+        stunTimerAnimation.bitmap.drawProgressBar(25, 25, this.getAsProgress(), 125);
+
+        stunTimerAnimation.x = SPF_MapXToScreenX(enemy._x) - 50;
+        stunTimerAnimation.y = SPF_MapYToScreenY(enemy._y) - 100;
+      });
+
+      stunTimerAnimation.show();
+  }
+
 }
 
 function SPF_UnstunEnemy(enemy) {
@@ -252,24 +270,6 @@ function SPF_FindItemById(idOfItem) {
     });
 
     return itemToReturn;
-}
-
-/*
-  Use event notes field to keep track of types
-  ex) {"npcType": "security_npc"}
-*/
-
-// Converts Note JSON into a JS object.
-function SPF_ParseNote(event) {
-
-  var parsedJSON = {};
-  try {
-      parsedJSON = JSON.parse(event.event().note);
-  } catch(e) {
-      // Do nothing...
-  }
-
-  return parsedJSON;
 }
 
 (function() {
@@ -473,9 +473,13 @@ function SPF_ParseNote(event) {
       this._sceneElement.show();
   };
 
+  SPF_Timer.prototype.resetTimerFrames = function(count) {
+    this._initialCount = count;
+    this._frames = count;
+  }
+
   // TODO: Use check for isInDialog() to avoid updating enemies when player
   // is doing things.
-
   SPF_Timer.prototype.start = function(count, onExpireCallback, onTick) {
     Game_Timer.prototype.start.call(this, count);
     // Change the onExpire to call our custom function
