@@ -202,11 +202,14 @@
 
     SPF_Enemies.forEach(function(enemy) {
 
+      if (enemy._npcType === SPF_NPCS.MASKED_GUARD || $gameSelfSwitches.value([$gameMap._mapId, enemy.eventId(), 'B']) || $gameSelfSwitches.value([$gameMap._mapId, enemy.eventId(), 'A'])) {
+        return;
+      }
+
       var distanceToExplosion = SPF_DistanceBetweenTwoPoints(enemy.x, enemy.y,
                                            explosion.spawnX, explosion.spawnY);
 
-      if (distanceToExplosion < EXPLOSION_RADIUS_TILES &&
-          enemy._npcType !== SPF_NPCS.MASKED_GUARD) {
+      if (distanceToExplosion < EXPLOSION_RADIUS_TILES) {
         SPF_StunEnemy(enemy, STUN_DURATION);
       }
 

@@ -18,6 +18,7 @@
  * GainItems 3 0 1       - Gain the specified amounts
  *========================================================================================
  *
+ * items tagged with <resets> in the note will have all their self switches turned off
  *
  * @author Mike Greber
  *
@@ -37,19 +38,13 @@
         {
             switch(command) {
                 case "CheckPoint":
-                    checkPoint();
-                    if (args && args.length > 1)
-                    {
-                        $gamePlayer._savedX = args[0];
-                        $gamePlayer._savedY = args[1];
-                        $gameVariables.setValue(6,args[0]);
-                        $gameVariables.setValue(7,args[1]);
-                        $gameVariables.setValue(5, $gameMap._mapId);
-                        console.log("Set respawn position to", $gameVariables.value(5),$gameVariables.value(6),$gameVariables.value(7));
-                    }
+                    recordItemsAtCheckPoint();
                     break;
-                case "Respawn":
-                    reSpawnPlayer();
+                case "ResetToCheckpointValues":
+                    resetToCheckpointValues();
+                    break;
+                case "ResetEventStates":
+                    resetEventSwitches();
                     break;
                 case "TopUpItems":
                     if (args && args.length > 0)
@@ -69,9 +64,9 @@
         }
     }
 
-    function checkPoint() {
+    function recordItemsAtCheckPoint() {
         let items = $gameParty.allItems();
-
+        // itemsAtCheckpoint = items;
         for (let i = 0; i < items.length; ++i)
         {
             itemsAtCheckpoint[i] = $gameParty.numItems(items[i]);
@@ -109,32 +104,44 @@
                 $gameParty.gainItem($dataItems[items[i].id], difference);
             }
         }
-        // let items = $gameParty.allItems();
-        //
-        // for (let i = 0; i < items.length; ++i)
-        // {
-        //     let difference = $gameVariables[100] ? $gameVariables[100][i] - $gameParty.numItems(items[i]) : 0;
-        //     console.log($gameVariables[100][i], $gameParty.numItems(items[i]), difference, $gameVariables[100].length);
-        //     if (difference > 0)
-        //     {
-        //         console.log("Topping up", items[i].name);
-        //         $gameParty.gainItem($dataItems[items[i].id], difference);
-        //     }
-        // }
     }
 
-    function reSpawnPlayer()
-    {
-        // if (xPosition && yPosition) {
-        //     // console.log("Respawning at", xPosition, yPosition);
-        //     // $gameParty.members().forEach(function(m) {
-        //     //     m.recoverAll();
-        //     // });
-        //     // $gameActors.actor(1).recoverAll();
-        //     // $gameActors.actor(1).removeState(1);
-        //     // $gamePlayer.reserveTransfer($gameMap.mapId(), xPosition, yPosition);
-        //     // $gamePlayer.performTransfer();
-        // }
+    function resetToCheckpointValues() {
+        let items = $gameParty.allItems();
+
+        console.log(itemsAtCheckpoint);
+
+        let length = Math.min(items.length, itemsAtCheckpoint.length);
+
+        for (let i = 0; i < length; ++i)
+        {
+            let difference = itemsAtCheckpoint ? itemsAtCheckpoint[i] - $gameParty.numItems(items[i]) : 0;
+            console.log(itemsAtCheckpoint[i], $gameParty.numItems(items[i]), difference);
+            if (difference > 0)
+            {
+                console.log("Topping up", items[i].name);
+                $gameParty.gainItem($dataItems[items[i].id], difference);
+            } else if (difference < 0)
+            {
+                console.log("Reducing", items[i].name);
+                $gameParty.loseItem($dataItems[items[i].id], -difference);
+            }
+        }
+
+
+    }
+
+    function resetEventSwitches() {
+        let allEvents = $gameMap.events();
+        allEvents.forEach(function(event) {
+            if (event._resets) {
+                let switches = ['A', 'B', 'C'];
+                switches.forEach(function(switchname) {
+                    let key = [$gameMap.mapId(), event.eventId(), switchname];
+                    $gameSelfSwitches.setValue(key, false);
+                });
+            }
+        });
     }
 
 })();
