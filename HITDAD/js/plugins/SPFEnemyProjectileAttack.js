@@ -149,9 +149,12 @@
 
     SPF_Enemies.forEach(function(enemy) {
 
+      let isStunned =  $gameSelfSwitches.value([$gameMap._mapId, enemy.eventId(), 'B']) || $gameSelfSwitches.value([$gameMap._mapId, enemy.eventId(), 'A']);
+
       if (isPlayerInRange(enemy) &&
           isLookingInDirectionOfPlayer(enemy) &&
-          !enemy._isStunned) {
+          !isStunned) {
+          // !enemy._isStunned) {
 
         var bullet = new SPF_EnemyProjectile(enemy.direction());
 
