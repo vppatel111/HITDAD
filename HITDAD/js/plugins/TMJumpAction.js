@@ -2647,7 +2647,13 @@ function Game_Bullet() {
         //[AUDIO] play walking steps
         if(!this._isFalling && !this._ladder){
           AudioManager.playSe(actSeWalk);
+        
+        //[AUDIO] play ladder steps
+        } else if (!this._isFalling && this._ladder){
+          AudioManager.playSe({name: "ladder-climb-v2", pitch: 100, volume: 50, pan: 0});
         }
+
+
         if (this.actor()) this.actor().onPlayerWalk();
       }
       this._realSteps = 0;
