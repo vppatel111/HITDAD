@@ -12,13 +12,11 @@
  *
  * Plugin Commands
  *========================================================================================
- * CheckPoint            - Will record player position and inventory, call on level entry
- * TopUpItems            - Refill inventory to checkpoint amounts
- * TopUpItems 2 3 0      - Refill inventory to the specified amounts
- * GainItems 3 0 1       - Gain the specified amounts
+ * CheckPoint                   - Will record player position and inventory, call on level entry
+ * ResetToCheckpointValues      - Refill inventory to checkpoint amounts
+ * ResetEventStates             - Resets self switches on events with note <resets>
  *========================================================================================
  *
- * items tagged with <resets> in the note will have all their self switches turned off
  *
  * @author Mike Greber
  *
