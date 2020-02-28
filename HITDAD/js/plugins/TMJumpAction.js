@@ -1890,6 +1890,7 @@ function Game_Bullet() {
       this.damaged();
       if (battler._actionResult.hpDamage > 0) {
         battler.playDamageSe();
+        battler.requestEffect('blink');
       } else {
         battler.playRecovarySe();
       }
@@ -1906,8 +1907,8 @@ function Game_Bullet() {
   // ダメージ後の処理
   Game_CharacterBase.prototype.damaged = function() {
     var battler = this.battler();
-    this.battler().requestEffect('blink');
-    AudioManager.playSe(actSeDamaged);
+    // this.battler().requestEffect('blink');
+    // AudioManager.playSe(actSeDamaged);
   //  if (this.isLocking()) {
   //    return;
   //  }
