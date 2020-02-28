@@ -2883,6 +2883,7 @@ function Game_Bullet() {
   var _Game_Event_setupPage = Game_Event.prototype.setupPage;
   Game_Event.prototype.setupPage = function() {
     _Game_Event_setupPage.call(this);
+
     if (this._pageIndex >= 0) {
       this._enemyId        = +this.loadTagParam('enemy') || 0;
       this._collideW       = +this.loadTagParam('w') || 0.375;
@@ -2892,9 +2893,10 @@ function Game_Bullet() {
       this._repopTimer     = +this.loadTagParam('repop') || 0;
       this._detectionRange = +this.loadTagParam('range');
       this._npcType = +this.loadTagParam('npc_type');
-      this._canPickup = this.loadTagParam('can_pickup') || 0;
-      this._boxReset = this.loadTagParam('box_reset') || 0;
-      this._instantDeath = this.loadTagParam('death') || 0;
+      this._canPickup = +this.loadTagParam('can_pickup') || 0;
+      this._resets = +this.loadTagParam('resets');
+      this._boxReset = +this.loadTagParam('box_reset') || 0;
+      this._instantDeath = +this.loadTagParam('death') || 0;
       this._startX = this.x;
       this._startY = this.y;
       this._resetting = false;

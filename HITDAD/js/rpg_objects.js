@@ -4769,6 +4769,17 @@ Game_Party.prototype.initialize = function() {
     this.initAllItems();
 };
 
+Game_Party.prototype.setItemQuantity = function(item, amount) { // SPF Implementation
+    let container = this.itemContainer(item);
+    if (container) {
+        container[item.id] = amount.clamp(0, this.maxItems(item));
+        if (container[item.id] === 0) {
+            delete container[item.id];
+        }
+        $gameMap.requestRefresh();
+    }
+};
+
 Game_Party.prototype.initAllItems = function() {
     this._items = {};
     this._weapons = {};
