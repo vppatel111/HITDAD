@@ -75,11 +75,10 @@ function SPF_CollidedWithPlayerCharacter(x, y, collider) {
 
 // TODO: Determine what we collided into was really a box.
 // Each box needs a collider on it.
-function SPF_CollidedWithBoxes(x, y, collider, boxCollider) {
+function SPF_CollidedWithBoxes(x, y, collider, boxCollider, boxesAtLocation) {
 
-  // Get all events on a specific tile.
-  var boxesAtLocation = $gameMap.eventsXy(Math.floor(x), Math.floor(y));
-
+  // Get all events on a tile as well as one tile above, below, to the right and
+  // to the left of the tile.
   var collidedWithBoxes = false;
   boxesAtLocation.forEach(function(event) {
 

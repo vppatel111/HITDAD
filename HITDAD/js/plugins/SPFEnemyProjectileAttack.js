@@ -125,8 +125,28 @@
   // There are 3 types of box, 1x1, 1x2 and 3x1.
   // TODO: Implement this for 3x1 boxes.
   SPF_EnemyProjectile.prototype.collideBoxes = function() {
-    return SPF_CollidedWithBoxes(this._x, this._y, bulletCollider, BOX_TYPE.ONE_BY_ONE) ||
-           SPF_CollidedWithBoxes(this._x, this._y + 1, bulletCollider, BOX_TYPE.ONE_BY_TWO);
+
+    var x = this._x;
+    var y = this._y;
+
+    var boxesAtLocation = $gameMap.eventsXy(Math.floor(x), Math.floor(y));
+    boxesAtLocation = boxesAtLocation.concat($gameMap.eventsXy(Math.floor(x - 1), Math.floor(y)));
+
+    // If collided with 1 x 1 boxes.
+    if (SPF_CollidedWithBoxes(this._x, this._y, bulletCollider,
+                              BOX_TYPE.ONE_BY_ONE, boxesAtLocation))
+    {
+        return true;
+    }
+
+    boxesAtLocation = boxesAtLocation.concat($gameMap.eventsXy(Math.floor(x), Math.floor(y + 1)));
+    // If collided with 1 x 2 boxes.
+    if (SPF_CollidedWithBoxes(this._x, this._y, bulletCollider,
+                              BOX_TYPE.ONE_BY_TWO, boxesAtLocation))
+    {
+        return true;
+    }
+
   }
 
   SPF_EnemyProjectile.prototype.hurtPlayer = function() {
