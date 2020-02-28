@@ -125,8 +125,6 @@
         // if (typeof object.eventId !== "function") return;
         //
         // let event = $gameMap.event(object.eventId());
-
-        // if (SPF_ParseNote(event).npcType !== SPF_NPCS.SECURITY_NPC) {
         if (object._canPickup) {
             $gamePlayer._carryingObject = object;
             $gamePlayer._carryingObject.carry();

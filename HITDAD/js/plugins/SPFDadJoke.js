@@ -208,7 +208,9 @@
 
     SPF_Enemies.forEach(function(enemy) {
 
-      if (enemy._npcType === SPF_NPCS.DEAF_GUARD || $gameSelfSwitches.value([$gameMap._mapId, enemy.eventId(), 'B']) || $gameSelfSwitches.value([$gameMap._mapId, enemy.eventId(), 'A'])) {
+      if (enemy._npcType === SPF_NPCS.DEAF_GUARD ||
+          SPF_IsEnemyPacified(enemy)) {
+            
         return;
       }
 
