@@ -76,7 +76,7 @@
       let distanceToEnemy = $gamePlayer._realX - enemy._realX; // Will be negative if enemy is on right of player
       let verticalOffset = Math.abs($gamePlayer._realY - enemy._realY);
 
-      // direction === 4 means Left
+      // Get enemies in direction player is facing to have positive distance value (direction === 6 means right)
       let forwardDistanceToEnemy = direction === 4 ?  distanceToEnemy : -distanceToEnemy;
 
       if (forwardDistanceToEnemy < 2.0 && forwardDistanceToEnemy > 0.0 && verticalOffset < 1.0) {
@@ -88,7 +88,6 @@
     });
 
     if (closestEnemy) {
-      SPF_IncapacitateEnemy(closestEnemy);
       return closestEnemy;
     }
 
@@ -144,11 +143,11 @@
 
     // Check collision between all targets.
     // let eventsHit = getEventsInDirectionOfCollision();
-    let eventHit = getEnemiesInFrontOfPlayer();
+    let enemyHit = getEnemiesInFrontOfPlayer();
 
     // Do nothing if the player didn't collide with any events.
     // if (eventsHit.length === 0) return;
-    if (!eventHit) return;
+    if (!enemyHit) return;
 
     let item = SPF_FindItemById(itemID);
 
@@ -161,7 +160,7 @@
       // Incapacitate the enemy.
       // if (!SPF_isEmpty(enemyHit)) {
         $gameParty.loseItem(item, 1);
-        // SPF_IncapacitateEnemy(enemyHit);
+        SPF_IncapacitateEnemy(enemyHit);
         AudioManager.playSe(sePacify);
       // }
 

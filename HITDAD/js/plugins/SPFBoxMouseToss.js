@@ -92,43 +92,16 @@
             $gamePlayer._carryingObject.dash(xDifference / 2000 , -0.3 );
             $gamePlayer._carryingObject = null;
             $gamePlayer._shotDelay = 1;
-            // $gamePlayer._landingObject = null;
-            // $gamePlayer._topObject = null;
-            // $gamePlayer._rightObject = null;
-            // $gamePlayer._leftObject = null;
             AudioManager.playSe(actSeHurl);
 
         } else {
 
                 let objectToCarry = findBoxWithinReach();
 
-
-                // if ($gamePlayer._topObject)
-                // {
-                //     objectToCarry = $gamePlayer._topObject;
-                //     $gamePlayer._topObject = null;
-                //
-                // } else if ((Object.prototype.toString.call($gamePlayer._landingObject) !== '[object Array]'))
-                // {
-                //     objectToCarry = $gamePlayer._landingObject;
-                //     $gamePlayer._landingObject = null;
-                //
-                // } else if ($gamePlayer._rightObject)
-                // {
-                //     objectToCarry = $gamePlayer._rightObject;
-                //     $gamePlayer._rightObject = null;
-                // } else if ($gamePlayer._leftObject)
-                // {
-                //     objectToCarry = $gamePlayer._leftObject;
-                //     $gamePlayer._leftObject = null;
-                // }
-
                 if (objectToCarry)
                 {
                     executeCarry(objectToCarry);
-                    objectToCarry = null;
-                } else {
-                    console.log("No box detected");
+                    // objectToCarry = null;
                 }
 
         }
@@ -151,7 +124,7 @@
         return pickupableEvents;
     }
 
-    // Checks if and returns an enemy that is within melee range.
+    // Checks if and returns an enemy that is within melee range, returns null if none in range.
     function findBoxWithinReach() {
         let direction = $gamePlayer.direction();
 
@@ -162,12 +135,13 @@
         let closestBoxDistance = null;
 
         SPF_Boxes.forEach(function(box) {
-            let distanceToBox = xTraceStart - box._realX; // Will be negative if box is to right of player
+            let distanceToBox =  box._realX - xTraceStart; // Will be positive if box is to right of player
             let verticalOffset = Math.abs($gamePlayer._realY - box._realY);
 
-            let forwardDistanceToBox = direction === 4 ? distanceToBox : - distanceToBox;
+            // Get box in direction player is facing to have positive distance value (direction === 6 means right)
+            let forwardDistanceToBox = direction === 6 ? distanceToBox : - distanceToBox;
 
-            if (forwardDistanceToBox < 1.5 && forwardDistanceToBox >= 0.0 && verticalOffset < 2.0) {
+            if (forwardDistanceToBox < 1.75 && forwardDistanceToBox >= 0.0 && verticalOffset < 2.0) {
                 if (!closestBox || closestBoxDistance > forwardDistanceToBox) {
                     closestBoxDistance = forwardDistanceToBox;
                     closestBox = box;
@@ -182,14 +156,10 @@
 
 
     function executeCarry(object) {
-        // if (typeof object.eventId !== "function") return;
-        //
-        // let event = $gameMap.event(object.eventId());
         $gamePlayer._carryingObject = object;
         $gamePlayer._carryingObject.carry();
         AudioManager.playSe(actSeCarry);
-        object = null;
-
+        // object = null;
     }
 
 })();
