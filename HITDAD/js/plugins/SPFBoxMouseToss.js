@@ -12,6 +12,11 @@
  *
  * Box will land approximately at the same distance horizontally as the mouse click.
  *
+ * Plugin Command
+ * =================================================================================
+ * Must call InitializeBoxes on loading of level with pickupable boxes
+ * =================================================================================
+ *
  * @author Mike Greber
  *
  * @param hurlSe
@@ -101,14 +106,13 @@
                 if (objectToCarry)
                 {
                     executeCarry(objectToCarry);
-                    // objectToCarry = null;
                 }
 
         }
     };
 
     function initializeBoxes() {
-        var allEvents = $gameMap.events();
+        let allEvents = $gameMap.events();
         SPF_Boxes = getPickupableEvents(allEvents);
     }
 
@@ -159,7 +163,6 @@
         $gamePlayer._carryingObject = object;
         $gamePlayer._carryingObject.carry();
         AudioManager.playSe(actSeCarry);
-        // object = null;
     }
 
 })();

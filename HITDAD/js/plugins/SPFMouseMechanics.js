@@ -16,20 +16,6 @@
 
 (function() {
 
-    var Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function (command, args) {
-        Game_Interpreter_pluginCommand.call( this, command, args )
-        {
-            switch(command) {
-                case "ResetBox":
-                   console.log("ResetBox Called");
-                    break;
-                case "Respawn":
-                    break;
-            }
-        }
-    }
-
     const _defaultWindowHeight = 691;
     const _defaultWindowWidth = 1000;
 
