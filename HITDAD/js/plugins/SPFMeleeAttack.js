@@ -73,12 +73,13 @@
 
     SPF_Enemies.forEach(function(enemy) {
       if (!enemy._npcType || SPF_IsEnemyPacified(enemy)) return;
-      let distanceToEnemy = $gamePlayer._realX - enemy._realX;
+      let distanceToEnemy = $gamePlayer._realX - enemy._realX; // Will be negative if enemy is on right of player
       let verticalOffset = Math.abs($gamePlayer._realY - enemy._realY);
 
+      // direction === 4 means Left
       let forwardDistanceToEnemy = direction === 4 ?  distanceToEnemy : -distanceToEnemy;
 
-      if (forwardDistanceToEnemy < 2.0 && verticalOffset < 1.0) {
+      if (forwardDistanceToEnemy < 2.0 && forwardDistanceToEnemy > 0.0 && verticalOffset < 1.0) {
         if (!closestEnemy || closestEnemyDistance > forwardDistanceToEnemy) {
           closestEnemyDistance = forwardDistanceToEnemy;
           closestEnemy = enemy;

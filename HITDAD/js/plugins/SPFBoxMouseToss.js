@@ -47,6 +47,15 @@
     let actSeCarry = JSON.parse(parameters['carrySeParam'] || '{}');
     actSeCarry.name = parameters['carrySe'] || '';
 
+    var aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
+    Game_Interpreter.prototype.pluginCommand = function(command, args) {
+        aliasPluginCommand.call(this, command, args);
+
+        if (command === 'InitializeBoxes') {
+            initializeBoxes();
+        }
+    };
+
     Game_Player.prototype.SPF_HurlBox = function(mouseX) {
         if ($gamePlayer.isCarrying()) {
             let target = $gamePlayer._carryingObject;
@@ -83,53 +92,104 @@
             $gamePlayer._carryingObject.dash(xDifference / 2000 , -0.3 );
             $gamePlayer._carryingObject = null;
             $gamePlayer._shotDelay = 1;
-            $gamePlayer._landingObject = null;
-            $gamePlayer._topObject = null;
-            $gamePlayer._rightObject = null;
-            $gamePlayer._leftObject = null;
+            // $gamePlayer._landingObject = null;
+            // $gamePlayer._topObject = null;
+            // $gamePlayer._rightObject = null;
+            // $gamePlayer._leftObject = null;
             AudioManager.playSe(actSeHurl);
 
         } else {
 
-                let objectToCarry = null;
+                let objectToCarry = findBoxWithinReach();
 
-                if ($gamePlayer._topObject)
-                {
-                    objectToCarry = $gamePlayer._topObject;
-                    $gamePlayer._topObject = null;
 
-                } else if ((Object.prototype.toString.call($gamePlayer._landingObject) !== '[object Array]'))
-                {
-                    objectToCarry = $gamePlayer._landingObject;
-                    $gamePlayer._landingObject = null;
-
-                } else if ($gamePlayer._rightObject)
-                {
-                    objectToCarry = $gamePlayer._rightObject;
-                    $gamePlayer._rightObject = null;
-                } else if ($gamePlayer._leftObject)
-                {
-                    objectToCarry = $gamePlayer._leftObject;
-                    $gamePlayer._leftObject = null;
-                }
+                // if ($gamePlayer._topObject)
+                // {
+                //     objectToCarry = $gamePlayer._topObject;
+                //     $gamePlayer._topObject = null;
+                //
+                // } else if ((Object.prototype.toString.call($gamePlayer._landingObject) !== '[object Array]'))
+                // {
+                //     objectToCarry = $gamePlayer._landingObject;
+                //     $gamePlayer._landingObject = null;
+                //
+                // } else if ($gamePlayer._rightObject)
+                // {
+                //     objectToCarry = $gamePlayer._rightObject;
+                //     $gamePlayer._rightObject = null;
+                // } else if ($gamePlayer._leftObject)
+                // {
+                //     objectToCarry = $gamePlayer._leftObject;
+                //     $gamePlayer._leftObject = null;
+                // }
 
                 if (objectToCarry)
                 {
                     executeCarry(objectToCarry);
+                    objectToCarry = null;
+                } else {
+                    console.log("No box detected");
                 }
 
         }
     };
 
+    function initializeBoxes() {
+        var allEvents = $gameMap.events();
+        SPF_Boxes = getPickupableEvents(allEvents);
+    }
+
+    function getPickupableEvents(events) {
+        let pickupableEvents = [];
+
+        events.forEach(function(event) {
+            if (event._canPickup) {
+                pickupableEvents.push(event);
+            }
+        });
+
+        return pickupableEvents;
+    }
+
+    // Checks if and returns an enemy that is within melee range.
+    function findBoxWithinReach() {
+        let direction = $gamePlayer.direction();
+
+        // So it scans from around the players back for detecting objects underneath
+        let xTraceStart = direction === 4 ? $gamePlayer._realX + 0.5 : $gamePlayer._realX  - 0.5;
+
+        let closestBox = null;
+        let closestBoxDistance = null;
+
+        SPF_Boxes.forEach(function(box) {
+            let distanceToBox = xTraceStart - box._realX; // Will be negative if box is to right of player
+            let verticalOffset = Math.abs($gamePlayer._realY - box._realY);
+
+            let forwardDistanceToBox = direction === 4 ? distanceToBox : - distanceToBox;
+
+            if (forwardDistanceToBox < 1.5 && forwardDistanceToBox >= 0.0 && verticalOffset < 2.0) {
+                if (!closestBox || closestBoxDistance > forwardDistanceToBox) {
+                    closestBoxDistance = forwardDistanceToBox;
+                    closestBox = box;
+                }
+            }
+        });
+
+        if (closestBox) {
+            return closestBox;
+        }
+    }
+
+
     function executeCarry(object) {
         // if (typeof object.eventId !== "function") return;
         //
         // let event = $gameMap.event(object.eventId());
-        if (object._canPickup) {
-            $gamePlayer._carryingObject = object;
-            $gamePlayer._carryingObject.carry();
-            AudioManager.playSe(actSeCarry);
-        }
+        $gamePlayer._carryingObject = object;
+        $gamePlayer._carryingObject.carry();
+        AudioManager.playSe(actSeCarry);
+        object = null;
+
     }
 
 })();

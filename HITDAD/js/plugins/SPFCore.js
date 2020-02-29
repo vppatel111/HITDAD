@@ -53,6 +53,7 @@ var SPF_CurrentlySelectedItem = {};
 var SPF_CSI = {};
 
 var SPF_Enemies = [];
+var SPF_Boxes = [];
 
 // Defines a rectanglular hitbox for HITDAD units are in tiles.
 // The (x, y) coordinates define the top left corner of hitbox.
