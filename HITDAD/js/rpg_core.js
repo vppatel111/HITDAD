@@ -1346,6 +1346,27 @@ Bitmap.prototype.drawExplosion = function(x, y, radius, color) {
     this._setDirty();
 };
 
+
+Bitmap.prototype.drawTrajectory = function(x, y, radius, color) {
+    var context = this._context;
+    context.save();
+
+    var gradient = context.createRadialGradient(x, y,
+        Math.floor(radius/4),
+        x, y,
+        radius);
+    gradient.addColorStop(0, color);
+    gradient.addColorStop(1, color);
+
+    context.fillStyle = gradient;
+    context.beginPath();
+    context.arc(x, y, radius, 0, Math.PI * 2, false);
+    context.fill();
+
+    context.restore();
+    this._setDirty();
+};
+
 Bitmap.prototype.resetProgressBar = function (x, y, maxWidth) {
   var context = this._context;
   context.save();

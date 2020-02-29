@@ -55,7 +55,14 @@
         let click = new ScaledClick(event);
 
         if (event.button === 2) { // Right Click
-            $gamePlayer.SPF_HurlBox(click.x);
+            if ($gamePlayer.isCarrying()) {
+                $gamePlayer.drawTrajectory(click);
+            }
+            $gamePlayer.SPF_HurlBox(click);
+            $gamePlayer.trajectory(click);
+            $gamePlayer._rightButtonClicked = true;
+
+
         } else if (event.button === 0) { // Left Click
             if ($gameSwitches.value(10) && click.x < 200.0 && click.y < 200.0) {
                 $gamePlayer.AnswerCall();
@@ -81,6 +88,45 @@
 
             }
         }
+    });
+
+    document.addEventListener("mouseup", function (event) {
+
+
+        if (!$gameSwitches || !$gamePlayer) {
+            return;
+        }
+
+        // let click = new ScaledClick(event);
+        //
+        // if (event.button === 2) { // Right Click
+        //     $gamePlayer.SPF_HurlBox(click.x);
+            $gamePlayer._rightButtonClicked = false;
+        // } else if (event.button === 0) { // Left Click
+        //     if ($gameSwitches.value(10) && click.x < 200.0 && click.y < 200.0) {
+        //         $gamePlayer.AnswerCall();
+        //     } else {
+        //
+        //         if (!$gameSwitches.value(11) &&
+        //             SPF_CSI &&
+        //             $gameParty.numItems(SPF_CSI) &&
+        //             !Input._isItemShortCut()) {
+        //
+        //             switch (SPF_CSI.id) {
+        //                 case 1:
+        //                     $gamePlayer.SPF_MeleeAttack();
+        //                     break;
+        //                 case 2:
+        //                     $gamePlayer.DiaperBomb(click);
+        //                     break;
+        //                 case 3:
+        //                     $gamePlayer.ChargeDadJoke();
+        //                     break;
+        //             }
+        //         }
+        //
+        //     }
+        // }
     });
 
 })();

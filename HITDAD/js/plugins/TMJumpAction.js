@@ -2051,6 +2051,7 @@ function Game_Bullet() {
     this._realSteps = 0;
     this._carryPower = 0;
     this._wallJump = false;
+    this._rightButtonClicked = false;
     this._dashDelay = 0;
     this._dashDelayTime = 30;
     this._dashMpCost = 0;
@@ -2160,6 +2161,8 @@ function Game_Bullet() {
 
   // フレーム更新
   Game_Player.prototype.update = function(sceneActive) {
+    // this.drawTrajectory(10, 10, 10, "white");
+
     var lastScrolledX = this.scrolledX();
     var lastScrolledY = this.scrolledY();
     if (this.isLocking()) {

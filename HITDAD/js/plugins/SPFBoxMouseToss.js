@@ -61,7 +61,47 @@
         }
     };
 
-    Game_Player.prototype.SPF_HurlBox = function(mouseX) {
+
+
+    Game_Player.prototype.drawTrajectory = function(mousePosition) {
+        // var myPoints = [10,10, 40,30, 100,10]; //minimum two points
+        // var tension = 1;
+        // if (!$gamePlayer._rightButtonClicked) return;
+        var explosion = new SPF_Sprite();
+        let bitmap = new Bitmap(1000, 691);
+        // bitmap.fillRect(0.0,0.0, 150.0,100.0,"blue");
+
+
+        // At Hitdad holding box
+        bitmap.drawCircle(this.screenX(),this.screenY() - 122,10,'red');
+
+        // At mouse click X
+        bitmap.drawCircle(mousePosition.x,this.screenY() - 122,10,'blue');
+
+        // At peak
+        bitmap.drawCircle((mousePosition.x + this.screenX()) / 2,this.screenY() - 122 - 144,10,'green');
+
+
+
+        console.log(this);
+        explosion.bitmap = bitmap;
+
+        explosion.visible = true;
+        explosion.opacity = 255;
+
+        // Draw explosion slightly higher then where it landed.
+        // explosion.x = mousePosition.x;//this.screenX();
+        // explosion.y = this.screenY() - 122;
+
+        explosion.spawnX = this._x;
+        explosion.spawnY = this._y;
+
+        explosion.show();
+    }
+
+
+    Game_Player.prototype.SPF_HurlBox = function(click) {
+
         if ($gamePlayer.isCarrying()) {
             let target = $gamePlayer._carryingObject;
             let lastRealX = target._realX;
@@ -92,9 +132,9 @@
                 if (!character._through && target.isCollide(character)) return;
             }
 
-            let xDifference = (mouseX - $gamePlayer.screenX());
+            let xDifference = calculateDifference(click);
             $gamePlayer._carryingObject.hurl();
-            $gamePlayer._carryingObject.dash(xDifference / 2000 , -0.3 );
+            hurlObject(xDifference);
             $gamePlayer._carryingObject = null;
             $gamePlayer._shotDelay = 1;
             AudioManager.playSe(actSeHurl);
@@ -110,6 +150,53 @@
 
         }
     };
+
+    function clamp(num, min, max) {
+        return num <= min ? min : num >= max ? max : num;
+    }
+
+    function calculateDifference(click) {
+        return click.x - $gamePlayer.screenX();
+    }
+
+    function calculateAngleAndVelocity(xDifference) {
+        let velocityX = Math.max(xDifference, 115) * Math.cos(45) / 1000;
+        let velocityY = -Math.abs(clamp(xDifference, 115, 300) * Math.sin(45)) / 1000;
+        let angle = Math.atan(-velocityY/velocityX);
+        let velocity = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+
+        let output = {};
+        output.x = velocityX;
+        output.y = velocityY;
+        output.angle = angle;
+        output.velocity = velocity
+        return output;
+    }
+
+    Game_Player.prototype.trajectory = function (click) {
+        let difference = calculateDifference(click);
+
+        let velocity = calculateAngleAndVelocity(difference);
+
+        let gravity = 0.0045;
+
+        let timeToGround = Math.sqrt(0.98/0.015);
+
+        let fVelocity = timeToGround * 0.015;
+
+        let time =  fVelocity - velocity.y;
+
+        console.log("Time", time);
+    }
+
+    function hurlObject(xDifference) {
+
+       let velocity = calculateAngleAndVelocity(xDifference);
+
+
+        $gamePlayer._carryingObject.dash(velocity.x , velocity.y);
+        // $gamePlayer._carryingObject.dash(xDifference / 1900 , -0.3 );
+    }
 
     function initializeBoxes() {
         let allEvents = $gameMap.events();
