@@ -71,7 +71,7 @@
                             $gamePlayer.SPF_MeleeAttack();
                             break;
                         case 2:
-                            $gamePlayer.DiaperBomb(event);
+                            $gamePlayer.DiaperBomb(click);
                             break;
                         case 3:
                             $gamePlayer.ChargeDadJoke();

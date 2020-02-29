@@ -90,7 +90,7 @@
   }
 
   Game_Player.prototype.DiaperBomb = function(event) {
-    let angle = angleToPlayer(event.pageX, event.pageY, $gamePlayer.screenX(), $gamePlayer.screenY());
+    let angle = angleToPlayer(event.x, event.y, $gamePlayer.screenX(), $gamePlayer.screenY());
     let bomb = new SPF_ProjectileBomb(angle);
 
     // TODO: Draw an arrow indicator for direction of throw.
