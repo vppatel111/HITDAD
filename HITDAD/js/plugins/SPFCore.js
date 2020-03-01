@@ -64,10 +64,6 @@ var MOUSE_POSITION = {
     toRight: function() {
         return this.distance() > 0;
     },
-
-    screenWidth: function() {
-        return this.scale * _defaultWindowWidth;
-    }
 }
 
 // NOTE: SPF_CurrentlySelectedItem is only updated by the TMItemShortCut plugin
@@ -88,6 +84,10 @@ var SPF_Boxes = [];
 // In this case, define a 2 block high hitbox that starts at head
 // and extends down to legs.
 var HIT_DAD_HITBOX = {x: -0.5, y: -2, width: 1, height: 2};
+
+function actualScreenWidth() {
+    return MOUSE_POSITION.scale * _defaultWindowWidth;
+}
 
 function SPF_CollidedWithPlayerCharacter(x, y, collider) {
   var point_l1 = {x: $gamePlayer._realX + HIT_DAD_HITBOX.x,
