@@ -166,6 +166,38 @@ function SPF_DoesRectanglesOverlap(point_l1, point_r1, point_l2, point_r2) {
   return true;
 
 }
+
+function getAspectRatio() {
+    return innerWidth / innerHeight;
+}
+
+// Scales
+function SPF_ScaledClick(eventX, eventY) {
+
+    const _defaultWindowHeight = 691;
+    const _defaultWindowWidth = 1000;
+
+    // Width / Height
+    const desiredAspectRatio = _defaultWindowWidth / _defaultWindowHeight;
+
+    let topPadding = 0;
+    let leftPadding = 0;
+    let windowHeight = _defaultWindowHeight;
+    let windowWidth = _defaultWindowWidth;
+    let scale = innerWidth / windowWidth;
+    if (desiredAspectRatio > getAspectRatio()) {
+        windowHeight *= innerWidth / windowWidth;
+        topPadding = (innerHeight - windowHeight) / 2;
+    } else if (desiredAspectRatio < getAspectRatio()) {
+        scale = innerHeight / windowHeight;
+        windowWidth *= innerHeight / windowHeight;
+        leftPadding = (innerWidth - windowWidth) / 2;
+    }
+    this.scale = scale;
+    this.x = (eventX - leftPadding) / this.scale;
+    this.y = (eventY - topPadding) / this.scale;
+}
+
 // --------------------- End Helper functions -------------------------
 
 function SPF_LoadIconOntoBitmap(sourceBitmap, iconIndex) {
@@ -273,15 +305,63 @@ function SPF_FindItemById(idOfItem) {
     return itemToReturn;
 }
 
+/**
+ * Do a line trace forward from the player, return first hit event in range or null if none in range
+ *
+ * @method SPF_LineTrace
+ * @param {Array} events The list of events to check for
+ * @param {Number} range The max distance for the line trace from the trace start (in tiles or fraction of tiles)
+ * @param {Number} traceStartOffset The offset for the start of the line trace from the player (+ moves start in front of player, - behind)
+ * @param {Number} verticalTolerance The y tolerance for the line trace.
+ * @param {CallableFunction} checkFunction Extra function to pass in, if the function returns true for an event, the event is ignored.
+ */
+function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance= 2.0, checkFunction = null) {
+    let direction = $gamePlayer.direction();
+
+    // Adjusts trace start if an offset is set
+    let xTraceStart = direction === DIRECTION.RIGHT ? $gamePlayer._realX + traceStartOffset : $gamePlayer._realX - traceStartOffset;
+
+    let closestEvent;
+    let closestEventDistance;
+
+    events.forEach(function(event) {
+
+        if (typeof checkFunction === "function") {
+            if (checkFunction(event)) return;
+        }
+
+        let distanceToBox =  event._realX - xTraceStart; // Will be positive if box is to right of player
+
+        // Stop execution if direction of object does not match direction of player
+        if (!(distanceToBox > 0 === (direction === DIRECTION.RIGHT))) return;
+
+        let verticalOffset = Math.abs($gamePlayer._realY - event._realY);
+
+        let forwardDistanceToBox = Math.abs(distanceToBox);
+
+        // Assigns closest event if object is in range of the trace
+        if (forwardDistanceToBox <= range && forwardDistanceToBox >= 0.0 && verticalOffset < verticalTolerance) {
+            if (!closestEvent || closestEventDistance > forwardDistanceToBox) {
+                closestEventDistance = forwardDistanceToBox;
+                closestEvent = event;
+            }
+        }
+    });
+
+    if (closestEvent) {
+        return closestEvent;
+    }
+}
+
 (function() {
 
   var aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     aliasPluginCommand.call(this, command, args);
 
-    // TODO: Rename this to initialize.
-    if (command === 'spf_initializeEnemies()') {
+    if (command === 'Initialize') {
       initializeEnemies();
+      initializeBoxes();
       initializePlayer();
     }
   };
@@ -299,19 +379,32 @@ function SPF_FindItemById(idOfItem) {
 
   function getEnemyEvents(events) {
 
-    var enemyEvents = [];
+    let enemyEvents = [];
     events.forEach(function(event) {
-
-        // if (event._npcType === SPF_NPCS.NORMAL_GUARD) {
         if (event._npcType) {
-
         enemyEvents.push(event);
       }
-
     });
 
     return enemyEvents;
   }
+
+    function initializeBoxes() {
+      let allEvents = $gameMap.events();
+      SPF_Boxes = getPickupableEvents(allEvents);
+    }
+
+    function getPickupableEvents(events) {
+        let pickupableEvents = [];
+
+        events.forEach(function(event) {
+            if (event._canPickup) {
+                pickupableEvents.push(event);
+            }
+        });
+
+        return pickupableEvents;
+    }
 
   SPF_Projectile.prototype.initialize = function(directionX) {
     this._opacity = 0;

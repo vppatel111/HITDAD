@@ -2161,8 +2161,13 @@ function Game_Bullet() {
 
   // フレーム更新
   Game_Player.prototype.update = function(sceneActive) {
-    // this.drawTrajectory(10, 10, 10, "white");
 
+    if (this._rightButtonClicked) {
+      // let points = $gamePlayer.spawnTrajectoryPoints();
+      // // Need mouse position x and y
+      // let mousePosition = SPF_ScaledClick(x, y);
+      // $gamePlayer.drawTrajectory(points, mousePosition);
+    }
     var lastScrolledX = this.scrolledX();
     var lastScrolledY = this.scrolledY();
     if (this.isLocking()) {

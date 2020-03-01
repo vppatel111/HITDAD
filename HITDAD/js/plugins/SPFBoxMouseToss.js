@@ -52,54 +52,6 @@
     let actSeCarry = JSON.parse(parameters['carrySeParam'] || '{}');
     actSeCarry.name = parameters['carrySe'] || '';
 
-    var aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
-    Game_Interpreter.prototype.pluginCommand = function(command, args) {
-        aliasPluginCommand.call(this, command, args);
-
-        if (command === 'InitializeBoxes') {
-            initializeBoxes();
-        }
-    };
-
-
-
-    Game_Player.prototype.drawTrajectory = function(mousePosition) {
-        // var myPoints = [10,10, 40,30, 100,10]; //minimum two points
-        // var tension = 1;
-        // if (!$gamePlayer._rightButtonClicked) return;
-        var explosion = new SPF_Sprite();
-        let bitmap = new Bitmap(1000, 691);
-        // bitmap.fillRect(0.0,0.0, 150.0,100.0,"blue");
-
-
-        // At Hitdad holding box
-        bitmap.drawCircle(this.screenX(),this.screenY() - 122,10,'red');
-
-        // At mouse click X
-        bitmap.drawCircle(mousePosition.x,this.screenY() - 122,10,'blue');
-
-        // At peak
-        bitmap.drawCircle((mousePosition.x + this.screenX()) / 2,this.screenY() - 122 - 144,10,'green');
-
-
-
-        console.log(this);
-        explosion.bitmap = bitmap;
-
-        explosion.visible = true;
-        explosion.opacity = 255;
-
-        // Draw explosion slightly higher then where it landed.
-        // explosion.x = mousePosition.x;//this.screenX();
-        // explosion.y = this.screenY() - 122;
-
-        explosion.spawnX = this._x;
-        explosion.spawnY = this._y;
-
-        explosion.show();
-    }
-
-
     Game_Player.prototype.SPF_HurlBox = function(click) {
 
         if ($gamePlayer.isCarrying()) {
@@ -133,7 +85,7 @@
             }
 
             let xDifference = calculateDifference(click);
-            $gamePlayer._carryingObject.hurl();
+
             hurlObject(xDifference);
             $gamePlayer._carryingObject = null;
             $gamePlayer._shotDelay = 1;
@@ -141,7 +93,7 @@
 
         } else {
 
-                let objectToCarry = findBoxWithinReach();
+                let objectToCarry = SPF_LineTrace(SPF_Boxes, 2.0, -0.75);
 
                 if (objectToCarry)
                 {
@@ -150,6 +102,18 @@
 
         }
     };
+
+    function hurlObject(xDifference) {
+        $gamePlayer._carryingObject.hurl();
+        let velocity = calculateAngleAndVelocity(xDifference);
+        $gamePlayer._carryingObject.dash(velocity.xv , velocity.yv);
+    }
+
+    function executeCarry(object) {
+        $gamePlayer._carryingObject = object;
+        $gamePlayer._carryingObject.carry();
+        AudioManager.playSe(actSeCarry);
+    }
 
     function clamp(num, min, max) {
         return num <= min ? min : num >= max ? max : num;
@@ -160,96 +124,66 @@
     }
 
     function calculateAngleAndVelocity(xDifference) {
-        let velocityX = Math.max(xDifference, 115) * Math.cos(45) / 1000;
-        let velocityY = -Math.abs(clamp(xDifference, 115, 300) * Math.sin(45)) / 1000;
+        let toRight = xDifference >= 0;
+        let magnitude = Math.abs(xDifference);
+
+        let velocityX = Math.max(magnitude, 115) * Math.cos(45) / 1000;
+        if (!toRight) {
+            velocityX *= -1;
+        }
+
+        let velocityY = -Math.abs(clamp(magnitude, 115, 300) * Math.sin(45)) / 1000;
         let angle = Math.atan(-velocityY/velocityX);
         let velocity = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
 
         let output = {};
-        output.x = velocityX;
-        output.y = velocityY;
+        output.xv = velocityX;
+        output.yv = velocityY;
         output.angle = angle;
         output.velocity = velocity
         return output;
     }
 
-    Game_Player.prototype.trajectory = function (click) {
+    // Projectile calculation scaled to tile width
+    function calculatePointInTrajectory(trajectory, time) {
+        let gravity = 0.015;
+        let tileWidth = 48;
+        let xPosition = trajectory.xv * time * tileWidth + $gamePlayer.screenX();
+        let yPosition = -0.5 * gravity * time * time * tileWidth - trajectory.yv * tileWidth * time ;
+
+        let output = {};
+        output.x = xPosition;
+        output.y = -yPosition + $gamePlayer.screenY() - 98;
+        console.log("Time", time, output.x, output.y);
+        return output;
+    }
+
+    Game_Player.prototype.spawnTrajectoryPoints = function() {
+        let points = [];
+
+        for (let i = 0; i < 10; ++i) {
+            let point = new Bitmap(1000, 691);
+            points.push(point);
+        }
+
+        return points;
+    }
+
+    Game_Player.prototype.drawTrajectory = function(points, click) {
+
         let difference = calculateDifference(click);
 
         let velocity = calculateAngleAndVelocity(difference);
 
-        let gravity = 0.0045;
-
-        let timeToGround = Math.sqrt(0.98/0.015);
-
-        let fVelocity = timeToGround * 0.015;
-
-        let time =  fVelocity - velocity.y;
-
-        console.log("Time", time);
-    }
-
-    function hurlObject(xDifference) {
-
-       let velocity = calculateAngleAndVelocity(xDifference);
-
-
-        $gamePlayer._carryingObject.dash(velocity.x , velocity.y);
-        // $gamePlayer._carryingObject.dash(xDifference / 1900 , -0.3 );
-    }
-
-    function initializeBoxes() {
-        let allEvents = $gameMap.events();
-        SPF_Boxes = getPickupableEvents(allEvents);
-    }
-
-    function getPickupableEvents(events) {
-        let pickupableEvents = [];
-
-        events.forEach(function(event) {
-            if (event._canPickup) {
-                pickupableEvents.push(event);
-            }
-        });
-
-        return pickupableEvents;
-    }
-
-    // Checks if and returns an enemy that is within melee range, returns null if none in range.
-    function findBoxWithinReach() {
-        let direction = $gamePlayer.direction();
-
-        // So it scans from around the players back for detecting objects underneath
-        let xTraceStart = direction === 4 ? $gamePlayer._realX + 0.5 : $gamePlayer._realX  - 0.5;
-
-        let closestBox = null;
-        let closestBoxDistance = null;
-
-        SPF_Boxes.forEach(function(box) {
-            let distanceToBox =  box._realX - xTraceStart; // Will be positive if box is to right of player
-            let verticalOffset = Math.abs($gamePlayer._realY - box._realY);
-
-            // Get box in direction player is facing to have positive distance value (direction === 6 means right)
-            let forwardDistanceToBox = direction === 6 ? distanceToBox : - distanceToBox;
-
-            if (forwardDistanceToBox < 1.75 && forwardDistanceToBox >= 0.0 && verticalOffset < 2.0) {
-                if (!closestBox || closestBoxDistance > forwardDistanceToBox) {
-                    closestBoxDistance = forwardDistanceToBox;
-                    closestBox = box;
-                }
-            }
-        });
-
-        if (closestBox) {
-            return closestBox;
+        for (let i = 0; i < points.length; ++i) {
+            let pointPos = calculatePointInTrajectory(velocity, (i + 1) * 5);
+            let point = new SPF_Sprite();
+            points[i].drawCircle(pointPos.x , pointPos.y,10,"red");
+            point.bitmap = points[i];
+            point.visible = true;
+            point.opacity = 255;
+            point.show();
         }
-    }
-
-
-    function executeCarry(object) {
-        $gamePlayer._carryingObject = object;
-        $gamePlayer._carryingObject.carry();
-        AudioManager.playSe(actSeCarry);
     }
 
 })();
