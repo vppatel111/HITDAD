@@ -23,6 +23,12 @@ var DEBUG = false;
 
 // These global variables are shared across ALL plugins.
 // Be VERY careful with these to avoid conflicts.
+
+const _defaultWindowHeight = 691;
+const _defaultWindowWidth = 1000;
+// Width / Height
+const desiredAspectRatio = _defaultWindowWidth / _defaultWindowHeight;
+
 var DIRECTION = {
    LEFT: 4,
    RIGHT: 6
@@ -41,6 +47,28 @@ var BOX_TYPE = {
   ONE_BY_TWO: {x: 0,  y: -1, width: 1, height: 2},
   THREE_BY_ONE: {x: -1, y: 0, width: 3, height: 1},
 };
+
+// Holds sprites for trajectory
+var SPF_TRAJECTORY = [];
+
+// Scaled to screen size, set in SPF_ScaledClick
+var MOUSE_POSITION = {
+    x: 0.0,
+    y: 0.0,
+    scale: 0.0,
+
+    distance: function() {
+        return this.x - $gamePlayer.screenX();
+    },
+
+    toRight: function() {
+        return this.distance() > 0;
+    },
+
+    screenWidth: function() {
+        return this.scale * _defaultWindowWidth;
+    }
+}
 
 // NOTE: SPF_CurrentlySelectedItem is only updated by the TMItemShortCut plugin
 // however, TMItemShortCut initially returns null if the player has not opened
@@ -171,20 +199,18 @@ function getAspectRatio() {
     return innerWidth / innerHeight;
 }
 
-// Scales
-function SPF_ScaledClick(eventX, eventY) {
+function calculateMouseDistanceToPlayer(click) {
+    return click.x - $gamePlayer.screenX();
+}
 
-    const _defaultWindowHeight = 691;
-    const _defaultWindowWidth = 1000;
-
-    // Width / Height
-    const desiredAspectRatio = _defaultWindowWidth / _defaultWindowHeight;
+function SPF_ScaledClick(click) {
 
     let topPadding = 0;
     let leftPadding = 0;
     let windowHeight = _defaultWindowHeight;
     let windowWidth = _defaultWindowWidth;
     let scale = innerWidth / windowWidth;
+
     if (desiredAspectRatio > getAspectRatio()) {
         windowHeight *= innerWidth / windowWidth;
         topPadding = (innerHeight - windowHeight) / 2;
@@ -193,9 +219,12 @@ function SPF_ScaledClick(eventX, eventY) {
         windowWidth *= innerHeight / windowHeight;
         leftPadding = (innerWidth - windowWidth) / 2;
     }
-    this.scale = scale;
-    this.x = (eventX - leftPadding) / this.scale;
-    this.y = (eventY - topPadding) / this.scale;
+
+    MOUSE_POSITION.x = (click.pageX - leftPadding) / scale;
+    MOUSE_POSITION.y = (click.pageY - topPadding) / scale;
+    MOUSE_POSITION.scale = scale;
+
+    return MOUSE_POSITION;
 }
 
 // --------------------- End Helper functions -------------------------

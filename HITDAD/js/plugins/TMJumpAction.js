@@ -2160,14 +2160,21 @@ function Game_Bullet() {
   };
 
   // フレーム更新
+  let points;
+
   Game_Player.prototype.update = function(sceneActive) {
 
-    if (this._rightButtonClicked) {
-      // let points = $gamePlayer.spawnTrajectoryPoints();
-      // // Need mouse position x and y
-      // let mousePosition = SPF_ScaledClick(x, y);
-      // $gamePlayer.drawTrajectory(points, mousePosition);
+    if (this._rightButtonClicked && this.isCarrying()) {
+      // let mousePosition = {
+      //   x: MOUSE_POSITION.X,
+      //   y: MOUSE_POSITION.Y,
+      // };
+      // if (!points) {
+      //   points = $gamePlayer.spawnTrajectoryPoints();
+      // }
+      $gamePlayer.drawTrajectory();
     }
+
     var lastScrolledX = this.scrolledX();
     var lastScrolledY = this.scrolledY();
     if (this.isLocking()) {

@@ -23,13 +23,11 @@
             return;
         }
 
-        let click = new SPF_ScaledClick(event.pageX, event.pageY);
+        let click = SPF_ScaledClick(event);
 
         if (event.button === 2) { // Right Click
-            $gamePlayer.SPF_HurlBox(click);
+            $gamePlayer.SPF_ThrowObject();
             $gamePlayer._rightButtonClicked = true;
-
-
         } else if (event.button === 0) { // Left Click
             if ($gameSwitches.value(10) && click.x < 200.0 && click.y < 200.0) {
                 $gamePlayer.AnswerCall();
@@ -57,18 +55,29 @@
         }
     });
 
+    document.addEventListener("mousemove", function (event) {
+
+        if (!$gameSwitches || !$gamePlayer) {
+            return;
+        }
+
+        if ($gamePlayer._rightButtonClicked && $gamePlayer.isCarrying()) { // Right Click
+            SPF_ScaledClick(event);
+        }
+
+    });
+
     document.addEventListener("mouseup", function (event) {
 
         if (!$gameSwitches || !$gamePlayer) {
             return;
         }
 
-        let click = new SPF_ScaledClick(event.pageX, event.pageY);
+        let click = SPF_ScaledClick(event);
 
         if (event.button === 2) { // Right Click
-            let points = $gamePlayer.spawnTrajectoryPoints();
-            $gamePlayer.drawTrajectory(points, click);
-            $gamePlayer.SPF_HurlBox(click);
+            $gamePlayer.SPF_ThrowObject();
+            $gamePlayer.hideTrajectory();
             $gamePlayer._rightButtonClicked = false;
          }
     });
