@@ -2051,6 +2051,7 @@ function Game_Bullet() {
     this._realSteps = 0;
     this._carryPower = 0;
     this._wallJump = false;
+    this._rightButtonClicked = false;
     this._dashDelay = 0;
     this._dashDelayTime = 30;
     this._dashMpCost = 0;
@@ -2159,7 +2160,21 @@ function Game_Bullet() {
   };
 
   // フレーム更新
+  let points;
+
   Game_Player.prototype.update = function(sceneActive) {
+
+    if (this._rightButtonClicked && this.isCarrying()) {
+      // let mousePosition = {
+      //   x: MOUSE_POSITION.X,
+      //   y: MOUSE_POSITION.Y,
+      // };
+      // if (!points) {
+      //   points = $gamePlayer.spawnTrajectoryPoints();
+      // }
+      $gamePlayer.drawTrajectory();
+    }
+
     var lastScrolledX = this.scrolledX();
     var lastScrolledY = this.scrolledY();
     if (this.isLocking()) {

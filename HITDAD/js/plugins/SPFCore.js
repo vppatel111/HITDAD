@@ -23,6 +23,12 @@ var DEBUG = false;
 
 // These global variables are shared across ALL plugins.
 // Be VERY careful with these to avoid conflicts.
+
+const _defaultWindowHeight = 691;
+const _defaultWindowWidth = 1000;
+// Width / Height
+const desiredAspectRatio = _defaultWindowWidth / _defaultWindowHeight;
+
 var DIRECTION = {
    LEFT: 4,
    RIGHT: 6
@@ -42,6 +48,24 @@ var BOX_TYPE = {
   THREE_BY_ONE: {x: -1, y: 0, width: 3, height: 1},
 };
 
+// Holds sprites for trajectory
+var SPF_TRAJECTORY = [];
+
+// Scaled to screen size, set in SPF_ScaledClick
+var MOUSE_POSITION = {
+    x: 0.0,
+    y: 0.0,
+    scale: 0.0,
+
+    distance: function() {
+        return this.x - $gamePlayer.screenX();
+    },
+
+    toRight: function() {
+        return this.distance() > 0;
+    },
+}
+
 // NOTE: SPF_CurrentlySelectedItem is only updated by the TMItemShortCut plugin
 // however, TMItemShortCut initially returns null if the player has not opened
 // the hotbar.
@@ -53,12 +77,17 @@ var SPF_CurrentlySelectedItem = {};
 var SPF_CSI = {};
 
 var SPF_Enemies = [];
+var SPF_Boxes = [];
 
 // Defines a rectanglular hitbox for HITDAD units are in tiles.
 // The (x, y) coordinates define the top left corner of hitbox.
 // In this case, define a 2 block high hitbox that starts at head
 // and extends down to legs.
 var HIT_DAD_HITBOX = {x: -0.5, y: -2, width: 1, height: 2};
+
+function actualScreenWidth() {
+    return MOUSE_POSITION.scale * _defaultWindowWidth;
+}
 
 function SPF_CollidedWithPlayerCharacter(x, y, collider) {
   var point_l1 = {x: $gamePlayer._realX + HIT_DAD_HITBOX.x,
@@ -165,6 +194,39 @@ function SPF_DoesRectanglesOverlap(point_l1, point_r1, point_l2, point_r2) {
   return true;
 
 }
+
+function getAspectRatio() {
+    return innerWidth / innerHeight;
+}
+
+function calculateMouseDistanceToPlayer(click) {
+    return click.x - $gamePlayer.screenX();
+}
+
+function SPF_ScaledClick(click) {
+
+    let topPadding = 0;
+    let leftPadding = 0;
+    let windowHeight = _defaultWindowHeight;
+    let windowWidth = _defaultWindowWidth;
+    let scale = innerWidth / windowWidth;
+
+    if (desiredAspectRatio > getAspectRatio()) {
+        windowHeight *= innerWidth / windowWidth;
+        topPadding = (innerHeight - windowHeight) / 2;
+    } else if (desiredAspectRatio < getAspectRatio()) {
+        scale = innerHeight / windowHeight;
+        windowWidth *= innerHeight / windowHeight;
+        leftPadding = (innerWidth - windowWidth) / 2;
+    }
+
+    MOUSE_POSITION.x = (click.pageX - leftPadding) / scale;
+    MOUSE_POSITION.y = (click.pageY - topPadding) / scale;
+    MOUSE_POSITION.scale = scale;
+
+    return MOUSE_POSITION;
+}
+
 // --------------------- End Helper functions -------------------------
 
 function SPF_LoadIconOntoBitmap(sourceBitmap, iconIndex) {
@@ -272,15 +334,63 @@ function SPF_FindItemById(idOfItem) {
     return itemToReturn;
 }
 
+/**
+ * Do a line trace forward from the player, return first hit event in range or null if none in range
+ *
+ * @method SPF_LineTrace
+ * @param {Array} events The list of events to check for
+ * @param {Number} range The max distance for the line trace from the trace start (in tiles or fraction of tiles)
+ * @param {Number} traceStartOffset The offset for the start of the line trace from the player (+ moves start in front of player, - behind)
+ * @param {Number} verticalTolerance The y tolerance for the line trace.
+ * @param {CallableFunction} checkFunction Extra function to pass in, if the function returns true for an event, the event is ignored.
+ */
+function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance= 2.0, checkFunction = null) {
+    let direction = $gamePlayer.direction();
+
+    // Adjusts trace start if an offset is set
+    let xTraceStart = direction === DIRECTION.RIGHT ? $gamePlayer._realX + traceStartOffset : $gamePlayer._realX - traceStartOffset;
+
+    let closestEvent;
+    let closestEventDistance;
+
+    events.forEach(function(event) {
+
+        if (typeof checkFunction === "function") {
+            if (checkFunction(event)) return;
+        }
+
+        let distanceToBox =  event._realX - xTraceStart; // Will be positive if box is to right of player
+
+        // Stop execution if direction of object does not match direction of player
+        if (!(distanceToBox > 0 === (direction === DIRECTION.RIGHT))) return;
+
+        let verticalOffset = Math.abs($gamePlayer._realY - event._realY);
+
+        let forwardDistanceToBox = Math.abs(distanceToBox);
+
+        // Assigns closest event if object is in range of the trace
+        if (forwardDistanceToBox <= range && forwardDistanceToBox >= 0.0 && verticalOffset < verticalTolerance) {
+            if (!closestEvent || closestEventDistance > forwardDistanceToBox) {
+                closestEventDistance = forwardDistanceToBox;
+                closestEvent = event;
+            }
+        }
+    });
+
+    if (closestEvent) {
+        return closestEvent;
+    }
+}
+
 (function() {
 
   var aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     aliasPluginCommand.call(this, command, args);
 
-    // TODO: Rename this to initialize.
-    if (command === 'spf_initializeEnemies()') {
+    if (command === 'Initialize') {
       initializeEnemies();
+      initializeBoxes();
       initializePlayer();
     }
   };
@@ -298,19 +408,32 @@ function SPF_FindItemById(idOfItem) {
 
   function getEnemyEvents(events) {
 
-    var enemyEvents = [];
+    let enemyEvents = [];
     events.forEach(function(event) {
-
-        // if (event._npcType === SPF_NPCS.NORMAL_GUARD) {
         if (event._npcType) {
-
         enemyEvents.push(event);
       }
-
     });
 
     return enemyEvents;
   }
+
+    function initializeBoxes() {
+      let allEvents = $gameMap.events();
+      SPF_Boxes = getPickupableEvents(allEvents);
+    }
+
+    function getPickupableEvents(events) {
+        let pickupableEvents = [];
+
+        events.forEach(function(event) {
+            if (event._canPickup) {
+                pickupableEvents.push(event);
+            }
+        });
+
+        return pickupableEvents;
+    }
 
   SPF_Projectile.prototype.initialize = function(directionX) {
     this._opacity = 0;
