@@ -50,7 +50,7 @@
 
       $gameParty.loseItem(item, 1);
       SPF_IncapacitateEnemy(enemyHit);
-      AudioManager.playSe(sePacify);
+      AudioManager.playSe(SE_MILKBOTTLE);
 
     }
   }

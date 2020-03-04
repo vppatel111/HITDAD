@@ -192,7 +192,7 @@
           bullet.setup(enemy.x + 1, enemy.y - 1, BULLET_SPEED);
         }
 
-        AudioManager.playSe(SHOOT_SOUND);
+        AudioManager.playSe(SE_SHOOT);
 
       }
 

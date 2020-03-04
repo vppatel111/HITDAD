@@ -95,6 +95,11 @@ function SPF_ProjectileBomb() {
       $gamePlayer._carryingDiaperBomb = null;
     }
 
+
+    // Decrement item after bomb is thrown
+    $gameParty.loseItem(SPF_CSI, 1);
+    AudioManager.playSe(SE_DIAPERTHROW);
+
   }
 
   Game_Player.prototype.isCarryingDiaperBomb = function() {
@@ -158,7 +163,7 @@ function SPF_ProjectileBomb() {
     if (this.collideMap()) {
        this.erase();
        this.explode();
-       AudioManager.playSe(IMPACT_SOUND);
+       AudioManager.playSe(SE_DIAPERTHROWIMPACT);
     }
 
   }
