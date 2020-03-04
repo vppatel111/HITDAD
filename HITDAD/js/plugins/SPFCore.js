@@ -343,6 +343,54 @@ function SPF_FindItemById(idOfItem) {
     return itemToReturn;
 }
 
+
+/** Sprite Sheet Switching **/
+
+const SPF_SPRITESHEET = {
+    DEFAULT: 0,
+    FALLING: 1,
+    CARRYING: 2,
+    LANDING:3,
+}
+
+/**
+ * @param {SPF_SPRITESHEET} name
+ */
+function SPF_ChangeSpriteSheet(name) {
+
+    let file;
+    let index;
+
+    switch(name) {
+        case SPF_SPRITESHEET.DEFAULT:
+            file = "!hitdad";
+            index = 0;
+            break;
+        case SPF_SPRITESHEET.FALLING:
+            file = "!hitdad";
+            index = 1;
+            break;
+        case SPF_SPRITESHEET.CARRYING:
+            file = "!hitdad_carry"
+            index = 0;
+            break;
+        case SPF_SPRITESHEET.LANDING:
+            $gamePlayer.isCarrying() ?
+                SPF_ChangeSpriteSheet(SPF_SPRITESHEET.CARRYING) :
+                SPF_ChangeSpriteSheet(SPF_SPRITESHEET.DEFAULT);
+            break;
+        default:
+            console.log("Error switching sprite sheet");
+            break;
+    }
+
+    if (file) {
+        $gameActors.actor(1).setCharacterImage(file, index);
+        $gamePlayer.refresh();
+    }
+}
+
+
 /**
  * Do a line trace forward from the player, return first hit event in range or null if none in range
  *

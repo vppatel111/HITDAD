@@ -75,6 +75,7 @@
         $gamePlayer._carryingObject = null;
         $gamePlayer._shotDelay = 1;
         AudioManager.playSe(SE_THROWBOX);
+        SPF_ChangeSpriteSheet(SPF_SPRITESHEET.DEFAULT);
     }
 
 
@@ -82,6 +83,7 @@
         $gamePlayer._carryingObject = object;
         $gamePlayer._carryingObject.carry();
         AudioManager.playSe(SE_PICKUPBOX);
+        SPF_ChangeSpriteSheet(SPF_SPRITESHEET.CARRYING);
     }
 
 

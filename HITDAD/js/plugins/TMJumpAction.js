@@ -1344,8 +1344,7 @@ function Game_Bullet() {
     this._isFalling = true;
 
     if (this === $gamePlayer) {
-      $gameActors.actor(1).setCharacterImage('!hitdad', 1);
-      $gamePlayer.refresh();
+      SPF_ChangeSpriteSheet(SPF_SPRITESHEET.FALLING);
     }
 
   };
@@ -1738,8 +1737,7 @@ function Game_Bullet() {
 	if (this._isFalling) {
       this._isFalling = false;
       if (this === $gamePlayer) {
-        $gameActors.actor(1).setCharacterImage('!hitdad', 0);
-        $gamePlayer.refresh();
+        SPF_ChangeSpriteSheet(SPF_SPRITESHEET.LANDING);
       }
       if (!$gameSwitches.value(12) && this._canPickup || this === $gamePlayer) {
         AudioManager.playSe(SE_JUMPLAND);
@@ -2386,10 +2384,7 @@ function Game_Bullet() {
       this._carryingObject.hurl();
     }
     this._carryingObject = null;
-    this._landingObject = null;
-    this._topObject = null;
-    this._rightObject = null;
-    this._leftObject = null;
+    SPF_ChangeSpriteSheet(SPF_SPRITESHEET.DEFAULT);
   };
 
   // ボタン入力による攻撃
@@ -2527,15 +2522,12 @@ function Game_Bullet() {
       if (Input.isPressed('up')) {
         if (this.isCollideLadder(false)) {
           this.getOnLadder(false);
-          $gameActors.actor(1).setCharacterImage('!hitdad', 0);
-          $gamePlayer.refresh();
+          SPF_ChangeSpriteSheet(SPF_SPRITESHEET.LANDING);
         }
       } else if (Input.isPressed('down')) {
         if (this.isCollideLadder(true)) {
           this.getOnLadder(true);
-          $gameActors.actor(1).setCharacterImage('!hitdad', 0);
-          $gamePlayer.refresh();
-
+          SPF_ChangeSpriteSheet(SPF_SPRITESHEET.LANDING);
         }
       }
     }
