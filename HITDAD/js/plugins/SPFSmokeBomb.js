@@ -2,8 +2,6 @@
 // SPFSmokeBomb
 // v1.0
 //
-// TODO: Drawing entire trajectory is hard so only draw an arrow
-// in the direction of shooting whne mouse down.
 //=============================================================================
 
 /*:
@@ -63,6 +61,11 @@
  * @default {"volume":90, "pitch":70, "pan":0}
  *
  */
+
+function SPF_ProjectileBomb() {
+   this.initialize.apply(this, arguments);
+}
+
 (function() {
 
   var parameters = PluginManager.parameters('SPFSmokeBomb');
@@ -80,30 +83,32 @@
 
   var EXPLOSION_RADIUS_TILES = EXPLOSION_RADIUS / 48; // Explosion radius in tiles.
 
-  // Calculate the angle between the player and mouse and returns
-  // the angle in radians.
-  function angleToPlayer(mouseX, mouseY,
-                         playerX, playerY) {
+  Game_Player.prototype.SPF_ThrowDiaperBomb = function(event) {
 
-     return Math.atan2(playerY - mouseY, playerX - mouseX);
+    if ($gamePlayer.isCarryingDiaperBomb()) {
+      let angle = SPF_AngleToPlayer(event.x, event.y, $gamePlayer.screenX(), $gamePlayer.screenY());
+      let bomb = new SPF_ProjectileBomb(angle);
 
-  }
+      // Decrement item after bomb is thrown
+      $gameParty.loseItem(SPF_CSI, 1);
+      AudioManager.playSe(HURL_SOUND);
+      $gamePlayer._carryingDiaperBomb = null;
+    }
 
-  Game_Player.prototype.DiaperBomb = function(event) {
-    let angle = angleToPlayer(event.x, event.y, $gamePlayer.screenX(), $gamePlayer.screenY());
-    let bomb = new SPF_ProjectileBomb(angle);
-
-    // TODO: Draw an arrow indicator for direction of throw.
-    //var arrow = new SPF_ArrowSprite();
 
     // Decrement item after bomb is thrown
     $gameParty.loseItem(SPF_CSI, 1);
     AudioManager.playSe(SE_DIAPERTHROW);
+
   }
 
-  function SPF_ProjectileBomb() {
-    this.initialize.apply(this, arguments);
+  Game_Player.prototype.isCarryingDiaperBomb = function() {
+    return this._carryingDiaperBomb !== null;
   }
+
+  // Static properties
+  SPF_ProjectileBomb._GRAVITY = GRAVITY;
+  SPF_ProjectileBomb._INITIAL_VELOCITY = INITIAL_VELOCITY;
 
   SPF_ProjectileBomb.prototype.initialize = function(angle) {
     this._opacity = 0;
@@ -252,7 +257,6 @@
 
       // Update the bullet position
       this._bomb.update();
-
       this.opacity = this._bomb._opacity;
 
       // Convert map X/Y into a screen coordinate to draw.
