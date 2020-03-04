@@ -40,7 +40,7 @@ function SPF_BoxCalculateAngleAndVelocity() {
 }
 
 function SPF_BombCalculateProjectileAngleAndVelocity() {
-  var INITIAL_VELOCITY = 0.20;
+  var INITIAL_VELOCITY = SPF_ProjectileBomb._INITIAL_VELOCITY;
 
   let mouseDistance = Math.abs(MOUSE_POSITION.distance());
   let magnitude = Math.abs(INITIAL_VELOCITY);

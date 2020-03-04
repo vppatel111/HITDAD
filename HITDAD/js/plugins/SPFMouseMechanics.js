@@ -16,6 +16,14 @@
 
 (function() {
 
+    function CanUseItem(SPF_CSI) {
+      return !$gameSwitches.value(11) &&
+              SPF_CSI &&
+              $gameParty.numItems(SPF_CSI) &&
+             !Input._isItemShortCut() &&
+             !$gamePlayer.isCarrying();
+    }
+
     document.addEventListener("mousedown", function (event) {
 
         if (!$gameSwitches || !$gamePlayer) {
@@ -28,17 +36,8 @@
             $gamePlayer.SPF_ThrowObject();
             $gamePlayer._rightButtonClicked = true;
 
-            // Only let diaper bomb work if all these conditionals are met.
-            if (!$gameSwitches.value(11) &&
-                 SPF_CSI && SPF_CSI.id == 2 &&
-                 $gameParty.numItems(SPF_CSI) &&
-                !Input._isItemShortCut() &&
-                !$gamePlayer.isCarrying()) {
-
-                console.log("carrying bomb: ", $gamePlayer.isCarryingDiaperBomb(), SPF_CSI.id);
-                //$gamePlayer.SPF_ThrowDiaperBomb(click);
+            if (CanUseItem(SPF_CSI) && SPF_CSI.id == 2) {
                 $gamePlayer._carryingDiaperBomb = true;
-
             }
 
         } else if (event.button === 0) { // Left Click
@@ -46,10 +45,7 @@
                 $gamePlayer.AnswerCall();
             } else {
 
-                if (!$gameSwitches.value(11) &&
-                     SPF_CSI &&
-                     $gameParty.numItems(SPF_CSI) &&
-                    !Input._isItemShortCut()) {
+                if (CanUseItem(SPF_CSI)) {
 
                     switch (SPF_CSI.id) {
                         case 1:

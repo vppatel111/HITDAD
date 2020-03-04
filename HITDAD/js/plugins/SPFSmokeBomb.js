@@ -61,6 +61,11 @@
  * @default {"volume":90, "pitch":70, "pan":0}
  *
  */
+
+function SPF_ProjectileBomb() {
+   this.initialize.apply(this, arguments);
+}
+
 (function() {
 
   var parameters = PluginManager.parameters('SPFSmokeBomb');
@@ -80,7 +85,6 @@
 
   Game_Player.prototype.SPF_ThrowDiaperBomb = function(event) {
 
-    console.log("Diaper bomb click: ", $gamePlayer.isCarryingDiaperBomb());
     if ($gamePlayer.isCarryingDiaperBomb()) {
       let angle = SPF_AngleToPlayer(event.x, event.y, $gamePlayer.screenX(), $gamePlayer.screenY());
       let bomb = new SPF_ProjectileBomb(angle);
@@ -97,9 +101,9 @@
     return this._carryingDiaperBomb !== null;
   }
 
-  function SPF_ProjectileBomb() {
-    this.initialize.apply(this, arguments);
-  }
+  // Static properties
+  SPF_ProjectileBomb._GRAVITY = GRAVITY;
+  SPF_ProjectileBomb._INITIAL_VELOCITY = INITIAL_VELOCITY;
 
   SPF_ProjectileBomb.prototype.initialize = function(angle) {
     this._opacity = 0;
