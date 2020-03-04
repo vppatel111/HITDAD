@@ -2,8 +2,6 @@
 // SPFSmokeBomb
 // v1.0
 //
-// TODO: Drawing entire trajectory is hard so only draw an arrow
-// in the direction of shooting whne mouse down.
 //=============================================================================
 
 /*:
@@ -80,25 +78,28 @@
 
   var EXPLOSION_RADIUS_TILES = EXPLOSION_RADIUS / 48; // Explosion radius in tiles.
 
-  // Calculate the angle between the player and mouse and returns
-  // the angle in radians.
-  function angleToPlayer(mouseX, mouseY,
-                         playerX, playerY) {
+  Game_Player.prototype.SPF_ThrowDiaperBomb = function() {
 
-     return Math.atan2(playerY - mouseY, playerX - mouseX);
+    if ($gamePlayer.isCarryingDiaperBomb()) {
+      let angle = SPF_AngleToPlayer(event.x, event.y, $gamePlayer.screenX(), $gamePlayer.screenY());
+      let bomb = new SPF_ProjectileBomb(angle);
 
-  }
+      // Decrement item after bomb is thrown
+      $gameParty.loseItem(SPF_CSI, 1);
+      AudioManager.playSe(HURL_SOUND);
+    } else {
+      this._carryingDiaperBomb = true;
+    }
+
+  };
 
   Game_Player.prototype.DiaperBomb = function(event) {
-    let angle = angleToPlayer(event.x, event.y, $gamePlayer.screenX(), $gamePlayer.screenY());
-    let bomb = new SPF_ProjectileBomb(angle);
 
-    // TODO: Draw an arrow indicator for direction of throw.
-    //var arrow = new SPF_ArrowSprite();
+    
+  }
 
-    // Decrement item after bomb is thrown
-    $gameParty.loseItem(SPF_CSI, 1);
-    AudioManager.playSe(HURL_SOUND);
+  Game_Player.prototype.isCarryingDiaperBomb = function() {
+    return this._carryingDiaperBomb !== null;
   }
 
   function SPF_ProjectileBomb() {
@@ -252,7 +253,6 @@
 
       // Update the bullet position
       this._bomb.update();
-
       this.opacity = this._bomb._opacity;
 
       // Convert map X/Y into a screen coordinate to draw.

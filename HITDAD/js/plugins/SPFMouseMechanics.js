@@ -18,7 +18,6 @@
 
     document.addEventListener("mousedown", function (event) {
 
-
         if (!$gameSwitches || !$gamePlayer) {
             return;
         }
@@ -27,6 +26,7 @@
 
         if (event.button === 2) { // Right Click
             $gamePlayer.SPF_ThrowObject();
+            $gamePlayer.SPF_ThrowDiaperBomb();
             $gamePlayer._rightButtonClicked = true;
         } else if (event.button === 0) { // Left Click
             if ($gameSwitches.value(10) && click.x < 200.0 && click.y < 200.0) {
@@ -43,6 +43,7 @@
                             $gamePlayer.SPF_MeleeAttack();
                             break;
                         case 2:
+                            $gamePlayer._carryingDiaperBomb = null;
                             $gamePlayer.DiaperBomb(click);
                             break;
                         case 3:
@@ -61,7 +62,10 @@
             return;
         }
 
-        if ($gamePlayer._rightButtonClicked && $gamePlayer.isCarrying()) { // Right Click
+        if ($gamePlayer._rightButtonClicked &&
+            ($gamePlayer.isCarrying() ||
+             $gamePlayer.isCarryingDiaperBomb())) {
+
             SPF_ScaledClick(event);
         }
 
@@ -77,6 +81,7 @@
 
         if (event.button === 2) { // Right Click
             $gamePlayer.SPF_ThrowObject();
+            $gamePlayer.SPF_ThrowDiaperBomb();
             $gamePlayer.hideTrajectory();
             $gamePlayer._rightButtonClicked = false;
          }
