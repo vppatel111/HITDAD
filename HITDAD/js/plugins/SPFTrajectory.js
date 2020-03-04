@@ -13,6 +13,10 @@
  *
  */
 
+function SPF_Clamp(num, min, max) {
+     return num <= min ? min : num >= max ? max : num;
+}
+
 function SPF_BoxCalculateAngleAndVelocity() {
      let magnitude = Math.abs(MOUSE_POSITION.distance());
 
@@ -23,7 +27,7 @@ function SPF_BoxCalculateAngleAndVelocity() {
          velocityX *= -1;
      }
 
-     let velocityY = -Math.abs(clamp(magnitude, 115, 300) * Math.sin(45)) / 1000;
+     let velocityY = -Math.abs(SPF_Clamp(magnitude, 115, 300) * Math.sin(45)) / 1000;
      let angle = Math.atan(-velocityY/velocityX);
      let velocity = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
 
@@ -61,10 +65,6 @@ function SPF_BombCalculateProjectileAngleAndVelocity() {
 }
 
 (function () {
-
-  function clamp(num, min, max) {
-      return num <= min ? min : num >= max ? max : num;
-  }
 
   // Projectile calculation scaled to tile width
   function calculatePointInTrajectory(trajectory, time, gravityInput) {
@@ -104,12 +104,12 @@ function SPF_BombCalculateProjectileAngleAndVelocity() {
 
       spawnTrajectoryPoints(10);
 
-      let velocity = velocityInput || calculateAngleAndVelocity();
+      let velocity = velocityInput || SPF_BoxCalculateAngleAndVelocity();
 
       for (let i = 0; i < SPF_TRAJECTORY.length; ++i) {
 
           // TODO improve scaling of distance between points
-          let timeInTrajectory = (i + 1) * clamp(3/Math.abs(velocity.vx), 1, 5);
+          let timeInTrajectory = (i + 1) * SPF_Clamp(3/Math.abs(velocity.vx), 1, 5);
           let pointPos = calculatePointInTrajectory(velocity, timeInTrajectory, gravity);
           SPF_TRAJECTORY[i].x = pointPos.x;
           SPF_TRAJECTORY[i].y = pointPos.y;

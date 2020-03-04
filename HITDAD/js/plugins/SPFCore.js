@@ -227,10 +227,6 @@ function SPF_ScaledClick(click) {
     return MOUSE_POSITION;
 }
 
-function SPF_Clamp(num, min, max) {
-    return num <= min ? min : num >= max ? max : num;
-}
-
 // Calculate the angle between the player and mouse and returns
 // the angle in radians.
 function SPF_AngleToPlayer(mouseX, mouseY,
