@@ -280,6 +280,13 @@ function SPF_IncapacitateEnemy(enemy) {
   $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'A'], true);
 }
 
+function SPF_EnemyPauseMovement(enemy, pause) {
+    enemy.setMoveSpeed(pause ? 0 : 4);
+    enemy.setStepAnime(!pause);
+    enemy.setWalkAnime(!pause);
+    if (enemy._movementPauseCountDown > 0) enemy._movementPauseCountDown--;
+}
+
 // Stun duration is in units of frames.
 function SPF_StunEnemy(enemy, stunDuration) {
 

@@ -2,15 +2,20 @@
 // SPFEnemyProjectileAttack
 // v1.0
 //
-// Description: This plugin causes any enemies with "security_npc" in
+// Description: This plugin causes any enemies with <npc_type:n> in
 // their notes to shoot at you.
 //
 // To use:
-// 1. You must place a parallel event in the world that calls
-//    plugin command "spf_ShootBullet()"
-// 2. Then place a delay of N seconds (attack speed of enemy).
-// 3. Ensure enemies have {"npcType": "security_npc"} in their note field and
-//    have priority set to "Same as characters".
+// 1. You must set the a tag <position:n> where n is the enemies x position on the map"
+//    and have the enemy in its rightmost position for its path
+// 2. You must set <movement:n> to the distance you want the enemy to travel to the left
+//    before turning around.
+//
+// Other Tags available for customization:
+//  <fire_rate:n>       The time between shots
+//  <shot_delay:n>      Adds a delay between when the NPC first detects the player and its first shot
+//  <movement:n>        Sets the distance the NPC will move to the left before turning around
+//  <movement_pause:n>  Adds a pause at each end of the path before the NPC turns around
 //=============================================================================
 
 /*:
@@ -60,15 +65,6 @@
   // Defines a rectanglular collider for the bullet where each dimension is given
   // in tiles. The (x,y) coordinates define the top-left corner of the rectangle.
   var bulletCollider = {x: 0, y: 0.18, width: 1, height: 0.56};
-
-  var aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
-  Game_Interpreter.prototype.pluginCommand = function(command, args) {
-    aliasPluginCommand.call(this, command, args);
-
-    if (command === 'spf_ShootBullet()') {
-      checkEnemyDetection();
-    }
-  };
 
   function isLookingInDirectionOfPlayer(event) {
     var distanceX = event.x - $gamePlayer.x;
@@ -165,37 +161,89 @@
       }
   }
 
-  function checkEnemyDetection() {
+
+  Game_Event.prototype.SPF_UpdateMovement = function() {
+
+    if (SPF_IsEnemyStunned(this) || SPF_IsEnemyPacified(this) || this._playerDetected || this._movementPauseCountDown > 0) {
+      SPF_EnemyPauseMovement(this, true);
+      return;
+    } else {
+      SPF_EnemyPauseMovement(this, false);
+    }
+
+    function changeDirection(enemy, left) {
+      if (enemy._movementPause) {
+        enemy._movementPauseCountDown = enemy._movementPause * 60;
+      }
+      enemy._movingLeft = left;
+    }
+
+    if (this._movingLeft) {
+      if (Math.abs(this._startX - this.x) < this._movementRange) {
+        this.moveStraight(4);
+      } else {
+        changeDirection(this, false);
+      }
+    } else {
+      if (Math.abs(this._startX - this.x) > 0) {
+        this.moveStraight(6);
+      } else {
+        changeDirection(this, true);
+      }
+    }
+  }
+
+  Game_Player.prototype.SPF_UpdateEnemyStates =  function() {
 
     SPF_Enemies.forEach(function(enemy) {
 
-      let isStunned = SPF_IsEnemyStunned(enemy) || SPF_IsEnemyPacified(enemy);
+      enemy.SPF_UpdateMovement();
 
-      if (isPlayerInRange(enemy) &&
-          isLookingInDirectionOfPlayer(enemy) &&
-          !isStunned) {
+      if (!enemy._fireRate) return;
 
-        var bullet = new SPF_EnemyProjectile(enemy.direction());
+        let isStunned = SPF_IsEnemyStunned(enemy) || SPF_IsEnemyPacified(enemy);
 
-        if (DEBUG) {
-          var getColliderPoints = function() {
-            return SPF_GetColliderPoints(bullet._x, bullet._y, bulletCollider);
+        if (isPlayerInRange(enemy) &&
+            isLookingInDirectionOfPlayer(enemy) &&
+            !isStunned) {
+
+          if (!enemy._playerDetected) {
+            enemy._playerDetected = true;
+            enemy._shotDelayCountdown = enemy._shotDelay * 60; // Adds delay before first shot is fired
+            SPF_EnemyPauseMovement(enemy, true);
           }
-          SPF_DrawCollider("Bullet", getColliderPoints, bulletCollider);
-        }
 
-        // Shoot the projectile in that direction.
-        if (enemy.direction() == DIRECTION.LEFT) {
-          bullet.setup(enemy.x, enemy.y - 1, -1 * BULLET_SPEED);
+          // Don't shoot until delays are finished
+          if (enemy._shotDelayCountdown > 0 || enemy._fireCountdown > 0) {
+            enemy._fireCountdown--;
+            enemy._shotDelayCountdown--;
+            return;
+          } else {
+            // Set countdown for next shot
+            enemy._fireCountdown = enemy._fireRate * 60;
+          }
+
+          var bullet = new SPF_EnemyProjectile(enemy.direction());
+
+          if (DEBUG) {
+            var getColliderPoints = function () {
+              return SPF_GetColliderPoints(bullet._x, bullet._y, bulletCollider);
+            }
+            SPF_DrawCollider("Bullet", getColliderPoints, bulletCollider);
+          }
+
+          // Shoot the projectile in that direction.
+          if (enemy.direction() === DIRECTION.LEFT) {
+              bullet.setup(enemy.x, enemy.y - 1, -1 * BULLET_SPEED);
+          } else {
+              // Spawn bullet on right of enemy if going right.
+              bullet.setup(enemy.x + 1, enemy.y - 1, BULLET_SPEED);
+          }
+          AudioManager.playSe(SE_SHOOT);
+
         } else {
-          // Spawn bullet on right of enemy if going right.
-          bullet.setup(enemy.x + 1, enemy.y - 1, BULLET_SPEED);
+          enemy._playerDetected = false;
         }
-
-        AudioManager.playSe(SE_SHOOT);
-
-      }
-
     });
   }
 
