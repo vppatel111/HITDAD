@@ -75,7 +75,7 @@ function SPF_BombCalculateProjectileAngleAndVelocity() {
 
       let output = {};
       output.x = xPosition;
-      output.y = -yPosition + $gamePlayer.screenY() - 98;
+      output.y = -yPosition + $gamePlayer.screenY() - 74;
       return output;
   }
 
