@@ -4,41 +4,66 @@
 //=============================================================================
 
 /*:
- * @plugindesc Plugin to add
+ * @plugindesc Draws trajectories for boxes and diaper bombs when holding right-click
  *
- * @help Left click -> Attacks, Answer Calls
- * Right Click -> Pickup and throw box
+ * @help Hold Left click (while holding bomb or box) -> will automatically draw
+ * throwing projectile.
  *
- * @author Mike Greber and Vishal Patel
+ * @author Mike Greber
  *
  */
+
+function SPF_BoxCalculateAngleAndVelocity() {
+     let magnitude = Math.abs(MOUSE_POSITION.distance());
+
+     // BUG: Math.cos is in radians, therefore this 45 might be causing
+     // potential issues.
+     let velocityX = Math.max(magnitude, 115) * Math.cos(45) / 1000;
+     if (!MOUSE_POSITION.toRight()) {
+         velocityX *= -1;
+     }
+
+     let velocityY = -Math.abs(clamp(magnitude, 115, 300) * Math.sin(45)) / 1000;
+     let angle = Math.atan(-velocityY/velocityX);
+     let velocity = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+
+     let output = {};
+     output.vx = velocityX;
+     output.vy = velocityY;
+     output.angle = angle;
+     output.velocity = velocity;
+     return output;
+}
+
+function SPF_BombCalculateProjectileAngleAndVelocity() {
+  var INITIAL_VELOCITY = 0.20;
+
+  let mouseDistance = Math.abs(MOUSE_POSITION.distance());
+  let magnitude = Math.abs(INITIAL_VELOCITY);
+
+  let angle = SPF_AngleToPlayer(MOUSE_POSITION.x,
+                                MOUSE_POSITION.y,
+                                $gamePlayer.screenX(),
+                                $gamePlayer.screenY());
+
+  let velocityX = -1 * Math.cos(angle) * INITIAL_VELOCITY;
+  let velocityY = -1 * Math.sin(angle) * INITIAL_VELOCITY;
+
+  velocityX = SPF_RoundToTwoDecimalPlaces(velocityX);
+  velocityY = SPF_RoundToTwoDecimalPlaces(velocityY);
+
+  let output = {};
+  output.vx = velocityX;
+  output.vy = velocityY;
+  output.angle = angle;
+  output.velocity = magnitude;
+  return output;
+}
 
 (function () {
 
   function clamp(num, min, max) {
       return num <= min ? min : num >= max ? max : num;
-  }
-
-  function calculateAngleAndVelocity() {
-      let magnitude = Math.abs(MOUSE_POSITION.distance());
-
-      // BUG: Math.cos is in radians, therefore this 45 might be causing
-      // potential issues.
-      let velocityX = Math.max(magnitude, 115) * Math.cos(45) / 1000;
-      if (!MOUSE_POSITION.toRight()) {
-          velocityX *= -1;
-      }
-
-      let velocityY = -Math.abs(clamp(magnitude, 115, 300) * Math.sin(45)) / 1000;
-      let angle = Math.atan(-velocityY/velocityX);
-      let velocity = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
-
-      let output = {};
-      output.vx = velocityX;
-      output.vy = velocityY;
-      output.angle = angle;
-      output.velocity = velocity;
-      return output;
   }
 
   // Projectile calculation scaled to tile width

@@ -26,8 +26,21 @@
 
         if (event.button === 2) { // Right Click
             $gamePlayer.SPF_ThrowObject();
-            $gamePlayer.SPF_ThrowDiaperBomb();
             $gamePlayer._rightButtonClicked = true;
+
+            // Only let diaper bomb work if all these conditionals are met.
+            if (!$gameSwitches.value(11) &&
+                 SPF_CSI && SPF_CSI.id == 2 &&
+                 $gameParty.numItems(SPF_CSI) &&
+                !Input._isItemShortCut() &&
+                !$gamePlayer.isCarrying()) {
+
+                console.log("carrying bomb: ", $gamePlayer.isCarryingDiaperBomb(), SPF_CSI.id);
+                //$gamePlayer.SPF_ThrowDiaperBomb(click);
+                $gamePlayer._carryingDiaperBomb = true;
+
+            }
+
         } else if (event.button === 0) { // Left Click
             if ($gameSwitches.value(10) && click.x < 200.0 && click.y < 200.0) {
                 $gamePlayer.AnswerCall();
@@ -41,10 +54,6 @@
                     switch (SPF_CSI.id) {
                         case 1:
                             $gamePlayer.SPF_MeleeAttack();
-                            break;
-                        case 2:
-                            $gamePlayer._carryingDiaperBomb = null;
-                            $gamePlayer.DiaperBomb(click);
                             break;
                         case 3:
                             $gamePlayer.ChargeDadJoke();
@@ -81,7 +90,7 @@
 
         if (event.button === 2) { // Right Click
             $gamePlayer.SPF_ThrowObject();
-            $gamePlayer.SPF_ThrowDiaperBomb();
+            $gamePlayer.SPF_ThrowDiaperBomb(click);
             $gamePlayer.hideTrajectory();
             $gamePlayer._rightButtonClicked = false;
          }

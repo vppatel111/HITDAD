@@ -78,8 +78,9 @@
 
   var EXPLOSION_RADIUS_TILES = EXPLOSION_RADIUS / 48; // Explosion radius in tiles.
 
-  Game_Player.prototype.SPF_ThrowDiaperBomb = function() {
+  Game_Player.prototype.SPF_ThrowDiaperBomb = function(event) {
 
+    console.log("Diaper bomb click: ", $gamePlayer.isCarryingDiaperBomb());
     if ($gamePlayer.isCarryingDiaperBomb()) {
       let angle = SPF_AngleToPlayer(event.x, event.y, $gamePlayer.screenX(), $gamePlayer.screenY());
       let bomb = new SPF_ProjectileBomb(angle);
@@ -87,15 +88,9 @@
       // Decrement item after bomb is thrown
       $gameParty.loseItem(SPF_CSI, 1);
       AudioManager.playSe(HURL_SOUND);
-    } else {
-      this._carryingDiaperBomb = true;
+      $gamePlayer._carryingDiaperBomb = null;
     }
 
-  };
-
-  Game_Player.prototype.DiaperBomb = function(event) {
-
-    
   }
 
   Game_Player.prototype.isCarryingDiaperBomb = function() {

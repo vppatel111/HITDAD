@@ -1308,6 +1308,7 @@ function Game_Bullet() {
     this._invincibleTime = 10;
     this._carried = false;
     this._carryingObject = null;
+    this._carryingDiaperBomb = null;
 
 	//DECLARE VARIABLES FOR SOUND EFFECTS INTEGRATION --eesayas 7PF
     this._isFalling = false;
@@ -1937,6 +1938,7 @@ function Game_Bullet() {
     this.resetPeak();
     this._carried = false;
     this._carryingObject = null;
+    this._carryingDiaperBomb = null;
   };
 
   // マップ用ポップアップのセット
@@ -2068,6 +2070,7 @@ function Game_Bullet() {
     this._shotSeVolume = 0;
     this._shotSePitch = 0;
     this._carryingObject = null;
+    this._carryingDiaperBomb = null;
 
   };
 
@@ -2168,7 +2171,7 @@ function Game_Bullet() {
     }
 
     if (this._rightButtonClicked && this.isCarryingDiaperBomb()) {
-      var velocity = SPF_CalculateProjectileAngleAndVelocity();
+      var velocity = SPF_BombCalculateProjectileAngleAndVelocity();
       var gravity = 0.005;
       $gamePlayer.drawTrajectory(velocity, gravity);
     }

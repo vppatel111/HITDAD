@@ -240,36 +240,6 @@ function SPF_AngleToPlayer(mouseX, mouseY,
 
 }
 
-// After that, constrain it so diaper bomb only throws while not holding a box
-// and only when it is selected.
-//
-// AFter that refactor and cleanup a bit of code and PR that.
-function SPF_CalculateProjectileAngleAndVelocity()
-{
-  var INITIAL_VELOCITY = 0.20;
-
-  let mouseDistance = Math.abs(MOUSE_POSITION.distance());
-  let magnitude = Math.abs(INITIAL_VELOCITY);
-
-  let angle = SPF_AngleToPlayer(MOUSE_POSITION.x,
-                                MOUSE_POSITION.y,
-                                $gamePlayer.screenX(),
-                                $gamePlayer.screenY());
-
-  let velocityX = -1 * Math.cos(angle) * INITIAL_VELOCITY;
-  let velocityY = -1 * Math.sin(angle) * INITIAL_VELOCITY;
-
-  velocityX = SPF_RoundToTwoDecimalPlaces(velocityX);
-  velocityY = SPF_RoundToTwoDecimalPlaces(velocityY);
-
-  let output = {};
-  output.vx = velocityX;
-  output.vy = velocityY;
-  output.angle = angle;
-  output.velocity = magnitude;
-  return output;
-}
-
 // --------------------- End Helper functions -------------------------
 
 function SPF_LoadIconOntoBitmap(sourceBitmap, iconIndex) {

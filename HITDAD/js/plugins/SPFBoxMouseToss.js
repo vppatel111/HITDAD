@@ -69,7 +69,7 @@
 
 
     function hurlObject() {
-        let velocity = calculateAngleAndVelocity();
+        let velocity = SPF_BoxCalculateAngleAndVelocity();
         $gamePlayer._carryingObject.dash(velocity.vx , velocity.vy);
         $gamePlayer._carryingObject.hurl();
         $gamePlayer._carryingObject = null;
