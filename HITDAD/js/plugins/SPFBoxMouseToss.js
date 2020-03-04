@@ -69,7 +69,7 @@
 
 
     function hurlObject() {
-        let velocity = calculateAngleAndVelocity();
+        let velocity = SPF_BoxCalculateAngleAndVelocity();
         $gamePlayer._carryingObject.dash(velocity.vx , velocity.vy);
         $gamePlayer._carryingObject.hurl();
         $gamePlayer._carryingObject = null;
@@ -115,85 +115,6 @@
             if (!character._through && target.isCollide(character)) return;
         }
         return true;
-    }
-
-
-    function clamp(num, min, max) {
-        return num <= min ? min : num >= max ? max : num;
-    }
-
-
-    function calculateAngleAndVelocity() {
-        let magnitude = Math.abs(MOUSE_POSITION.distance());
-
-        let velocityX = Math.max(magnitude, 115) * Math.cos(45) / 1000;
-        if (!MOUSE_POSITION.toRight()) {
-            velocityX *= -1;
-        }
-
-        let velocityY = -Math.abs(clamp(magnitude, 115, 300) * Math.sin(45)) / 1000;
-        let angle = Math.atan(-velocityY/velocityX);
-        let velocity = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
-
-        let output = {};
-        output.vx = velocityX;
-        output.vy = velocityY;
-        output.angle = angle;
-        output.velocity = velocity;
-        return output;
-    }
-
-    // Projectile calculation scaled to tile width
-    function calculatePointInTrajectory(trajectory, time) {
-        let gravity = 0.015;
-        let tileWidth = 48;
-        let xPosition = trajectory.vx * time * tileWidth + $gamePlayer.screenX();
-        let yPosition = -0.5 * gravity * time * time * tileWidth - trajectory.vy * tileWidth * time ;
-
-        let output = {};
-        output.x = xPosition;
-        output.y = -yPosition + $gamePlayer.screenY() - 98;
-        return output;
-    }
-
-
-    function spawnTrajectoryPoints(number) {
-
-        if (SPF_TRAJECTORY.length > 0) return;
-
-        for (let i = 0; i < number; ++i) {
-            let point = new SPF_Sprite();
-            point.bitmap = new Bitmap(1000, 691);
-            point.bitmap.drawCircle(5 , 5,5,"white");
-            SPF_TRAJECTORY.push(point);
-        }
-    }
-
-
-    Game_Player.prototype.hideTrajectory = function() {
-        SPF_TRAJECTORY.forEach(function(point) {
-            point.remove();
-        });
-    }
-
-
-    Game_Player.prototype.drawTrajectory = function() {
-
-        spawnTrajectoryPoints(10);
-
-        let velocity = calculateAngleAndVelocity();
-
-        for (let i = 0; i < SPF_TRAJECTORY.length; ++i) {
-
-            // TODO improve scaling of distance between points
-            let pointPos = calculatePointInTrajectory(velocity, (i + 1) * clamp(3/Math.abs(velocity.vx), 1, 5 ));
-            SPF_TRAJECTORY[i].x = pointPos.x;
-            SPF_TRAJECTORY[i].y = pointPos.y;
-            SPF_TRAJECTORY[i].visible = true;
-            SPF_TRAJECTORY[i].opacity = 255;
-            SPF_TRAJECTORY[i].show();
-
-        }
     }
 
 })();

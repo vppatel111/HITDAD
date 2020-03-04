@@ -16,8 +16,15 @@
 
 (function() {
 
-    document.addEventListener("mousedown", function (event) {
+    function CanUseItem(SPF_CSI) {
+      return !$gameSwitches.value(11) &&
+              SPF_CSI &&
+              $gameParty.numItems(SPF_CSI) &&
+             !Input._isItemShortCut() &&
+             !$gamePlayer.isCarrying();
+    }
 
+    document.addEventListener("mousedown", function (event) {
 
         if (!$gameSwitches || !$gamePlayer) {
             return;
@@ -28,22 +35,21 @@
         if (event.button === 2) { // Right Click
             $gamePlayer.SPF_ThrowObject();
             $gamePlayer._rightButtonClicked = true;
+
+            if (CanUseItem(SPF_CSI) && SPF_CSI.id == 2) {
+                $gamePlayer._carryingDiaperBomb = true;
+            }
+
         } else if (event.button === 0) { // Left Click
             if ($gameSwitches.value(10) && click.x < 200.0 && click.y < 200.0) {
                 $gamePlayer.AnswerCall();
             } else {
 
-                if (!$gameSwitches.value(11) &&
-                     SPF_CSI &&
-                     $gameParty.numItems(SPF_CSI) &&
-                    !Input._isItemShortCut()) {
+                if (CanUseItem(SPF_CSI)) {
 
                     switch (SPF_CSI.id) {
                         case 1:
                             $gamePlayer.SPF_MeleeAttack();
-                            break;
-                        case 2:
-                            $gamePlayer.DiaperBomb(click);
                             break;
                         case 3:
                             $gamePlayer.ChargeDadJoke();
@@ -61,7 +67,10 @@
             return;
         }
 
-        if ($gamePlayer._rightButtonClicked && $gamePlayer.isCarrying()) { // Right Click
+        if ($gamePlayer._rightButtonClicked &&
+            ($gamePlayer.isCarrying() ||
+             $gamePlayer.isCarryingDiaperBomb())) {
+
             SPF_ScaledClick(event);
         }
 
@@ -77,6 +86,7 @@
 
         if (event.button === 2) { // Right Click
             $gamePlayer.SPF_ThrowObject();
+            $gamePlayer.SPF_ThrowDiaperBomb(click);
             $gamePlayer.hideTrajectory();
             $gamePlayer._rightButtonClicked = false;
          }

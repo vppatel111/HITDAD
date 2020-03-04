@@ -227,6 +227,15 @@ function SPF_ScaledClick(click) {
     return MOUSE_POSITION;
 }
 
+// Calculate the angle between the player and mouse and returns
+// the angle in radians.
+function SPF_AngleToPlayer(mouseX, mouseY,
+                           playerX, playerY) {
+
+   return Math.atan2(playerY - mouseY, playerX - mouseX);
+
+}
+
 // --------------------- End Helper functions -------------------------
 
 function SPF_LoadIconOntoBitmap(sourceBitmap, iconIndex) {

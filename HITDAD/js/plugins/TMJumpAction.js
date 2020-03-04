@@ -43,25 +43,25 @@
  * @desc 全滅時に起動するコモンイベント番号。
  * 初期値: 0
  * @default 0
- * 
+ *
  * @param guardState
  * @type state
  * @desc 防御状態として扱うステート番号
  * 初期値: 2
  * @default 2
- * 
+ *
  * @param guardMoveRate
  * @type number
  * @desc 防御状態の移動速度補正（％）
  * 初期値: 25
  * @default 25
- * 
+ *
  * @param eventCollapse
  * @type boolean
  * @desc イベント戦闘不能時に崩壊エフェクトを使う。
  * 初期値: ON ( false = OFF 無効 / true = ON 有効 )
  * @default true
- * 
+ *
  * @param hpGauge
  * @type boolean
  * @desc 足元にHPゲージを表示する機能を利用する。
@@ -152,7 +152,7 @@
  * @default 46
  * @require 1
  * @type animation
- * 
+ *
  * @param attackToOk
  * @type boolean
  * @desc 攻撃ボタンをメニューの決定ボタンとしても使うかどうか
@@ -184,7 +184,7 @@
  * @desc ジャンプ効果音のパラメータ。
  * 初期値: {"volume":90, "pitch":100, "pan":0}
  * @default {"volume":90, "pitch":100, "pan":0}
- * 
+ *
  * @param dashSe
  * @desc ダッシュ効果音のファイル名。
  * 初期値: Wind4
@@ -198,7 +198,7 @@
  * @desc ダッシュ効果音のパラメータ。
  * 初期値: {"volume":90, "pitch":50, "pan":0}
  * @default {"volume":90, "pitch":50, "pan":0}
- * 
+ *
  * @param flickSe
  * @desc ダッシュはじき効果音のファイル名。
  * 初期値: Damage1
@@ -212,7 +212,7 @@
  * @desc ダッシュはじき効果音のパラメータ。
  * 初期値: {"volume":90, "pitch":100, "pan":0}
  * @default {"volume":90, "pitch":100, "pan":0}
- * 
+ *
  * @param swimSe
  * @desc 入水効果音のファイル名。
  * 初期値: Water1
@@ -226,7 +226,7 @@
  * @desc 入水効果音のパラメータ。
  * 初期値: {"volume":90, "pitch":100, "pan":0}
  * @default {"volume":90, "pitch":100, "pan":0}
- * 
+ *
  * @param changeSe
  * @desc 操作キャラ切り替え効果音のファイル名。
  * 初期値: Sword1
@@ -240,7 +240,7 @@
  * @desc 操作キャラ切り替え効果音のパラメータ。
  * 初期値: {"volume":90, "pitch":100, "pan":0}
  * @default {"volume":90, "pitch":100, "pan":0}
- * 
+ *
  * @param carrySe
  * @desc イベント持ち上げ効果音のファイル名。
  * 初期値: Cancel1
@@ -254,7 +254,7 @@
  * @desc イベント持ち上げ効果音のパラメータ。
  * 初期値: {"volume":90, "pitch":70, "pan":0}
  * @default {"volume":90, "pitch":70, "pan":0}
- * 
+ *
  * @param hurlSe
  * @desc イベント投げ効果音のファイル名。
  * 初期値: Evasion1
@@ -268,7 +268,7 @@
  * @desc イベント投げ効果音のパラメータ。
  * 初期値: {"volume":90, "pitch":70, "pan":0}
  * @default {"volume":90, "pitch":70, "pan":0}
- * 
+ *
  * @param guardSe
  * @desc 防御効果音のファイル名。
  * 初期値: Equip1
@@ -332,7 +332,7 @@
  * @desc 弾発射時に武器画像を表示する。
  * 初期値: ON ( false = OFF 無効 / true = ON 有効 )
  * @default true
- * 
+ *
  * @param autoDamageSe
  * @type boolean
  * @desc 着弾時に自動で効果音を再生する。
@@ -424,7 +424,7 @@
  * @desc パッドボタン配置のコマンド名 (空にすると機能を無効化)
  * 初期値: パッドボタン配置
  * @default パッドボタン配置
- * 
+ *
  * @param stepAnimeConstantA
  * @type string
  * @desc 足踏み速度定数Ａ
@@ -444,7 +444,7 @@
  * @noteData weapons
  *
  * @requiredAssets img/system/TMJumpActionShield
- * 
+ *
  * @help
  * TMPlugin - ジャンプアクション ver1.0.1
  *
@@ -453,13 +453,13 @@
  *   詳細は配布サイトを参照してください。
  *
  *   このプラグインは RPGツクールMV Version 1.5.0 で動作確認をしています。
- * 
+ *
  *   このプラグインはMITライセンスのもとに配布しています、商用利用、
  *   改造、再配布など、自由にお使いいただけます。
- * 
+ *
  *
  * メモ欄タグ（アクター、装備、ステート）:
- * 
+ *
  *   <move_speed:0.05>        # 歩行速度
  *   <jump_speed:0.14>        # ジャンプ力
  *   <swim_speed:0.02>        # 泳ぐ速度
@@ -493,9 +493,9 @@
  *   <shot_se_volume:90>      # 弾発射効果音のボリューム
  *   <shot_se_pitch:150>      # 弾発射効果音のピッチ
  *
- * 
+ *
  * メモ欄タグ（イベント）:
- * 
+ *
  *   <w:0.375>                # 当たり判定（中心から左右の端までのサイズ）
  *   <h:0.75>                 # 当たり判定（足元から頭までのサイズ）
  *   <enemy:1>                # バトラー（敵番号）
@@ -504,22 +504,22 @@
  *   <lift>                   # リフト属性
  *   <weight:1>               # 重さ
  *   <gravity:0.004>          # 重力
- * 
- * 
+ *
+ *
  * メモ欄タグ（スキル）:
- * 
+ *
  *   <bullet_anime:67>        # 着弾時に再生するアニメーション
  *   <map_through>            # 弾が地形を無視して貫通する
  *   <map_reflect>            # 弾が地形に当たると消えずに跳ね返る
- * 
+ *
  *   <time_bomb:6 0 0.2 45 1 0 1>
  *     弾が時間切れで削除される際に新しく弾を発射する。
  *     パラメータはプラグインコマンド『nallShot』の n ～ skillId までを
  *     設定します。
  *
- * 
+ *
  * プラグインコマンド:
- * 
+ *
  *   actGainHp -1 -5          # プレイヤーに 5 ダメージを与える。
  *   actGainHp 1 -100         # イベント 1 番に 100 ダメージを与える。
  *   actHp 1 2                # イベント 1 番のHPをゲーム変数 2 番に代入。
@@ -529,10 +529,10 @@
  *   actChangeActor 2         # 操作キャラクターをアクター 2 番に変更。
  *   actHideHpGauge           # 足元HPゲージを隠す
  *   actShowHpGauge           # 足元HPゲージを表示する
- * 
+ *
  *   actPopup -1 テキスト #ff0000
  *     プレイヤーに赤色のテキストをポップアップ
- * 
+ *
  *   nwayShot eventId n space angle speed count type index skillId
  *     eventId: 弾を発射するイベントの番号（ -1 でプレイヤー）
  *     n:       同時に発射する弾の数
@@ -543,7 +543,7 @@
  *     type:    弾のタイプ
  *     index:   弾画像のインデックス
  *     skillId: 弾のスキル（ダメージ計算用、省略可）
- * 
+ *
  *   nwayAim eventId n space angle speed count type index skillId
  *     nway_shot と同様ですが、angleにプレイヤーがいる方向（ラジアン）を
  *     自動的に加算します。angleが 0 なら自機狙いになります。
@@ -561,11 +561,11 @@ Imported.TMJumpAction = true;
 if (!Imported.TMEventBase) {
   Imported.TMEventBase = true;
   (function() {
-  
+
     //-----------------------------------------------------------------------------
     // Game_Event
     //
-  
+
     var _Game_Event_setupPage = Game_Event.prototype.setupPage;
     Game_Event.prototype.setupPage = function() {
       _Game_Event_setupPage.call(this);
@@ -700,7 +700,7 @@ function Game_Bullet() {
   ConfigManager.getPadButton = function(id) {
     return Input.gamepadMapper[id];
   };
-  
+
   ConfigManager.setPadButton = function(id, code) {
     Input.gamepadMapper[id] = code;
   };
@@ -807,7 +807,7 @@ function Game_Bullet() {
     if (!actAutoDamageSe) return;
     SoundManager.playEnemyDamage();
   };
-  
+
   // 回復効果音の再生
   Game_Battler.prototype.playRecovarySe = function() {
     if (!actAutoDamageSe) return;
@@ -819,7 +819,7 @@ function Game_Bullet() {
     if (!actAutoDamageSe) return;
     SoundManager.playMiss();
   };
-  
+
   //-----------------------------------------------------------------------------
   // Game_Actor
   //
@@ -898,7 +898,7 @@ function Game_Bullet() {
     if (!actAutoDamageSe) return;
     SoundManager.playActorDamage();
   };
-  
+
   //-----------------------------------------------------------------------------
   // Game_Party
   //
@@ -1308,8 +1308,8 @@ function Game_Bullet() {
     this._invincibleTime = 10;
     this._carried = false;
     this._carryingObject = null;
-	
-	
+    this._carryingDiaperBomb = null;
+
 	//DECLARE VARIABLES FOR SOUND EFFECTS INTEGRATION --eesayas 7PF
     this._isFalling = false;
   };
@@ -1733,7 +1733,7 @@ function Game_Bullet() {
   Game_CharacterBase.prototype.getLand = function(y) {
     this._realY = y;
     this._vy = 0;
-	
+
 	//PLAY LANDING SOUND --eesayas
 	if (this._isFalling) {
       this._isFalling = false;
@@ -1938,6 +1938,7 @@ function Game_Bullet() {
     this.resetPeak();
     this._carried = false;
     this._carryingObject = null;
+    this._carryingDiaperBomb = null;
   };
 
   // マップ用ポップアップのセット
@@ -1950,7 +1951,7 @@ function Game_Bullet() {
     popup.g = g == null ? 0.5 : g;
     this._mapPopups.push(popup);
   };
-  
+
   // マップ用ポップアップがたまっているかどうかを返す
   Game_CharacterBase.prototype.isMapPopupExist = function() {
     return this._mapPopups.length > 0;
@@ -2069,6 +2070,7 @@ function Game_Bullet() {
     this._shotSeVolume = 0;
     this._shotSePitch = 0;
     this._carryingObject = null;
+    this._carryingDiaperBomb = null;
 
   };
 
@@ -2165,14 +2167,12 @@ function Game_Bullet() {
   Game_Player.prototype.update = function(sceneActive) {
 
     if (this._rightButtonClicked && this.isCarrying()) {
-      // let mousePosition = {
-      //   x: MOUSE_POSITION.X,
-      //   y: MOUSE_POSITION.Y,
-      // };
-      // if (!points) {
-      //   points = $gamePlayer.spawnTrajectoryPoints();
-      // }
       $gamePlayer.drawTrajectory();
+    }
+
+    if (this._rightButtonClicked && this.isCarryingDiaperBomb()) {
+      var velocity = SPF_BombCalculateProjectileAngleAndVelocity();
+      $gamePlayer.drawTrajectory(velocity, SPF_ProjectileBomb._GRAVITY);
     }
 
     var lastScrolledX = this.scrolledX();
@@ -2486,7 +2486,7 @@ function Game_Bullet() {
     }
     return true;
   };
-  
+
   // 方向ボタン入力による移動処理
   Game_Player.prototype.moveByInput = function() {
     if (this._ladder) {
@@ -2663,7 +2663,7 @@ function Game_Bullet() {
         //[AUDIO] play walking steps
         if(!this._isFalling && !this._ladder){
           AudioManager.playSe(actSeWalk);
-        
+
         //[AUDIO] play ladder steps
         } else if (!this._isFalling && this._ladder){
           AudioManager.playSe({name: "ladder-climb-v2", pitch: 100, volume: 50, pan: 0});
@@ -3020,7 +3020,7 @@ function Game_Bullet() {
       if (actEventCollapse) this.battler().requestEffect('appear');
     }
   };
-  
+
   // バトラーが戦闘不能になったときの処理
   Game_Event.prototype.battlerDead = function() {
     if (actEventCollapse) {
@@ -3049,7 +3049,7 @@ function Game_Bullet() {
       }
     }
   };
-  
+
   // 撃破報酬の獲得
   Game_Event.prototype.gainRewards = function() {
     var exp = this.battler().exp();
@@ -3069,19 +3069,19 @@ function Game_Bullet() {
     });
     this.setMapPopup('' + exp + TextManager.exp, '#ffe0ff', -40, -0.2, 0);
   };
-  
+
   // 撃破報酬（お金）の獲得
   Game_Event.prototype.gainRewardGold = function(gold) {
     $gameParty.gainGold(gold);
     this.setMapPopup('' + gold + TextManager.currencyUnit, '#ffffe0', -64, -0.2, 0);
   };
-  
+
   // 撃破報酬（アイテム）の獲得
   Game_Event.prototype.gainRewardItem = function(item, y) {
     $gameParty.gainItem(item, 1);
     this.setMapPopup('\\I[' + item.iconIndex + ']', '#000000', y, -4, 0.5);
   };
-  
+
   // 泳ぎ状態の更新
   Game_Event.prototype.updateSwiming = function() {
     Game_Character.prototype.updateSwiming.call(this);
@@ -3381,7 +3381,7 @@ function Game_Bullet() {
       }
     }
   };
-  
+
   // マップ用ポップアップのセット
   Sprite_Character.prototype.setupMapPopup = function() {
     while (this._character.isMapPopupExist()) {
@@ -3935,25 +3935,25 @@ function Game_Bullet() {
     _Scene_Options_create.call(this);
     this.createPadOptionsWindow();
   };
-  
+
   var _Scene_Options_createOptionsWindow = Scene_Options.prototype.createOptionsWindow;
   Scene_Options.prototype.createOptionsWindow = function() {
     _Scene_Options_createOptionsWindow.call(this);
     this._optionsWindow.setHandler('padConfig', this.onPadConfig.bind(this));
   };
-  
+
   Scene_Options.prototype.createPadOptionsWindow = function() {
     this._padOptionsWindow = new Window_PadOptions();
     this._padOptionsWindow.setHandler('cancel', this.cancelPadConfig.bind(this));
     this.addWindow(this._padOptionsWindow);
   };
-  
+
   Scene_Options.prototype.onPadConfig = function() {
     this._optionsWindow.hide();
     this._padOptionsWindow.show();
     this._padOptionsWindow.activate();
   };
-  
+
   Scene_Options.prototype.cancelPadConfig = function() {
     this._padOptionsWindow.hide();
     this._optionsWindow.show();
