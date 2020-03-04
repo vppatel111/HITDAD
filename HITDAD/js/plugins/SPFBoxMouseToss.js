@@ -74,14 +74,14 @@
         $gamePlayer._carryingObject.hurl();
         $gamePlayer._carryingObject = null;
         $gamePlayer._shotDelay = 1;
-        AudioManager.playSe(actSeHurl);
+        AudioManager.playSe(SE_THROWBOX);
     }
 
 
     function executeCarry(object) {
         $gamePlayer._carryingObject = object;
         $gamePlayer._carryingObject.carry();
-        AudioManager.playSe(actSeCarry);
+        AudioManager.playSe(SE_PICKUPBOX);
     }
 
 

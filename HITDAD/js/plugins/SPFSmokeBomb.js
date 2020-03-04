@@ -98,7 +98,7 @@
 
     // Decrement item after bomb is thrown
     $gameParty.loseItem(SPF_CSI, 1);
-    AudioManager.playSe(HURL_SOUND);
+    AudioManager.playSe(SE_DIAPERTHROW);
   }
 
   function SPF_ProjectileBomb() {
@@ -158,7 +158,7 @@
     if (this.collideMap()) {
        this.erase();
        this.explode();
-       AudioManager.playSe(IMPACT_SOUND);
+       AudioManager.playSe(SE_DIAPERTHROWIMPACT);
     }
 
   }

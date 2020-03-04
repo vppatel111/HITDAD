@@ -1742,7 +1742,7 @@ function Game_Bullet() {
         $gamePlayer.refresh();
       }
       if (!$gameSwitches.value(12) && this._canPickup || this === $gamePlayer) {
-        AudioManager.playSe(actSeLand);
+        AudioManager.playSe(SE_JUMPLAND);
       }
     }
 
@@ -2584,7 +2584,7 @@ function Game_Bullet() {
       this.resetStopCount();
       this.straighten();
       this.SPF_StartFalling();
-      AudioManager.playSe(actSeJump);
+      AudioManager.playSe(SE_JUMP);
     }
   };
 
@@ -2662,11 +2662,12 @@ function Game_Bullet() {
 
         //[AUDIO] play walking steps
         if(!this._isFalling && !this._ladder){
-          AudioManager.playSe(actSeWalk);
-        
+          AudioManager.playSe(SE_WALKSTEP);
+
         //[AUDIO] play ladder steps
         } else if (!this._isFalling && this._ladder){
-          AudioManager.playSe({name: "ladder-climb-v2", pitch: 100, volume: 50, pan: 0});
+          AudioManager.playSe(SE_LADDERSTEP);
+          // AudioManager.playSe({name: "ladder-climb-v2", pitch: 100, volume: 50, pan: 0});
         }
 
 
