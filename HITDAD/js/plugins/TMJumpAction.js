@@ -2173,6 +2173,8 @@ function Game_Bullet() {
       $gamePlayer.drawTrajectory(velocity, SPF_ProjectileBomb._GRAVITY);
     }
 
+    this.SPF_UpdateEnemyStates();
+
     var lastScrolledX = this.scrolledX();
     var lastScrolledY = this.scrolledY();
     if (this.isLocking()) {
@@ -2912,10 +2914,19 @@ function Game_Bullet() {
       this._resets = +this.loadTagParam('resets');
       this._boxReset = +this.loadTagParam('box_reset') || 0;
       this._instantDeath = +this.loadTagParam('death') || 0;
-      this._startX = this.x;
+      this._fireRate = +this.loadTagParam('fire_rate') || 0;
+      this._fireCountdown = 0;
+      this._startX = +this.loadTagParam('position') || this.x;
       this._startY = this.y;
+      this._movementRange = +this.loadTagParam('movement') || 0;
+      this._movementPause = +this.loadTagParam('movement_pause') || 1;
+      this._movementPauseCountDown = 0;
+      this._playerDetected = false;
+      this._shotDelay = +this.loadTagParam('shot_delay') || 2;
+      this._shotDelayCountdown = 0;
+      this._movingLeft = true;
       this._resetting = false;
-      // if (this._canPickup) console.log("Start Positions", this._startX, this._startY);
+      if (this._npcType) console.log("Start Positions", this._startX, this._startY);
       if (this._repopTimer > 0) {
         this._repopCount = this._repopTimer;
       }
