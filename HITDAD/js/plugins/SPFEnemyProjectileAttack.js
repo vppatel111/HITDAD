@@ -64,7 +64,7 @@
 
   // Defines a rectanglular collider for the bullet where each dimension is given
   // in tiles. The (x,y) coordinates define the top-left corner of the rectangle.
-  var bulletCollider = {x: 0, y: 0.18, width: 1, height: 0.56};
+  var bulletCollider = {x: 0.16, y: 0.27, width: 0.67, height: 0.33};
 
   function isLookingInDirectionOfPlayer(event) {
     var distanceX = event.x - $gamePlayer.x;
@@ -164,9 +164,14 @@
 
   Game_Event.prototype.SPF_UpdateMovement = function() {
 
-    if (SPF_IsEnemyStunned(this) || SPF_IsEnemyPacified(this) || this._playerDetected || this._movementPauseCountDown > 0) {
+    if (SPF_IsEnemyStunned(this) ||
+        SPF_IsEnemyPacified(this) ||
+        this._playerDetected ||
+        this._movementPauseCountDown > 0) {
+
       SPF_EnemyPauseMovement(this, true);
       return;
+
     } else {
       SPF_EnemyPauseMovement(this, false);
     }
