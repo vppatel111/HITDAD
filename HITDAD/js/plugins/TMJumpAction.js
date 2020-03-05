@@ -2924,6 +2924,7 @@ function Game_Bullet() {
       this._repopTimer     = +this.loadTagParam('repop') || 0;
       this._detectionRange = +this.loadTagParam('range');
       this._npcType = +this.loadTagParam('npc_type');
+      this._boxType = +this.loadTagParam('box_type') || 0; // If 0, not a box.
       this._canPickup = +this.loadTagParam('can_pickup') || 0;
       this._resets = +this.loadTagParam('resets');
       this._boxReset = +this.loadTagParam('box_reset') || 0;

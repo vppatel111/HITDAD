@@ -43,9 +43,9 @@ var SPF_NPCS = {
 };
 
 var BOX_TYPE = {
-  ONE_BY_ONE: {x: 0,  y: 0, width: 1, height: 1},
-  ONE_BY_TWO: {x: 0,  y: -1, width: 1, height: 2},
-  THREE_BY_ONE: {x: -1, y: 0, width: 3, height: 1},
+  ONE_BY_ONE: {type: 1, x: 0,  y: 0, width: 1, height: 1},
+  ONE_BY_TWO: {type: 2, x: 0,  y: -1, width: 1, height: 2},
+  THREE_BY_ONE: {type: 3, x: -1, y: 0, width: 3, height: 1},
 };
 
 // Holds sprites for trajectory
@@ -113,7 +113,8 @@ function SPF_CollidedWithBoxes(x, y, collider, boxCollider, boxesAtLocation) {
 
     // HACK: If it has collideH and collideW colliders and
     // has property "can_pickup", its very likely its a box.
-    if (event._collideH && event._collideW && event._canPickup) {
+    if (event._collideH && event._collideW && event._canPickup &&
+        event._boxType == boxCollider.type) {
 
       // Actual width is always half the real width => due to TMJumpAction.
       var BOX_HITBOX = boxCollider;
@@ -566,13 +567,6 @@ function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance=
 
       var bitmap = ImageManager.loadSystem("BulletIcon");
       this.bitmap = bitmap;
-      // if (bitmap) {
-      //   this.bitmap = bitmap;
-      // } else {
-      //   var bitmap = new Bitmap(100, 100);
-      //   bitmap.drawCircle(25, 25, 15, 'red');
-      //   this.bitmap = bitmap;
-      // }
 
       // Bullet keeps track of projectile X & Y in map.
       this._bullet = projectile;
