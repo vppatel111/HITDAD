@@ -2504,20 +2504,34 @@ function Game_Bullet() {
     } else {
       if (!this.isDashing()) {
         if (Input.isPressed('left')) {
-          var speed = this.isGuarding() ? -this._moveSpeed * actGuardMoveRate / 100 : -this._moveSpeed;
+          // Hitdad will never be guarding.
+          //var speed = this.isGuarding() ? -this._moveSpeed * actGuardMoveRate / 100 : -this._moveSpeed;
+
+          var speed = -this._moveSpeed;
           this.setDirection(4);
-          if (this._vx > speed) {
+
+          if (this._vx > 0) { // If moving in opposite direction, immediately turn.
+            this._vx = 0;
+          } else if (this._vx > speed) {
             var accele = Math.max(this._accele - this._friction, 0);
             this._vx = Math.max(this._vx - accele, speed);
           }
+
           this._moveCount = 4;
         } else if (Input.isPressed('right')) {
-          var speed = this.isGuarding() ? this._moveSpeed * actGuardMoveRate / 100  : this._moveSpeed;
+          // Hitdad will never be guarding.
+          //var speed = this.isGuarding() ? this._moveSpeed * actGuardMoveRate / 100  : this._moveSpeed;
+
+          var speed = this._moveSpeed;
           this.setDirection(6);
-          if (this._vx < speed) {
+
+          if (this._vx < 0) { // If moving in opposite direction, immediately turn.
+            this._vx = 0;
+          } else if (this._vx < speed) {
             var accele = Math.max(this._accele - this._friction, 0);
             this._vx = Math.min(this._vx + accele, speed);
           }
+
           this._moveCount = 4;
         }
       }
@@ -2661,7 +2675,7 @@ function Game_Bullet() {
         //[AUDIO] play ladder steps
         } else if (!this._isFalling && this._ladder){
           AudioManager.playSe(SE_LADDERSTEP);
-          
+
         }
 
 
