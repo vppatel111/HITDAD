@@ -89,16 +89,17 @@ function SPF_ProjectileBomb() {
       let angle = SPF_AngleToPlayer(event.x, event.y, $gamePlayer.screenX(), $gamePlayer.screenY());
       let bomb = new SPF_ProjectileBomb(angle);
 
+      // // Decrement item after bomb is thrown
+      // $gameParty.loseItem(SPF_CSI, 1);
+      // AudioManager.playSe(HURL_SOUND);
       // Decrement item after bomb is thrown
       $gameParty.loseItem(SPF_CSI, 1);
-      AudioManager.playSe(HURL_SOUND);
+      AudioManager.playSe(SE_DIAPERTHROW);
       $gamePlayer._carryingDiaperBomb = null;
     }
 
 
-    // Decrement item after bomb is thrown
-    $gameParty.loseItem(SPF_CSI, 1);
-    AudioManager.playSe(SE_DIAPERTHROW);
+
 
   }
 

@@ -67,8 +67,9 @@
             return;
         }
 
-        if ($gamePlayer._rightButtonClicked &&
-            ($gamePlayer.isCarrying() ||
+
+        if ($gamePlayer.isCarrying() ||
+            ($gamePlayer._rightButtonClicked &&
              $gamePlayer.isCarryingDiaperBomb())) {
 
             SPF_ScaledClick(event);
@@ -85,9 +86,10 @@
         let click = SPF_ScaledClick(event);
 
         if (event.button === 2) { // Right Click
-            $gamePlayer.SPF_ThrowObject();
             $gamePlayer.SPF_ThrowDiaperBomb(click);
-            $gamePlayer.hideTrajectory();
+            if (!$gamePlayer.isCarrying()) {
+                $gamePlayer.hideTrajectory();
+            }
             $gamePlayer._rightButtonClicked = false;
          }
     });
