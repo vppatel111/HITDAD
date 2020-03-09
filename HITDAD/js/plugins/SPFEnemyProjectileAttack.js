@@ -242,10 +242,10 @@
 
           // Shoot the projectile in that direction.
           if (enemy.direction() === DIRECTION.LEFT) {
-              bullet.setup(enemy.x, enemy.y - 1, -1 * BULLET_SPEED);
+              bullet.setup(enemy._realX - 1, enemy._realY - 1.45, -1 * BULLET_SPEED);
           } else {
               // Spawn bullet on right of enemy if going right.
-              bullet.setup(enemy.x + 1, enemy.y - 1, BULLET_SPEED);
+              bullet.setup(enemy._realX + 1, enemy._realY - 1.45, BULLET_SPEED);
           }
           AudioManager.playSe(SE_SHOOT);
 
