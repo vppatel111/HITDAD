@@ -2049,6 +2049,7 @@ function Game_Bullet() {
     _Game_Player_initMembers.call(this);
     this._realSteps = 0;
     this._carryPower = 0;
+    this._justThrewBox = false;
     this._wallJump = false;
     this._rightButtonClicked = false;
     this._dashDelay = 0;
