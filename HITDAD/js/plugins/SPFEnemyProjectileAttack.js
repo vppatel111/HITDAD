@@ -168,11 +168,14 @@
         SPF_IsEnemyPacified(this) ||
         this._playerDetected ||
         this._movementPauseCountDown > 0) {
-
+      if (this._playerDetected) {
+        SPF_ChangeEnemySpriteSheet(this, SPF_ENEMYSPRITESHEET.SHOOTING);
+      }
       SPF_EnemyPauseMovement(this, true);
       return;
 
     } else {
+      SPF_ChangeEnemySpriteSheet(this, SPF_ENEMYSPRITESHEET.PATROLLING)
       SPF_EnemyPauseMovement(this, false);
     }
 

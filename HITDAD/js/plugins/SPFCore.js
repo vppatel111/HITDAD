@@ -398,6 +398,38 @@ function SPF_ChangeSpriteSheet(name) {
     }
 }
 
+const SPF_ENEMYSPRITESHEET = {
+    PATROLLING: 0,
+    SHOOTING: 1,
+}
+
+function SPF_ChangeEnemySpriteSheet(enemy, name) {
+
+    let file;
+    let index;
+
+    switch(name) {
+        case SPF_ENEMYSPRITESHEET.PATROLLING:
+            file = "!hitdad_carry";
+            index = 3;
+            break;
+        case SPF_ENEMYSPRITESHEET.SHOOTING:
+            file = "!hitdad_carry";
+            index = 2;
+            break;
+        default:
+            console.log("Error switching sprite sheet");
+            break;
+    }
+
+    if (file) {
+        enemy.setImage(file, index);
+        enemy.refresh();
+        // $gameActors.actor(1).setCharacterImage(file, index);
+        // $gamePlayer.refresh();
+    }
+}
+
 
 /**
  * Do a line trace forward from the player, return first hit event in range or null if none in range
