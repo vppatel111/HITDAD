@@ -147,7 +147,7 @@
       this.bitmap.drawProgressBar(25, 25, attackCharge * 2, 125);
 
       if (attackCharge >= CHARGE_TIME) {
-        stunEnemiesInRadius();
+        executeDadJoke();
         attackCharge = 0;
         chargeAnimation.remove();
         jokeAnimation.remove();
@@ -166,6 +166,21 @@
 
     chargeAnimation.show();
 
+  }
+
+  function executeDadJoke() {
+    $gameScreen.startShake(3, 5, 120);
+    SPF_Enemies.forEach(function(enemy) {
+      if (enemy._npcType === SPF_NPCS.DEAF_GUARD ||
+          SPF_IsEnemyPacified(enemy)) {
+
+        return;
+      }
+
+      SPF_StunEnemy(enemy, STUN_DURATION);
+      var item = SPF_FindItemById(ITEM_ID);
+      $gameParty.loseItem(item, 1);
+    });
   }
 
   function stunEnemiesInRadius() {
