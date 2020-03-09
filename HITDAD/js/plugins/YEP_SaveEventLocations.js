@@ -193,7 +193,7 @@ Game_Event.prototype.loadLocation = function() {
 };
 
 Game_Event.prototype.resetLocation = function() {
-		Yanfly.SEL.Game_Event_locate.call(this, this.event().x, this.event().y);
+		Yanfly.SEL.Game_Event_locate.call(this, this.event().x + 0.5, this.event().y + 1);
 		this.setDirection(this._originalDirection);
 };
 
