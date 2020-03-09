@@ -2164,7 +2164,7 @@ function Game_Bullet() {
 
   Game_Player.prototype.update = function(sceneActive) {
 
-    if (this._rightButtonClicked && this.isCarrying()) {
+    if (this.isCarrying()) {
       $gamePlayer.drawTrajectory();
     }
 
