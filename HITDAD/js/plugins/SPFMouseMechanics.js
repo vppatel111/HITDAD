@@ -34,6 +34,7 @@
 
         if (event.button === 2) { // Right Click
             $gamePlayer.SPF_ThrowObject();
+            if ($gamePlayer.isCarrying()) return;
             $gamePlayer._rightButtonClicked = true;
 
             if (CanUseItem(SPF_CSI) && SPF_CSI.id == 2) {
@@ -86,7 +87,11 @@
         let click = SPF_ScaledClick(event);
 
         if (event.button === 2) { // Right Click
-            $gamePlayer.SPF_ThrowDiaperBomb(click);
+            if (!$gamePlayer._justThrewBox && !$gamePlayer.isCarrying()) {
+                $gamePlayer.SPF_ThrowDiaperBomb(click);
+            } else {
+                $gamePlayer._justThrewBox = false;
+            }
             if (!$gamePlayer.isCarrying()) {
                 $gamePlayer.hideTrajectory();
             }

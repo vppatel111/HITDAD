@@ -74,6 +74,7 @@
         $gamePlayer._carryingObject.hurl();
         $gamePlayer._carryingObject = null;
         $gamePlayer._shotDelay = 1;
+        $gamePlayer._justThrewBox = true;
         AudioManager.playSe(SE_THROWBOX);
         SPF_ChangeSpriteSheet(SPF_SPRITESHEET.DEFAULT);
     }
