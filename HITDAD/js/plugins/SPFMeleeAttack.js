@@ -94,6 +94,10 @@
       bottleAnimation.x =
       SPF_MapXToScreenX($gamePlayer._realX) + HORIZONTAL_OFFSET;
 
+      if (direction === DIRECTION.LEFT) {
+        bottleAnimation.x -= 10; // Account for size of HITDAD's sprite.
+      }
+
       bottleAnimation.y =
       SPF_MapYToScreenY($gamePlayer._realY) - VERTICAL_OFFSET;
 
@@ -102,7 +106,7 @@
 
       // Note: Circle used by PixiJS is shifted where 0 degrees is at (0, 1) and
       // 0 => 2*Pi is clockwise.
-      if (swingDegrees > (Math.PI/2) || swingDegrees < -(Math.PI/2)) {        
+      if (swingDegrees > (Math.PI/2) || swingDegrees < -(Math.PI/2)) {
         this.remove();
       } else {
 
