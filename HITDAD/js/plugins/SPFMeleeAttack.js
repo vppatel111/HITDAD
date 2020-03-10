@@ -75,6 +75,7 @@
 
     let item = SPF_FindItemById(itemID);
     let enemyHit = SPF_LineTrace(SPF_Enemies, 2.0, 0.0, 2.0, SPF_IsEnemyPacified);
+    let direction = $gamePlayer.direction();
 
     if (bottleAnimation) { bottleAnimation.remove(); }
 
@@ -101,10 +102,16 @@
 
       // Note: Circle used by PixiJS is shifted where 0 degrees is at (0, 1) and
       // 0 => 2*Pi is clockwise.
-      if (swingDegrees > (Math.PI/2)) {
+      if (swingDegrees > (Math.PI/2) || swingDegrees < -(Math.PI/2)) {        
         this.remove();
       } else {
-        swingDegrees += rotateSwing(swingDegrees);
+
+        if (direction === DIRECTION.RIGHT) {
+          swingDegrees += rotateSwing(swingDegrees);
+        } else {
+          swingDegrees -= rotateSwing(swingDegrees);
+        }
+
       }
 
     });
