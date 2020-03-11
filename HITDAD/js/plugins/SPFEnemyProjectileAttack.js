@@ -164,18 +164,17 @@
 
   Game_Event.prototype.SPF_UpdateMovement = function() {
 
+
     if (SPF_IsEnemyStunned(this) ||
         SPF_IsEnemyPacified(this) ||
-        this._playerDetected ||
+        this._state === SPF_ENEMYSTATE.SHOOTING ||
         this._movementPauseCountDown > 0) {
-      if (this._playerDetected) {
-        SPF_ChangeEnemySpriteSheet(this, SPF_ENEMYSPRITESHEET.SHOOTING);
-      }
+
       SPF_EnemyPauseMovement(this, true);
       return;
 
     } else {
-      SPF_ChangeEnemySpriteSheet(this, SPF_ENEMYSPRITESHEET.PATROLLING)
+
       SPF_EnemyPauseMovement(this, false);
     }
 
@@ -207,7 +206,7 @@
 
       enemy.SPF_UpdateMovement();
 
-      if (!enemy._fireRate) return;
+      if (!enemy._fireRate || SPF_IsEnemyPacified(enemy)) return;
 
         let isStunned = SPF_IsEnemyStunned(enemy) || SPF_IsEnemyPacified(enemy);
 
@@ -219,6 +218,7 @@
             enemy._playerDetected = true;
             enemy._shotDelayCountdown = enemy._shotDelay * 60; // Adds delay before first shot is fired
             SPF_EnemyPauseMovement(enemy, true);
+            SPF_EnemyStartShoot(enemy);
           }
 
           // Don't shoot until delays are finished
@@ -251,6 +251,11 @@
 
         } else {
           enemy._playerDetected = false;
+
+          if (!SPF_IsEnemyStunned(enemy))
+          {
+            SPF_EnemyStartPatrol(enemy);
+          }
         }
     });
   }

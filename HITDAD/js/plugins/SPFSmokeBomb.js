@@ -217,7 +217,7 @@ function SPF_ProjectileBomb() {
                                            explosion.spawnX, explosion.spawnY);
 
       if (distanceToExplosion < EXPLOSION_RADIUS_TILES) {
-        SPF_StunEnemy(enemy, STUN_DURATION);
+        SPF_StunEnemy(enemy, SPF_ENEMYSTATE.DIAPERSTUNNED, STUN_DURATION);
       }
 
     });

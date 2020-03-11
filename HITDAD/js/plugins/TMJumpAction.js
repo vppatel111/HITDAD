@@ -1460,7 +1460,6 @@ function Game_Bullet() {
           if (!this._isFalling && this._vy > 0.08) {
             this.SPF_StartFalling();
           }
-          if (this._isFalling) console.log("VY:", this._vy);
           this.collideMapDown();
           this.collideCharacterDown();
         } else {
@@ -2942,6 +2941,7 @@ function Game_Bullet() {
       this._shotDelay = +this.loadTagParam('shot_delay') || 2;
       this._shotDelayCountdown = 0;
       this._movingLeft = true;
+      this._state = 0;
       this._resetting = false;
       if (this._npcType) console.log("Start Positions", this._startX, this._startY);
       if (this._repopTimer > 0) {

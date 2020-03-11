@@ -177,10 +177,10 @@
         return;
       }
 
-      SPF_StunEnemy(enemy, STUN_DURATION);
-      var item = SPF_FindItemById(ITEM_ID);
-      $gameParty.loseItem(item, 1);
+      SPF_StunEnemy(enemy, SPF_ENEMYSTATE.JOKESTUNNED, STUN_DURATION);
     });
+    let item = SPF_FindItemById(ITEM_ID);
+    $gameParty.loseItem(item, 1);
   }
 
   function stunEnemiesInRadius() {
