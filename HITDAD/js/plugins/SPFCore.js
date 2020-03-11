@@ -387,6 +387,10 @@ function SPF_ChangeSpriteSheet(name) {
                 SPF_ChangeSpriteSheet(SPF_SPRITESHEET.CARRYING) :
                 SPF_ChangeSpriteSheet(SPF_SPRITESHEET.DEFAULT);
             break;
+        case SPF_SPRITESHEET.IDLING:
+            file = '!hitdad_idle';
+            index = 1;
+            break;
         default:
             console.log("Error switching sprite sheet");
             break;
