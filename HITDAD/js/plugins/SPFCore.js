@@ -29,6 +29,17 @@ const _defaultWindowWidth = 1000;
 // Width / Height
 const desiredAspectRatio = _defaultWindowWidth / _defaultWindowHeight;
 
+var showHotbar = true;
+var showHealth = true;
+
+// Makes the hotbar active when an blocking event is not running
+// and a game message is not being displayed. Refactored for use with item UI.
+function canShowHotbar() {
+    return !$gameMap.isEventRunning() &&
+    !$gameMessage.isBusy() &&
+    showHotbar;
+}
+
 var DIRECTION = {
    LEFT: 4,
    RIGHT: 6
@@ -74,7 +85,9 @@ var MOUSE_POSITION = {
 // the first slot of their inventory. This allows me to assume that this
 // structure is always initialized.
 var SPF_CurrentlySelectedItem = {};
-var SPF_CSI = {};
+var SPF_CSI = {
+    name:""
+};
 
 var SPF_Enemies = [];
 var SPF_Boxes = [];
@@ -486,10 +499,27 @@ function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance=
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     aliasPluginCommand.call(this, command, args);
 
-    if (command === 'Initialize') {
-      initializeEnemies();
-      initializeBoxes();
-      initializePlayer();
+    switch(command)
+    {
+        case "Initialize":
+            initializeEnemies();
+            initializeBoxes();
+            initializePlayer();
+            break;
+        case "HideUI":
+            showHotbar = false;
+            showHealth = false;
+            break;
+        case "HideHotbar":
+            showHotbar = false;
+            break;
+        case "HideHealth":
+            showHotbar = false;
+            break;
+        case "ShowUI":
+            showHealth = true;
+            showHotbar = true;
+            break;
     }
   };
 

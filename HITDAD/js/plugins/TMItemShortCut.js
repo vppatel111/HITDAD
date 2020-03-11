@@ -101,7 +101,7 @@ Imported.TMItemShortCut = true;
   var backgroundType = +(parameters['backgroundType'] || 0);
   var windowHide = JSON.parse(parameters['windowHide']);
 
-  var showHotbar = true;
+
 
   //-----------------------------------------------------------------------------
   // Input
@@ -162,14 +162,9 @@ Imported.TMItemShortCut = true;
     _Game_Interpreter_pluginCommand.call(this, command, args);
     if (command === 'setItemSC') {
       $gameParty.setShortCut(+args[0], +args[1]);
-    } else if (command === "initializeItems") {
+    } else if (command === "InitializeHotbar") {
       SPF_CSI = $gameParty.items(0)[0]; // To initialize the weapon so SPF_CSI contains the first weapon
-    } else if (command === "TMItemShortCut_ShowHotbar") {
-      showHotbar = true;
-    } else if (command === "TMItemShortCut_HideHotbar") {
-      showHotbar = false;
     }
-
   };
 
   //-----------------------------------------------------------------------------
@@ -310,9 +305,7 @@ Imported.TMItemShortCut = true;
 
       // Makes the hotbar active when an blocking event is not running
       // and a game message is not being displayed.
-      if (!$gameMap.isEventRunning() &&
-          !$gameMessage.isBusy() &&
-          showHotbar) {
+      if (canShowHotbar()) {
 
           this.open();
 
