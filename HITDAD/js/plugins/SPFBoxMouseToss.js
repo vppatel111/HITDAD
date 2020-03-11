@@ -60,7 +60,7 @@
 
         } else {
 
-            let objectToCarry = SPF_LineTrace(SPF_Boxes, 2.0, -0.75);
+            let objectToCarry = SPF_LineTrace(SPF_Boxes, 2.0, -0.75, 1.5, -0.5);
             if (objectToCarry) {
                 executeCarry(objectToCarry);
             }

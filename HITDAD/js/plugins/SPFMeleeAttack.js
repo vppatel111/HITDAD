@@ -74,7 +74,7 @@
   Game_Player.prototype.SPF_MeleeAttack = function() {
 
     let item = SPF_FindItemById(itemID);
-    let enemyHit = SPF_LineTrace(SPF_Enemies, 2.0, 0.0, 2.0, SPF_IsEnemyPacified);
+    let enemyHit = SPF_LineTrace(SPF_Enemies, 2.0, 0.0, 2.0, 0.0, SPF_IsEnemyPacified);
     let direction = $gamePlayer.direction();
 
     if (bottleAnimation) { bottleAnimation.remove(); }

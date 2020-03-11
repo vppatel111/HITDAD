@@ -438,10 +438,11 @@ function SPF_ChangeEnemySpriteSheet(enemy, name) {
  * @param {Array} events The list of events to check for
  * @param {Number} range The max distance for the line trace from the trace start (in tiles or fraction of tiles)
  * @param {Number} traceStartOffset The offset for the start of the line trace from the player (+ moves start in front of player, - behind)
+ * @param {Number} verticalStartOffset The offset for the center of the vertical tolerance
  * @param {Number} verticalTolerance The y tolerance for the line trace.
  * @param {CallableFunction} checkFunction Extra function to pass in, if the function returns true for an event, the event is ignored.
  */
-function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance= 2.0, checkFunction = null) {
+function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance= 2.0, verticalStartOffset = 0, checkFunction = null) {
     let direction = $gamePlayer.direction();
 
     // Adjusts trace start if an offset is set
@@ -461,7 +462,7 @@ function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance=
         // Stop execution if direction of object does not match direction of player
         if (!(distanceToBox > 0 === (direction === DIRECTION.RIGHT))) return;
 
-        let verticalOffset = Math.abs($gamePlayer._realY - event._realY);
+        let verticalOffset = Math.abs($gamePlayer._realY - event._realY + verticalStartOffset);
 
         let forwardDistanceToBox = Math.abs(distanceToBox);
 

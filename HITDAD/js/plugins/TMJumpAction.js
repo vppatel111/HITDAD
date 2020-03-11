@@ -2169,7 +2169,7 @@ function Game_Bullet() {
       $gamePlayer.drawTrajectory();
     }
 
-    if (this._rightButtonClicked && this.isCarryingDiaperBomb()) {
+    if (this.isCarryingDiaperBomb()) {
       var velocity = SPF_BombCalculateProjectileAngleAndVelocity();
       $gamePlayer.drawTrajectory(velocity, SPF_ProjectileBomb._GRAVITY);
     }
