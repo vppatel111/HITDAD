@@ -24,6 +24,8 @@
              !$gamePlayer.isCarrying();
     }
 
+    let cancelDiaperThrow = false;
+
     document.addEventListener("mousedown", function (event) {
 
         if (!$gameSwitches || !$gamePlayer) {
@@ -32,7 +34,10 @@
 
         let click = SPF_ScaledClick(event);
 
+
        if (event.button === 0) { // Left Click
+           $gamePlayer._leftMouseButtonClicked = true;
+
             if ($gameSwitches.value(10) && click.x < 200.0 && click.y < 200.0) {
                 $gamePlayer.AnswerCall();
             } else {
@@ -64,7 +69,6 @@
             return;
         }
 
-
         if ($gamePlayer.isCarrying() ||
             ($gamePlayer.isCarryingDiaperBomb())) {
 
@@ -81,7 +85,9 @@
 
         let click = SPF_ScaledClick(event);
 
-        if (event.button === 0) { // Right Click
+        if (event.button === 0) { // Left Click
+            $gamePlayer._leftMouseButtonClicked = false;
+
             if (!$gamePlayer._justThrewBox && !$gamePlayer.isCarrying()) {
                 $gamePlayer.SPF_ThrowDiaperBomb(click);
             } else {

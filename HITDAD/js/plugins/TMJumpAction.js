@@ -1457,9 +1457,10 @@ function Game_Bullet() {
         this._realY = this._realY.clamp(0, $gameMap.height());
       } else {
         if (this._vy > 0) {
-          if (!this._isFalling && this._vy > 0.05) {
+          if (!this._isFalling && this._vy > 0.08) {
             this.SPF_StartFalling();
           }
+          if (this._isFalling) console.log("VY:", this._vy);
           this.collideMapDown();
           this.collideCharacterDown();
         } else {
@@ -2051,7 +2052,7 @@ function Game_Bullet() {
     this._carryPower = 0;
     this._justThrewBox = false;
     this._wallJump = false;
-    this._rightButtonClicked = false;
+    this._leftMouseButtonClicked = false;
     this._dashDelay = 0;
     this._dashDelayTime = 30;
     this._dashMpCost = 0;

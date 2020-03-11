@@ -221,17 +221,19 @@ Imported.TMItemShortCut = true;
   // Replace with using number keys to select items.
   Window_ShortCut.prototype.processCursorMove = function() {
     var lastIndex = this.index();
-    if (Input.isRepeated('item1')) {
-      this.select(0);
-    }
-    if (Input.isRepeated('item2')) {
-      this.select(1);
-    }
-    if (Input.isRepeated('item3')) {
-      this.select(2);
-    }
-    if (this.index() !== lastIndex) {
+    if (!$gamePlayer._leftMouseButtonClicked) {
+      if (Input.isRepeated('item1')) {
+        this.select(0);
+      }
+      if (Input.isRepeated('item2')) {
+        this.select(1);
+      }
+      if (Input.isRepeated('item3')) {
+        this.select(2);
+      }
+      if (this.index() !== lastIndex) {
         SoundManager.playCursor();
+      }
     }
   }
 

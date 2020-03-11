@@ -54,9 +54,12 @@
 
 
     Game_Player.prototype.SPF_ThrowObject = function() {
-        if ($gamePlayer.isCarrying() && canThrow()) {
+        if ($gamePlayer.isCarrying()) {
 
-            hurlObject();
+            if (canThrow())
+            {
+                hurlObject();
+            }
 
         } else {
 
