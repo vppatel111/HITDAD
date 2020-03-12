@@ -359,6 +359,7 @@ const SPF_SPRITESHEET = {
     FALLING: 1,
     CARRYING: 2,
     LANDING:3,
+    IDLING:4,
 }
 
 /**
@@ -391,8 +392,8 @@ function SPF_ChangeSpriteSheet(name) {
             file = '!hitdad_idle';
             index = 1;
             $gamePlayer.setStepAnime(true);
-            $gamePlayer.moveSpeed = 1;
-            $gamePlayer.moveFrequency = 1;
+            $gamePlayer._moveSpeed = 1;
+            $gamePlayer._moveFrequency = 1;
 
             break;
         default:
@@ -404,7 +405,9 @@ function SPF_ChangeSpriteSheet(name) {
         $gameActors.actor(1).setCharacterImage(file, index);
         $gamePlayer.refresh();
     }
+
 }
+
 
 const SPF_ENEMYSPRITESHEET = {
     PATROLLING: 0,
