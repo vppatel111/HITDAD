@@ -382,6 +382,7 @@ const SPF_SPRITESHEET = {
     FALLING: 1,
     CARRYING: 2,
     LANDING:3,
+    IDLE:4,
 }
 
 /**
@@ -391,7 +392,7 @@ function SPF_ChangeSpriteSheet(name) {
 
     let file;
     let index;
-
+    $gamePlayer.setStepAnime(false);
     switch(name) {
         case SPF_SPRITESHEET.DEFAULT:
             file = "!hitdad";
@@ -409,6 +410,11 @@ function SPF_ChangeSpriteSheet(name) {
             $gamePlayer.isCarrying() ?
                 SPF_ChangeSpriteSheet(SPF_SPRITESHEET.CARRYING) :
                 SPF_ChangeSpriteSheet(SPF_SPRITESHEET.DEFAULT);
+            break;
+        case SPF_SPRITESHEET.IDLE:
+            file = "!hitdad_idle"
+            index = 1;
+            $gamePlayer.setStepAnime(true);
             break;
         default:
             console.log("Error switching sprite sheet");
