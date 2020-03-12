@@ -1602,9 +1602,9 @@ function Game_Bullet() {
             character._vy = this._vy;
             character._landingObject = this;
             character.resetJump();
-            this._topObject = null;
+            // this._topObject = null;
           } else {
-            this._topObject = character;
+            // this._topObject = character;
             this._realY = character._realY + this._collideH + 0.001;
             this._vy = 0;
             this._jumpInput = 0;
@@ -1754,6 +1754,8 @@ function Game_Bullet() {
   Game_CharacterBase.prototype.resetJump = function() {
     this._jumpCount = this._mulchJump;
     this._jumpInput = 0;
+    this._isFalling = false;
+    // SPF_ChangeSpriteSheet(SPF_SPRITESHEET.LANDING);
   };
 
   // 落下ダメージの処理
