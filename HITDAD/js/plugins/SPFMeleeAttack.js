@@ -86,7 +86,7 @@
     bottleAnimation.bitmap = bottleBitmap;
 
     // This function changes the pivot for rotation to (x,y) = (16, 32 + SWING_RANGE).
-    bottleAnimation.setTransform(0, 0, 1, 1, 0, 0, 0, 16, 32 + SWING_RANGE);
+    bottleAnimation.setTransform(0, 0, 1.3, 1.3, 0, 0, 0, 16, 32 + SWING_RANGE);
 
     swingDegrees = 0;
     bottleAnimation.setUpdate(function() {
