@@ -1740,7 +1740,20 @@ function Game_Bullet() {
         SPF_ChangeSpriteSheet(SPF_SPRITESHEET.LANDING);
       }
       if (!$gameSwitches.value(12) && this._canPickup || this === $gamePlayer) {
-        AudioManager.playSe(SE_JUMPLAND);
+        
+        switch (Game_Event._boxType) {
+          case 0: //HITDAD
+            AudioManager.playSe(SE_JUMPLAND);
+            break;
+          case 1:
+            AudioManager.playSe(SE_JUMPLAND);
+            break;
+          case 2:
+            AudioManager.playSe(SE_JUMPLAND);
+            break;
+        }
+       
+        
       }
     }
 
