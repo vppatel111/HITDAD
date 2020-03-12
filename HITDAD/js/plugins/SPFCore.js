@@ -368,7 +368,7 @@ function SPF_ChangeSpriteSheet(name) {
 
     let file;
     let index;
-
+    $gamePlayer.setStepAnime(false);
     switch(name) {
         case SPF_SPRITESHEET.DEFAULT:
             file = "!hitdad";
@@ -390,6 +390,10 @@ function SPF_ChangeSpriteSheet(name) {
         case SPF_SPRITESHEET.IDLING:
             file = '!hitdad_idle';
             index = 1;
+            $gamePlayer.setStepAnime(true);
+            $gamePlayer.moveSpeed = 1;
+            $gamePlayer.moveFrequency = 1;
+
             break;
         default:
             console.log("Error switching sprite sheet");
