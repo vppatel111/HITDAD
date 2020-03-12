@@ -29,6 +29,17 @@ const _defaultWindowWidth = 1000;
 // Width / Height
 const desiredAspectRatio = _defaultWindowWidth / _defaultWindowHeight;
 
+var showHotbar = true;
+var showHealth = true;
+
+// Makes the hotbar active when an blocking event is not running
+// and a game message is not being displayed. Refactored for use with item UI.
+function canShowHotbar() {
+    return !$gameMap.isEventRunning() &&
+    !$gameMessage.isBusy() &&
+    showHotbar;
+}
+
 var DIRECTION = {
    LEFT: 4,
    RIGHT: 6
@@ -74,7 +85,9 @@ var MOUSE_POSITION = {
 // the first slot of their inventory. This allows me to assume that this
 // structure is always initialized.
 var SPF_CurrentlySelectedItem = {};
-var SPF_CSI = {};
+var SPF_CSI = {
+    name:""
+};
 
 var SPF_Enemies = [];
 var SPF_Boxes = [];
@@ -270,15 +283,23 @@ function SPF_MapYToScreenY(mapY) {
 }
 
 function SPF_IsEnemyStunned(enemy) {
-  return $gameSelfSwitches.value([$gameMap._mapId, enemy.eventId(), 'B']);
+    return enemy._state > 1;
+}
+
+function SPF_EnemyStartPatrol(enemy) {
+        SPF_ChangeEnemyState(enemy, SPF_ENEMYSTATE.PATROLLING);
+}
+
+function SPF_EnemyStartShoot(enemy) {
+        SPF_ChangeEnemyState(enemy, SPF_ENEMYSTATE.SHOOTING);
 }
 
 function SPF_IsEnemyPacified(enemy) {
-  return $gameSelfSwitches.value([$gameMap._mapId, enemy.eventId(), 'A']);
+    return enemy._state === SPF_ENEMYSTATE.PACIFIED;
 }
 
 function SPF_IncapacitateEnemy(enemy) {
-  $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'A'], true);
+    SPF_ChangeEnemyState(enemy, SPF_ENEMYSTATE.PACIFIED);
 }
 
 function SPF_EnemyPauseMovement(enemy, pause) {
@@ -289,8 +310,7 @@ function SPF_EnemyPauseMovement(enemy, pause) {
 }
 
 // Stun duration is in units of frames.
-function SPF_StunEnemy(enemy, stunDuration) {
-
+function SPF_StunEnemy(enemy, stunType, stunDuration) {
   var stunTimerAnimation = new SPF_Sprite();
   stunTimerAnimation.bitmap = new Bitmap(200, 200);
 
@@ -311,7 +331,8 @@ function SPF_StunEnemy(enemy, stunDuration) {
     }
 
   } else {
-    $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'B'], true);
+      SPF_ChangeEnemyState(enemy, stunType);
+    enemy._state = stunType;
     enemy.stunTimer = new SPF_Timer();
     enemy.stunTimer.start(stunDuration,
       function () { //onExpire
@@ -332,9 +353,11 @@ function SPF_StunEnemy(enemy, stunDuration) {
 }
 
 function SPF_UnstunEnemy(enemy) {
-  $gameSelfSwitches.setValue([$gameMap._mapId, enemy.eventId(), 'B'], false);
-  // enemy._isStunned = false;
-  enemy.stunTimer = {};
+    if (!SPF_IsEnemyPacified(enemy)) {
+        SPF_EnemyStartPatrol(enemy);
+    }
+
+    enemy.stunTimer = {};
 }
 
 function SPF_FindItemById(idOfItem) {
@@ -398,24 +421,48 @@ function SPF_ChangeSpriteSheet(name) {
     }
 }
 
-const SPF_ENEMYSPRITESHEET = {
+const SPF_ENEMYSTATE = {
     PATROLLING: 0,
     SHOOTING: 1,
+    DIAPERSTUNNED: 2,
+    JOKESTUNNED: 3,
+    PACIFIED:4,
 }
 
-function SPF_ChangeEnemySpriteSheet(enemy, name) {
+function SPF_ChangeEnemyState(enemy, state) {
+
+    if (enemy._state === state) return;
+
+    if (state === SPF_ENEMYSTATE.PACIFIED)
+    {
+        // Puts enemy behind player
+        enemy._priorityType = 0;
+    }
+    enemy._state = state;
 
     let file;
     let index;
 
-    switch(name) {
-        case SPF_ENEMYSPRITESHEET.PATROLLING:
+    switch(state) {
+        case SPF_ENEMYSTATE.PATROLLING:
             file = "!hitdad_carry";
             index = 3;
             break;
-        case SPF_ENEMYSPRITESHEET.SHOOTING:
+        case SPF_ENEMYSTATE.SHOOTING:
             file = "!hitdad_carry";
             index = 2;
+            break;
+        case SPF_ENEMYSTATE.DIAPERSTUNNED:
+            file = "!hitdad_knockout";
+            index = 1;
+            break;
+        case SPF_ENEMYSTATE.JOKESTUNNED:
+            file = "!hitdad_knockout";
+            index = 0;
+            break;
+        case SPF_ENEMYSTATE.PACIFIED:
+            file = "!hitdad_pacified";
+            index = 0;
             break;
         default:
             console.log("Error switching sprite sheet");
@@ -425,8 +472,6 @@ function SPF_ChangeEnemySpriteSheet(enemy, name) {
     if (file) {
         enemy.setImage(file, index);
         enemy.refresh();
-        // $gameActors.actor(1).setCharacterImage(file, index);
-        // $gamePlayer.refresh();
     }
 }
 
@@ -438,10 +483,11 @@ function SPF_ChangeEnemySpriteSheet(enemy, name) {
  * @param {Array} events The list of events to check for
  * @param {Number} range The max distance for the line trace from the trace start (in tiles or fraction of tiles)
  * @param {Number} traceStartOffset The offset for the start of the line trace from the player (+ moves start in front of player, - behind)
+ * @param {Number} verticalStartOffset The offset for the center of the vertical tolerance
  * @param {Number} verticalTolerance The y tolerance for the line trace.
  * @param {CallableFunction} checkFunction Extra function to pass in, if the function returns true for an event, the event is ignored.
  */
-function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance= 2.0, checkFunction = null) {
+function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance= 2.0, verticalStartOffset = 0, checkFunction = null) {
     let direction = $gamePlayer.direction();
 
     // Adjusts trace start if an offset is set
@@ -461,7 +507,7 @@ function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance=
         // Stop execution if direction of object does not match direction of player
         if (!(distanceToBox > 0 === (direction === DIRECTION.RIGHT))) return;
 
-        let verticalOffset = Math.abs($gamePlayer._realY - event._realY);
+        let verticalOffset = Math.abs($gamePlayer._realY - event._realY + verticalStartOffset);
 
         let forwardDistanceToBox = Math.abs(distanceToBox);
 
@@ -485,10 +531,27 @@ function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance=
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     aliasPluginCommand.call(this, command, args);
 
-    if (command === 'Initialize') {
-      initializeEnemies();
-      initializeBoxes();
-      initializePlayer();
+    switch(command)
+    {
+        case "Initialize":
+            initializeEnemies();
+            initializeBoxes();
+            initializePlayer();
+            break;
+        case "HideUI":
+            showHotbar = false;
+            showHealth = false;
+            break;
+        case "HideHotbar":
+            showHotbar = false;
+            break;
+        case "HideHealth":
+            showHotbar = false;
+            break;
+        case "ShowUI":
+            showHealth = true;
+            showHotbar = true;
+            break;
     }
   };
 

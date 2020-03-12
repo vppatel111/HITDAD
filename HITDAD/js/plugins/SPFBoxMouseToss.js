@@ -54,13 +54,16 @@
 
 
     Game_Player.prototype.SPF_ThrowObject = function() {
-        if ($gamePlayer.isCarrying() && canThrow()) {
+        if ($gamePlayer.isCarrying()) {
 
-            hurlObject();
+            if (canThrow())
+            {
+                hurlObject();
+            }
 
         } else {
 
-            let objectToCarry = SPF_LineTrace(SPF_Boxes, 2.0, -0.75);
+            let objectToCarry = SPF_LineTrace(SPF_Boxes, 2.0, -0.75, 1.5, -0.5);
             if (objectToCarry) {
                 executeCarry(objectToCarry);
             }

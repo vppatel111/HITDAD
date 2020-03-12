@@ -1457,7 +1457,7 @@ function Game_Bullet() {
         this._realY = this._realY.clamp(0, $gameMap.height());
       } else {
         if (this._vy > 0) {
-          if (!this._isFalling && this._vy > 0.05) {
+          if (!this._isFalling && this._vy > 0.08) {
             this.SPF_StartFalling();
           }
           this.collideMapDown();
@@ -1602,9 +1602,9 @@ function Game_Bullet() {
             character._vy = this._vy;
             character._landingObject = this;
             character.resetJump();
-            this._topObject = null;
+            // this._topObject = null;
           } else {
-            this._topObject = character;
+            // this._topObject = character;
             this._realY = character._realY + this._collideH + 0.001;
             this._vy = 0;
             this._jumpInput = 0;
@@ -1754,6 +1754,8 @@ function Game_Bullet() {
   Game_CharacterBase.prototype.resetJump = function() {
     this._jumpCount = this._mulchJump;
     this._jumpInput = 0;
+    this._isFalling = false;
+    // SPF_ChangeSpriteSheet(SPF_SPRITESHEET.LANDING);
   };
 
   // 落下ダメージの処理
@@ -2051,7 +2053,7 @@ function Game_Bullet() {
     this._carryPower = 0;
     this._justThrewBox = false;
     this._wallJump = false;
-    this._rightButtonClicked = false;
+    this._leftMouseButtonClicked = false;
     this._dashDelay = 0;
     this._dashDelayTime = 30;
     this._dashMpCost = 0;
@@ -2169,7 +2171,7 @@ function Game_Bullet() {
       $gamePlayer.drawTrajectory();
     }
 
-    if (this._rightButtonClicked && this.isCarryingDiaperBomb()) {
+    if (this.isCarryingDiaperBomb()) {
       var velocity = SPF_BombCalculateProjectileAngleAndVelocity();
       $gamePlayer.drawTrajectory(velocity, SPF_ProjectileBomb._GRAVITY);
     }
@@ -2941,6 +2943,7 @@ function Game_Bullet() {
       this._shotDelay = +this.loadTagParam('shot_delay') || 2;
       this._shotDelayCountdown = 0;
       this._movingLeft = true;
+      this._state = 0;
       this._resetting = false;
       if (this._npcType) console.log("Start Positions", this._startX, this._startY);
       if (this._repopTimer > 0) {
