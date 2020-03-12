@@ -82,7 +82,11 @@
         let allEvents = $gameMap.events();
         allEvents.forEach(function(event) {
             if (event._resets) {
-                let switches = ['A', 'B', 'C'];
+                event._priorityType = 1;
+                if (event._npcType) {
+                    SPF_ChangeEnemyState(event, SPF_ENEMYSTATE.PATROLLING);
+                }
+                let switches = ['A', 'B', 'C', 'D'];
                 switches.forEach(function(switchname) {
                     let key = [$gameMap.mapId(), event.eventId(), switchname];
                     $gameSelfSwitches.setValue(key, false);

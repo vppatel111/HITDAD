@@ -24,6 +24,8 @@
              !$gamePlayer.isCarrying();
     }
 
+    let cancelDiaperThrow = false;
+
     document.addEventListener("mousedown", function (event) {
 
         if (!$gameSwitches || !$gamePlayer) {
@@ -32,25 +34,24 @@
 
         let click = SPF_ScaledClick(event);
 
-        if (event.button === 2) { // Right Click
-            $gamePlayer.SPF_ThrowObject();
-            if ($gamePlayer.isCarrying()) return;
-            $gamePlayer._rightButtonClicked = true;
 
-            if (CanUseItem(SPF_CSI) && SPF_CSI.id == 2) {
-                $gamePlayer._carryingDiaperBomb = true;
-            }
+       if (event.button === 0) { // Left Click
+           $gamePlayer._leftMouseButtonClicked = true;
 
-        } else if (event.button === 0) { // Left Click
             if ($gameSwitches.value(10) && click.x < 200.0 && click.y < 200.0) {
                 $gamePlayer.AnswerCall();
             } else {
+                $gamePlayer.SPF_ThrowObject();
+                if ($gamePlayer.isCarrying() || $gamePlayer._justThrewBox) return;
 
                 if (CanUseItem(SPF_CSI)) {
 
                     switch (SPF_CSI.id) {
                         case 1:
                             $gamePlayer.SPF_MeleeAttack();
+                            break;
+                        case 2:
+                            $gamePlayer._carryingDiaperBomb = true;
                             break;
                         case 3:
                             $gamePlayer.ChargeDadJoke();
@@ -68,10 +69,8 @@
             return;
         }
 
-
         if ($gamePlayer.isCarrying() ||
-            ($gamePlayer._rightButtonClicked &&
-             $gamePlayer.isCarryingDiaperBomb())) {
+            ($gamePlayer.isCarryingDiaperBomb())) {
 
             SPF_ScaledClick(event);
         }
@@ -86,7 +85,9 @@
 
         let click = SPF_ScaledClick(event);
 
-        if (event.button === 2) { // Right Click
+        if (event.button === 0) { // Left Click
+            $gamePlayer._leftMouseButtonClicked = false;
+
             if (!$gamePlayer._justThrewBox && !$gamePlayer.isCarrying()) {
                 $gamePlayer.SPF_ThrowDiaperBomb(click);
             } else {
@@ -95,7 +96,6 @@
             if (!$gamePlayer.isCarrying()) {
                 $gamePlayer.hideTrajectory();
             }
-            $gamePlayer._rightButtonClicked = false;
          }
     });
 
