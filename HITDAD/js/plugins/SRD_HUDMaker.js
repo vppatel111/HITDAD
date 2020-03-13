@@ -330,7 +330,7 @@ MapHUD.prototype.updateActivity = function() {
 		}
 	} catch(e) {
 		this._isActive = true;
-		console.log("Map HUD ERROR:" + e);
+		// console.log("Map HUD ERROR:" + e);
 	}
 	this.visible = this._isActive || $gameTemp.isManipulatingHud;
 };
@@ -408,7 +408,7 @@ BattleHUD.prototype.updateActivity = function() {
 		}
 	} catch(e) {
 		this._isActive = true;
-		console.log("Battle HUD ERROR:" + e);
+		// console.log("Battle HUD ERROR:" + e);
 	}
 	this.visible = this._isActive || $gameTemp.isManipulatingHud;
 };
@@ -2220,7 +2220,7 @@ Sprite_HUDObject.prototype.updateActivity = function() {
 		try {
 			this._isActive = !!eval(this._condition);
 		} catch(e) {
-			console.log(this._condition + " \n" + e);
+			// console.log(this._condition + " \n" + e);
 			alert("There is an error with \"" + this._condition + "\" Press F8 to see more!");
 			this._condition = 'false';
 			this._isActive = false;
@@ -2375,7 +2375,7 @@ HUDManager.types[Sprite_HUDText._label] = {
 		try {
 			temp = String(eval("`" + data["Value"] + "`"));
 		} catch(e) {
-			console.log('Error with Text\n' + e);
+			// console.log('Error with Text\n' + e);
 			temp = "ERROR";
 		}
 		if(temp.length > 15) temp = temp.substring(0, 15) + "...";
@@ -2400,7 +2400,7 @@ Sprite_HUDText.prototype.getNewValue = function() {
 	try {
 		result = eval("`" + this["Value"] + "`");
 	} catch(e) {
-		console.log('Error with Text\n' + e);
+		// console.log('Error with Text\n' + e);
 		result = "ERROR";
 	}
 	return result;
@@ -3005,7 +3005,7 @@ Sprite_HUDCodeImage.prototype.getNewImage = function() {
 	try {
 		result = eval(this["Image"]);
 	} catch(e) {
-		console.log('Error with Picture EX\n' + e);
+		// console.log('Error with Picture EX\n' + e);
 		result = '';
 	}
 	return result;
@@ -3185,7 +3185,7 @@ Sprite_HUDGauge.prototype.getCurrentValue = function() {
 	try {
 		result = eval(this["Cur. Value"]);
 	} catch(e) {
-		console.log('Error with Gauge\n' + e);
+		// console.log('Error with Gauge\n' + e);
 		result = 0;
 	}
 	return result;
@@ -3196,7 +3196,7 @@ Sprite_HUDGauge.prototype.getMaxValue = function() {
 	try {
 		result = eval(this["Max Value"]);
 	} catch(e) {
-		console.log('Error with Gauge\n' + e);
+		// console.log('Error with Gauge\n' + e);
 		result = 0;
 	}
 	return result;
@@ -3365,7 +3365,7 @@ Sprite_HUDImageGauge.prototype.getCurrentValue = function() {
 	try {
 		result = eval(this["Cur. Value"]);
 	} catch(e) {
-		console.log('Error with Gauge\n' + e);
+		// console.log('Error with Gauge\n' + e);
 		result = 0;
 	}
 	return result;
@@ -3376,7 +3376,7 @@ Sprite_HUDImageGauge.prototype.getMaxValue = function() {
 	try {
 		result = eval(this["Max Value"]);
 	} catch(e) {
-		console.log('Error with Gauge\n' + e);
+		// console.log('Error with Gauge\n' + e);
 		result = 0;
 	}
 	return result;
@@ -3584,7 +3584,7 @@ Sprite_HUDImageText.prototype.getValue = function() {
 	try {
 		result = eval(this["Value"]);
 	} catch(e) {
-		console.log('Error with Image Text\n' + e);
+		// console.log('Error with Image Text\n' + e);
 		result = 0;
 	}
 	return result;
@@ -3758,7 +3758,7 @@ Sprite_HUDFace.prototype.getActorId = function() {
 	try {
 		result = eval(this["Actor ID"]);
 	} catch(e) {
-		console.log('Error with Actor Face\n' + e);
+		// console.log('Error with Actor Face\n' + e);
 		result = 1;
 	}
 	return result;

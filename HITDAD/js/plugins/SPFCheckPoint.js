@@ -70,7 +70,7 @@
             let difference = itemsAtCheckpoint[i] - $gameParty.numItems($dataItems[i + 1]);
 
             if (Math.abs(difference) > 0) {
-                console.log("Topping up", $dataItems[i + 1].name);
+                // console.log("Topping up", $dataItems[i + 1].name);
                 $gameParty.gainItem($dataItems[i + 1], difference);
             }
         }

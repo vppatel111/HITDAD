@@ -256,7 +256,7 @@ _.loadBasicData = function() {
 									return eval(value);
 								} catch(e) {
 									alert('There was error. Please visit console.')
-									console.log(value + '\n' + e);
+									// console.log(value + '\n' + e);
 									return '';
 								}
 							},
@@ -2764,7 +2764,7 @@ Scene_Base.prototype.refreshEditWindowProperties = function() {
 		try {
 			win.opacity = eval(opacity.value);
 		} catch(e) {
-			console.log(errorText + ' opacity input.\n' + e);
+			// console.log(errorText + ' opacity input.\n' + e);
 		}
 	}
 	if(width) {
@@ -2772,7 +2772,7 @@ Scene_Base.prototype.refreshEditWindowProperties = function() {
 		try {
 			win.width = eval(width.value);
 		} catch(e) {
-			console.log(errorText + ' width input.\n' + e);
+			// console.log(errorText + ' width input.\n' + e);
 		}
 	}
 	if(height) {
@@ -2780,7 +2780,7 @@ Scene_Base.prototype.refreshEditWindowProperties = function() {
 		try {
 			win.height = eval(height.value);
 		} catch(e) {
-			console.log(errorText + ' height input.\n' + e);
+			// console.log(errorText + ' height input.\n' + e);
 		}
 	}
 	if(rows) {
@@ -2790,7 +2790,7 @@ Scene_Base.prototype.refreshEditWindowProperties = function() {
 			try {
 				return eval(rows.value);
 			} catch(e) {
-				console.log(errorText + ' rows input.\n' + e);
+				// console.log(errorText + ' rows input.\n' + e);
 				return errorCatch;
 			}
 		};
@@ -2802,7 +2802,7 @@ Scene_Base.prototype.refreshEditWindowProperties = function() {
 			try {
 				return eval(cols.value);
 			} catch(e) {
-				console.log(errorText + ' cols input.\n' + e);
+				// console.log(errorText + ' cols input.\n' + e);
 				return errorCatch;
 			}
 		};
@@ -2814,7 +2814,7 @@ Scene_Base.prototype.refreshEditWindowProperties = function() {
 			try {
 				return eval(lineHeight.value);
 			} catch(e) {
-				console.log(errorText + ' line height input.\n' + e);
+				// console.log(errorText + ' line height input.\n' + e);
 				return errorCatch;
 			}
 		};
@@ -2834,7 +2834,7 @@ Scene_Base.prototype.refreshEditWindowProperties = function() {
 		try {
 			win.refresh();
 		} catch(e) {
-			console.log(e);
+			// console.log(e);
 		}
 	}
 	if(win._refreshAllParts) win._refreshAllParts();
@@ -2859,21 +2859,21 @@ Scene_Base.prototype.initCustomWindowPositions = function() {
 				try {
 					win.opacity = eval(info.opacity);
 				} catch(e) {
-					console.log(errorText + ' opacity input.\n' + e);
+					// console.log(errorText + ' opacity input.\n' + e);
 				}
 			}
 			if(info.width !== undefined) {
 				try {
 					win.width = eval(info.width);
 				} catch(e) {
-					console.log(errorText + ' width input.\n' + e);
+					// console.log(errorText + ' width input.\n' + e);
 				}
 			}
 			if(info.height !== undefined) {
 				try {
 					win.height = eval(info.height);
 				} catch(e) {
-					console.log(errorText + ' height input.\n' + e);
+					// console.log(errorText + ' height input.\n' + e);
 				}
 			}
 			if(info.rows !== undefined) {
@@ -2882,7 +2882,7 @@ Scene_Base.prototype.initCustomWindowPositions = function() {
 					try {
 						return eval(info.rows);
 					} catch(e) {
-						console.log(errorText + ' rows input.\n' + e);
+						// console.log(errorText + ' rows input.\n' + e);
 						return errorCatch;
 					}
 				};
@@ -2893,7 +2893,7 @@ Scene_Base.prototype.initCustomWindowPositions = function() {
 					try {
 						return eval(info.cols);
 					} catch(e) {
-						console.log(errorText + ' cols input.\n' + e);
+						// console.log(errorText + ' cols input.\n' + e);
 						return errorCatch;
 					}
 				};
@@ -2904,7 +2904,7 @@ Scene_Base.prototype.initCustomWindowPositions = function() {
 					try {
 						return eval(info.lineHeight);
 					} catch(e) {
-						console.log(errorText + ' line height input.\n' + e);
+						// console.log(errorText + ' line height input.\n' + e);
 						return errorCatch;
 					}
 				};
@@ -2922,7 +2922,7 @@ Scene_Base.prototype.initCustomWindowPositions = function() {
 				try {
 					win.refresh();
 				} catch(e) {
-					console.log(e);
+					// console.log(e);
 				}
 			}
 			if(win._refreshAllParts) win._refreshAllParts();
