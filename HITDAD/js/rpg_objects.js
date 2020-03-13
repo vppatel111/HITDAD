@@ -5014,13 +5014,7 @@ Game_Party.prototype.gainItem = function(item, amount, includeEquip) {
         if (amount > 0 && !$gameSwitches.value(12)) {
 
             //play sound item get
-            //dev note: needs to be imported to SPF Audio
-            AudioManager.playSe({
-                name: "item-get",
-                volume: 55,
-                pitch: 100,
-                pan: 0
-            });
+            AudioManager.playSe(SE_GAINITEM);
         }
         $gameMap.requestRefresh();
     }
