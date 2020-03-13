@@ -2956,6 +2956,28 @@ function Game_Bullet() {
     }
   };
 
+  Game_Event.prototype.getLand = function(y) {
+    this._realY = y;
+    this._vy = 0;
+
+    if (this._isFalling) {
+      this._isFalling = false;
+      if (!$gameSwitches.value(12) && this._canPickup) {
+        switch(this._boxType) {
+          case 1:
+            AudioManager.playSe(SE_BOXLAND);
+            break;
+          case 2:
+            AudioManager.playSe(SE_BARRELLAND);
+            break;
+        }
+
+
+      }
+    }
+  }
+
+
   Game_Event.prototype.resetPosition = function() {
     this.setPosition(this._startX, this._startY - 2);
   }

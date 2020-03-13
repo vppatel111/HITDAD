@@ -179,16 +179,8 @@
 
       SPF_StunEnemy(enemy, SPF_ENEMYSTATE.JOKESTUNNED, STUN_DURATION);
 
-      //play enemy laughing
-      //dev note: needs to be imported to SPFAudio
-      AudioManager.playSe({
-        name: "guards-laugh-v2",
-        volume: 60,
-        pitch: 100,
-        pan: 0
-      });
-
     });
+    AudioManager.playSe(SE_DADJOKE);
     let item = SPF_FindItemById(ITEM_ID);
     $gameParty.loseItem(item, 1);
   }

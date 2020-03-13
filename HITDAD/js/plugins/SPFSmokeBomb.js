@@ -219,14 +219,7 @@ function SPF_ProjectileBomb() {
       if (distanceToExplosion < EXPLOSION_RADIUS_TILES) {
         SPF_StunEnemy(enemy, SPF_ENEMYSTATE.DIAPERSTUNNED, STUN_DURATION);
 
-        //play puking sound of guard who was hit by diaper
-        //dev note: needs to be imported to SPFAudio
-        AudioManager.playSe({
-          name: "guard-puke",
-          volume: 50,
-          pitch: 100,
-          pan: 0
-        });
+        AudioManager.playSe(SE_DIAPERGUARDHIT);
       }
 
     });
