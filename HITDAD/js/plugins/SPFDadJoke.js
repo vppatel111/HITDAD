@@ -3,9 +3,6 @@
 // v1.0
 //
 // TODO:
-// - Change "explosion" effect?
-// - ALMOST WORKS, increase the width, might need to specify a width
-// per object to print each joke correctly.
 // - ALSO increase the time to cast dad joke to be able to read joke.
 //=============================================================================
 
@@ -81,6 +78,9 @@
 
   var chargeAnimation;
   var jokeAnimation;
+
+  var numberofStunnedEnemies = 0;
+  var stunnedEnemyEmitters = []; // Keeps IDs for the stunned enemies.
 
   function getDadJoke() {
       var joke = DAD_JOKES[dadJokeIndex];
@@ -170,6 +170,8 @@
 
   function executeDadJoke() {
     $gameScreen.startShake(3, 5, 120);
+
+    var enemyId = 0;
     SPF_Enemies.forEach(function(enemy) {
       if (enemy._npcType === SPF_NPCS.DEAF_GUARD ||
           SPF_IsEnemyPacified(enemy)) {
@@ -177,10 +179,25 @@
         return;
       }
 
+      DisplayParticles(enemy, enemyId);
+      enemyId++;
       SPF_StunEnemy(enemy, SPF_ENEMYSTATE.JOKESTUNNED, STUN_DURATION);
     });
+
     let item = SPF_FindItemById(ITEM_ID);
     $gameParty.loseItem(item, 1);
+  }
+
+  function DisplayParticles(enemy, enemyId) {
+    console.log(enemy, SPF_MapXToScreenX(enemy._realX),
+                       SPF_MapYToScreenY(enemy._realY));
+    $gameMap.createPEmitter("enemy"+enemyId, "HA!", "laugh_emitter", enemy.eventId);
+
+    // 1 and linear are from the game.
+    $gameMap.movePEmitterPos("enemy1",
+    [SPF_MapXToScreenX(enemy._realX),
+     SPF_MapYToScreenY(enemy._realY),
+      1, 'linear']);
   }
 
   function stunEnemiesInRadius() {
@@ -225,7 +242,7 @@
 
       if (enemy._npcType === SPF_NPCS.DEAF_GUARD ||
           SPF_IsEnemyPacified(enemy)) {
-            
+
         return;
       }
 
