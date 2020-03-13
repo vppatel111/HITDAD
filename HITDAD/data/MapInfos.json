@@ -11,7 +11,7 @@ null,
 {"id":9,"expanded":false,"name":"8. Ladders Level","order":9,"parentId":0,"scrollX":816,"scrollY":640},
 {"id":10,"expanded":false,"name":"11. Final Level","order":13,"parentId":0,"scrollX":2457,"scrollY":1444.5},
 {"id":11,"expanded":false,"name":"4. Bottle Level","order":10,"parentId":0,"scrollX":2457,"scrollY":1444.5},
-{"id":12,"expanded":false,"name":"5. Elevator Level","order":11,"parentId":0,"scrollX":816,"scrollY":640},
+{"id":12,"expanded":false,"name":"5. Elevator Level","order":11,"parentId":0,"scrollX":2457,"scrollY":1444.5},
 {"id":13,"expanded":false,"name":"6. Dad Joke Level","order":12,"parentId":0,"scrollX":832,"scrollY":640},
 {"id":14,"expanded":false,"name":"9. Lava Level","order":14,"parentId":0,"scrollX":2457,"scrollY":1444.5},
 {"id":15,"expanded":false,"name":"Puzzle 2","order":15,"parentId":0,"scrollX":2457,"scrollY":1383}
