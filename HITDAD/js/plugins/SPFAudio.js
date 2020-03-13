@@ -137,6 +137,17 @@
  * @desc: {"volume":25, "pitch":105, "pan":0}
  * @default {"volume":25, "pitch":105, "pan":0}
  *
+ * @param GainHealth
+ * @desc Sound effect when a barrel lands
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param GainHealthParam
+ * @type string
+ * @desc: {"volume":25, "pitch":105, "pan":0}
+ * @default {"volume":25, "pitch":105, "pan":0}
+ *
  * @param
  * @param ***WEAPON SETTINGS***
  * @default =================================
@@ -315,6 +326,9 @@ SE_BARRELLAND.name = parameters['BarrelLand'] || '';
 var SE_GAINITEM = JSON.parse(parameters['GainItemParam'] || '{}');
 SE_GAINITEM.name = parameters['GainItem'] || '';
 
+var SE_GAINHEALTH = JSON.parse(parameters['GainHealthParam'] || '{}');
+SE_GAINHEALTH.name = parameters['GainHealth'] || '';
+
 /** Weapon Sound Effects **/
 
 var SE_MILKBOTTLE = JSON.parse(parameters['MilkBottleParam'] || '{}');
@@ -384,6 +398,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
                 break;
             case "Monkey":
                 AudioManager.playSe(SE_MONKEY);
+                break;
+            case "HealthPickup":
+                AudioManager.playSe(SE_GAINHEALTH);
                 break;
             default:
                 console.log("Invalid Audio Plugin Call:", args[0], "does not exist");
