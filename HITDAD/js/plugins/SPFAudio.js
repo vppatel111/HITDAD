@@ -126,6 +126,17 @@
  * @desc: {"volume":25, "pitch":105, "pan":0}
  * @default {"volume":25, "pitch":105, "pan":0}
  *
+ * @param GainItem
+ * @desc Sound effect when a barrel lands
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param GainItemParam
+ * @type string
+ * @desc: {"volume":25, "pitch":105, "pan":0}
+ * @default {"volume":25, "pitch":105, "pan":0}
+ *
  * @param
  * @param ***WEAPON SETTINGS***
  * @default =================================
@@ -300,6 +311,9 @@ SE_BOXLAND.name = parameters['BoxLand'] || '';
 
 var SE_BARRELLAND = JSON.parse(parameters['BarrelLandParam'] || '{}');
 SE_BARRELLAND.name = parameters['BarrelLand'] || '';
+
+var SE_GAINITEM = JSON.parse(parameters['GainItemParam'] || '{}');
+SE_GAINITEM.name = parameters['GainItem'] || '';
 
 /** Weapon Sound Effects **/
 
