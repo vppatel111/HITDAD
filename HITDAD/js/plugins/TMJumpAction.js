@@ -2945,7 +2945,7 @@ function Game_Bullet() {
       this._movingLeft = true;
       this._state = 0;
       this._resetting = false;
-      if (this._npcType) console.log("Start Positions", this._startX, this._startY);
+      // if (this._npcType) console.log("Start Positions", this._startX, this._startY);
       if (this._repopTimer > 0) {
         this._repopCount = this._repopTimer;
       }

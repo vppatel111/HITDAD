@@ -368,7 +368,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
     aliasPluginCommand.call(this, command, args);
 
     if (command === 'Audio') {
-        console.log("Audio Plugin Called");
+        // console.log("Audio Plugin Called");
         switch(args[0]) {
             case "KidHey":
                 AudioManager.playSe(SE_KIDHEY);
