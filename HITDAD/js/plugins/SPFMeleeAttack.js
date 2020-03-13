@@ -122,8 +122,11 @@
 
     bottleAnimation.show();
 
-    if (!enemyHit) return;
-
+    if (!enemyHit){
+      //if missed play swing sound
+      AudioManager.playSe(SE_MILKBOTTLEMISS);
+      return;
+    }
     if (!SPF_isEmpty(item) && SPF_IsItemSelected(item)) {
 
       $gameParty.loseItem(item, 1);
