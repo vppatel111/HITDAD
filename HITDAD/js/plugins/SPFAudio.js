@@ -93,6 +93,50 @@
  * @desc: {"volume":25, "pitch":105, "pan":0}
  * @default {"volume":25, "pitch":105, "pan":0}
  *
+ * @param BoxLand
+ * @desc Sound effect when a box lands
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param BoxLandParam
+ * @type string
+ * @desc: {"volume":25, "pitch":105, "pan":0}
+ * @default {"volume":25, "pitch":105, "pan":0}
+ *
+ * @param PickupBarrel
+ * @desc Sound effect when HitDad picks up a barrel
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param PickupBarrelParam
+ * @type string
+ * @desc: {"volume":25, "pitch":105, "pan":0}
+ * @default {"volume":25, "pitch":105, "pan":0}
+ *
+ * @param BarrelLand
+ * @desc Sound effect when a barrel lands
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param BarrelLandParam
+ * @type string
+ * @desc: {"volume":25, "pitch":105, "pan":0}
+ * @default {"volume":25, "pitch":105, "pan":0}
+ *
+ * @param GainItem
+ * @desc Sound effect when a barrel lands
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param GainItemParam
+ * @type string
+ * @desc: {"volume":25, "pitch":105, "pan":0}
+ * @default {"volume":25, "pitch":105, "pan":0}
+ *
  * @param
  * @param ***WEAPON SETTINGS***
  * @default =================================
@@ -140,6 +184,15 @@
  * @type file
  *
  * @param ThrowDiaperImpactParam
+ * @desc: {"volume":50, "pitch"70, "pan":0}
+ * @default {"volume":50, "pitch":70, "pan":0}
+ *
+ * @param DiaperGuardHit
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param DiaperGuardHitParam
  * @desc: {"volume":50, "pitch"70, "pan":0}
  * @default {"volume":50, "pitch":70, "pan":0}
  *
@@ -250,6 +303,17 @@ SE_THROWBOX.name = parameters['ThrowBox'] || '';
 var SE_PICKUPBOX = JSON.parse(parameters['PickupBoxParam'] || '{}');
 SE_PICKUPBOX.name = parameters['PickupBox'] || '';
 
+var SE_PICKUPBARREL = JSON.parse(parameters['PickupBarrelParam'] || '{}');
+SE_PICKUPBARREL.name = parameters['PickupBarrel'] || '';
+
+var SE_BOXLAND = JSON.parse(parameters['BoxLandParam'] || '{}');
+SE_BOXLAND.name = parameters['BoxLand'] || '';
+
+var SE_BARRELLAND = JSON.parse(parameters['BarrelLandParam'] || '{}');
+SE_BARRELLAND.name = parameters['BarrelLand'] || '';
+
+var SE_GAINITEM = JSON.parse(parameters['GainItemParam'] || '{}');
+SE_GAINITEM.name = parameters['GainItem'] || '';
 
 /** Weapon Sound Effects **/
 
@@ -264,6 +328,9 @@ SE_DIAPERTHROW.name = parameters['ThrowDiaper'] || '';
 
 var SE_DIAPERTHROWIMPACT = JSON.parse(parameters['ThrowDiaperParam'] || '{}');
 SE_DIAPERTHROWIMPACT.name = parameters['ThrowDiaperImpact'] || '';
+
+var SE_DIAPERGUARDHIT = JSON.parse(parameters['DiaperGuardHitParam'] || '{}');
+SE_DIAPERGUARDHIT.name = parameters['DiaperGuardHit'] || '';
 
 var SE_DADJOKE = JSON.parse(parameters['DadJokeParam'] || '{}');
 SE_DADJOKE.name = parameters['DadJoke'] || '';
