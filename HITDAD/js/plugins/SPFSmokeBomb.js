@@ -204,7 +204,16 @@ function SPF_ProjectileBomb() {
 
     });
 
-    explosion.show();
+    // explosion.show();
+    $gameMap.createPEmitter("1", "diaperbombparticle", "diaperexplosion");
+
+    $gameMap.movePEmitterPos("1",
+        [explosion.x, explosion.y,
+          1, 'linear']);
+    // $gameMap.movePEmitterPos("1",
+    //     [this.screenX(), this.screenY(),
+    //       1, 'linear']);
+
 
     SPF_Enemies.forEach(function(enemy) {
 
@@ -264,5 +273,17 @@ function SPF_ProjectileBomb() {
       this.x = this._bomb.screenX();
       this.y = this._bomb.screenY();
   };
+
+
+  function DisplayParticles(xPos, yPos) {
+    // console.log(enemy, SPF_MapXToScreenX(enemy._realX),
+    //     SPF_MapYToScreenY(enemy._realY));
+    $gameMap.createPEmitter("1", "diaperbombparticle", "diaperexplosion");
+
+    // 1 and linear are from the game.
+    $gameMap.movePEmitterPos("1",
+        [xPos, yPos,
+          1, 'linear']);
+  }
 
 })();
