@@ -2673,8 +2673,8 @@ function Game_Bullet() {
 
         //[AUDIO] play walking steps
         if(!this._isFalling && !this._ladder){
-          AudioManager.playSe(SE_WALKSTEP);
-
+          // AudioManager.playSe(SE_WALKSTEP);
+          playFootstepSound();
         //[AUDIO] play ladder steps
         } else if (!this._isFalling && this._ladder){
           AudioManager.playSe(SE_LADDERSTEP);
