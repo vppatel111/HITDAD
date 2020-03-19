@@ -191,6 +191,18 @@ function SPF_ProjectileBomb() {
     explosion.spawnX = this._x;
     explosion.spawnY = this._y;
 
+    // $gameMap.createPEmitter("1", "diaperbombparticle", "diaperexplosion");
+    $gameMap.createPEmitter("1", "fart1", "fart");
+    explosion.x = SPF_MapXToScreenX(this.spawnX)- EXPLOSION_RADIUS;
+    explosion.y = SPF_MapYToScreenY(this.spawnY) - EXPLOSION_RADIUS;
+
+    // $gameMap.setPEmitterAsLocal("1", false);
+    // $gameMap.setPEmitterStaticToPlayer("1", false);
+
+
+
+    var object = this;
+
     // Make the smoke bomb slowly disperse
     explosion.setUpdate(function() {
 
@@ -201,15 +213,16 @@ function SPF_ProjectileBomb() {
       // This ensures the explosion does not move when the screen moves.
       explosion.x = SPF_MapXToScreenX(this.spawnX) - EXPLOSION_RADIUS;
       explosion.y = SPF_MapYToScreenY(this.spawnY) - EXPLOSION_RADIUS;
+      $gameMap.setPEmitterPos("1", object.screenX(), object.screenY());
 
     });
 
-    // explosion.show();
-    $gameMap.createPEmitter("1", "diaperbombparticle", "diaperexplosion");
-
-    $gameMap.movePEmitterPos("1",
-        [explosion.x, explosion.y,
-          1, 'linear']);
+    explosion.show();
+    // $gameMap.createPEmitter("1", "diaperbombparticle", "diaperexplosion");
+    //
+    // $gameMap.movePEmitterPos("1",
+    //     [explosion.x, explosion.y,
+    //       1, 'linear']);
     // $gameMap.movePEmitterPos("1",
     //     [this.screenX(), this.screenY(),
     //       1, 'linear']);
