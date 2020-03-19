@@ -8,6 +8,11 @@
     src: url("AckiPreschool.ttf");
 }
 
+@font-face {
+    font-family: Kindergarden;
+    src: url("Kindergarden.ttf");
+}
+
 .IIV::-webkit-media-controls-play-button,
 video::-webkit-media-controls-start-playback-button {
     opacity: 0;
