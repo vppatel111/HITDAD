@@ -14,6 +14,7 @@
  * item from the hotbar and presses the right mouse button, the gamePlayer will
  * use an item with "itemID" and shoot a projectile which when it hits the
  * ground will "explode" and stun all enemies within the radius.
+ * Each level MUST contain event with priority: above player and not tags <particle_effect><gravity:0>
  *
  * @param itemID
  * @type number
@@ -168,41 +169,18 @@ function SPF_ProjectileBomb() {
 
   SPF_ProjectileBomb.prototype.explode = function () {
 
-    var explosion = new SPF_Sprite();
-    var bitmap = new Bitmap(EXPLOSION_RADIUS * 2,
-                            EXPLOSION_RADIUS * 2);
+    let explosion = this;
 
-    bitmap.drawExplosion(EXPLOSION_RADIUS,
-                        EXPLOSION_RADIUS,
-                        EXPLOSION_RADIUS, 'white');
+    SPF_ParticleEffect.locate(this._x, this._y);
+    SPF_ParticleEffect.effectsTimer = new SPF_Timer();
+    SPF_ParticleEffect.effectsTimer.start(10,
+        function() {
+      SPF_ParticleEffect.locate(0,0);
+      $gameMap.pausePEmitter("1");
+        });
+    $gameMap.createPEmitter("1", "diaper_explosion", "diaper_explosion", SPF_ParticleEffect.eventId());
 
-    explosion.bitmap = bitmap;
-
-    explosion.visible = true;
-    explosion.opacity = 255;
-
-    // Draw explosion slightly higher then where it landed.
-    explosion.x = this.screenX() - EXPLOSION_RADIUS;
-    explosion.y = this.screenY() - EXPLOSION_RADIUS;
-
-    explosion.spawnX = this._x;
-    explosion.spawnY = this._y;
-
-    // Make the smoke bomb slowly disperse
-    explosion.setUpdate(function() {
-
-      if (explosion.opacity > 0) {
-        explosion.opacity -= 1;
-      }
-
-      // This ensures the explosion does not move when the screen moves.
-      explosion.x = SPF_MapXToScreenX(this.spawnX) - EXPLOSION_RADIUS;
-      explosion.y = SPF_MapYToScreenY(this.spawnY) - EXPLOSION_RADIUS;
-
-    });
-
-    explosion.show();
-
+    // Stun all vulnerable enemies in range
     SPF_Enemies.forEach(function(enemy) {
 
       if (enemy._npcType === SPF_NPCS.MASKED_GUARD ||
@@ -210,8 +188,8 @@ function SPF_ProjectileBomb() {
         return;
       }
 
-      var distanceToExplosion = SPF_DistanceBetweenTwoPoints(enemy.x, enemy.y,
-                                           explosion.spawnX, explosion.spawnY);
+      let distanceToExplosion = SPF_DistanceBetweenTwoPoints(enemy.x, enemy.y,
+                                           explosion._x, explosion._y);
 
       if (distanceToExplosion < EXPLOSION_RADIUS_TILES) {
         SPF_StunEnemy(enemy, SPF_ENEMYSTATE.DIAPERSTUNNED, STUN_DURATION);
