@@ -386,6 +386,7 @@ SE_KIDSURPRISED.name = parameters['KidSurprised'] || '';
 var SE_MONKEY = JSON.parse(parameters['MonkeyParam'] || '{}');
 SE_MONKEY.name = parameters['Monkey'] || '';
 
+// To play different footstep sound on last level
 function playFootstepSound() {
     if ($gameMap.mapId() !== 10) { //Not last map
         AudioManager.playSe(SE_WALKSTEP);
