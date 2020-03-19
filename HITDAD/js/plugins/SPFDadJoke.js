@@ -63,19 +63,24 @@
   var CHARACTER_WIDTH = parseInt(parameters['characterWidth']);
   var TEXT_HEIGHT = parseInt(parameters['textHeight']);
 
+  // Jokes can only be 2 phrases.
   var DAD_JOKES = [
-                    {
-                      "charge": 0,
-                      "text": "Just been fired from a job as an interrogator..."
-                    },
-                    {
-                      "charge": 50,
-                      "text": "I suppose I should have asked why..."
-                    }
+                    ["There was a tap on my door this morning...",
+                     "My plumber has a strange sense of humour..."],
+                    ["Found out my mate Jack can communicate with vegetables...",
+                     "Apparently Jack and the beans talk."],
+                    ["Just been fired from a job as an interrogator...",
+                     "I suppose I should have asked why..."],
+                    ["Did you know today is ‘National Hindsight Day’? ",
+                     "Or really, it should have been..."],
+                    ["I just got attacked by a gang of mime artists...",
+                     "They did unspeakable things to me..."],
                   ];
 
-  var dadJokeIndex = 0; // Keep track of which jokes have already been told.
-  var currentJokeIndex = 0;
+  var FIRST_HALF = 0;
+  var SECOND_HALF = 1;
+
+  var currentJokeIndex = 0; // Keep track of which jokes have already been told.
 
   var attackCharge = 0;
 
@@ -94,9 +99,9 @@
   }
 
   // Returns # of characters * 10px width.
-  function getDadJokeTextLength(currentJokeIndex) {
-    var joke = DAD_JOKES[currentJokeIndex];
-    return joke.text.length * CHARACTER_WIDTH;
+  function getDadJokeTextLength(currentJokeIndex, partIndex) {
+    var joke = DAD_JOKES[currentJokeIndex][partIndex];
+    return joke.length * CHARACTER_WIDTH;
   }
 
   document.addEventListener("mouseup", function (event) {
@@ -113,6 +118,10 @@
   });
 
   Game_Player.prototype.ChargeDadJoke = function() {
+
+    if (chargeAnimation) { chargeAnimation.remove(); }
+    if (jokeAnimation) { jokeAnimation.remove(); }
+
     chargeAnimation = new SPF_Sprite();
     jokeAnimation = new SPF_Sprite();
 
@@ -120,21 +129,18 @@
 
     // 50 * 2 is the max lenth of the progress bar => attackCharge @ full * 2
     bitmap.resetProgressBar(25, 25, CHARGE_TIME*2);
-    currentJokeIndex = 0;
 
-    var jokeLength = getDadJokeTextLength(currentJokeIndex);
+    var jokeLength = getDadJokeTextLength(currentJokeIndex, FIRST_HALF);
 
     // new Bitmap(width, height);
     var jokeBitmap = new Bitmap(jokeLength, 200);
     jokeBitmap.clearRect(0, 0, jokeLength, TEXT_HEIGHT);
-    jokeBitmap.drawText(DAD_JOKES[currentJokeIndex].text, 0, 20,
+    jokeBitmap.drawText(DAD_JOKES[currentJokeIndex][FIRST_HALF], 0, 20,
                         jokeLength, 20, "center");
     jokeAnimation.bitmap = jokeBitmap;
-    jokeAnimation.x = 0;
+    jokeAnimation.x = offsetX(jokeLength);
     jokeAnimation.y = 525;
     jokeAnimation.show();
-
-    currentJokeIndex += 1;
 
     chargeAnimation.bitmap = bitmap;
     chargeAnimation.x = 345;
@@ -150,22 +156,38 @@
         executeDadJoke();
         attackCharge = 0;
         chargeAnimation.remove();
-        jokeAnimation.remove();
-      }
+        chargeAnimation = null;
 
-      // Display the next part of the dad joke.
-      if (attackCharge >= DAD_JOKES[currentJokeIndex].charge) {
+        // Display second half of the joke.
         jokeBitmap.clearRect(0, 0, jokeLength, TEXT_HEIGHT);
-        jokeBitmap.drawText(DAD_JOKES[currentJokeIndex].text, 0, 20,
+
+        // New joke length for second half.
+        jokeLength = getDadJokeTextLength(currentJokeIndex, SECOND_HALF);
+        
+        jokeAnimation.x = offsetX(jokeLength);
+        jokeBitmap.drawText(DAD_JOKES[currentJokeIndex][SECOND_HALF], 0, 20,
                             jokeLength, 20, "center");
-        // TODO: Implement longer than 2 sentence jokes.
-        // currentJokeIndex += 1;
+        jokeAnimation.fadeOut();
+
+        updateJokeIndex();
       }
 
     });
 
     chargeAnimation.show();
 
+  }
+
+  function offsetX(jokeLength) {
+    var LENGTH_OF_SCREEN = 970;
+    return Math.floor((LENGTH_OF_SCREEN - jokeLength) / 2);
+  }
+
+  function updateJokeIndex() {
+      currentJokeIndex += 1;
+      if (currentJokeIndex >= DAD_JOKES.length) {
+        currentJokeIndex = 0;
+      }
   }
 
   function executeDadJoke() {

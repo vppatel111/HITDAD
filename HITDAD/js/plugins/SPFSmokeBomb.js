@@ -98,9 +98,6 @@ function SPF_ProjectileBomb() {
       $gamePlayer._carryingDiaperBomb = null;
     }
 
-
-
-
   }
 
   Game_Player.prototype.isCarryingDiaperBomb = function() {

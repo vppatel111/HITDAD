@@ -322,14 +322,10 @@ function SPF_FindEnemyHaveEmitter(enemy) {
 // Stun duration is in units of frames.
 function SPF_StunEnemy(enemy, stunType, stunDuration) {
   var stunTimerAnimation = new SPF_Sprite();
-  stunTimerAnimation.bitmap = new Bitmap(200, 200);
-
-  // Draw a full progress bar.
-  stunTimerAnimation.bitmap.resetProgressBar(25, 25, 100);
-  stunTimerAnimation.bitmap.drawProgressBar(25, 25, 100, 125);
+  stunTimerAnimation.bitmap = ImageManager.loadSystem("3");
 
   // Position just above enemy head.
-  stunTimerAnimation.x = SPF_MapXToScreenX(enemy._x) - 50;
+  stunTimerAnimation.x = SPF_MapXToScreenX(enemy._x);
   stunTimerAnimation.y = SPF_MapYToScreenY(enemy._y) - 100;
 
   if (SPF_IsEnemyStunned(enemy) && enemy.stunTimer) {
@@ -356,11 +352,11 @@ function SPF_StunEnemy(enemy, stunType, stunDuration) {
 
       },
       function() { // onTick
-        stunTimerAnimation.bitmap.resetProgressBar(25, 25, 100);
-        stunTimerAnimation.bitmap.drawProgressBar(25, 25, this.getAsProgress(), 125);
 
-        stunTimerAnimation.x = SPF_MapXToScreenX(enemy._x) - 50;
+        stunTimerAnimation.x = SPF_MapXToScreenX(enemy._x);
         stunTimerAnimation.y = SPF_MapYToScreenY(enemy._y) - 100;
+
+        this.updateState(stunTimerAnimation);
 
         // Fix emitter to enemy on screen.
         var enemyEmitter = SPF_FindEnemyHaveEmitter(enemy);
@@ -736,6 +732,11 @@ function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance=
     SceneManager._scene.removeChild(this);
   }
 
+  SPF_Sprite.prototype.fadeOut = function(speed) {
+    this._isFadingOut = true;
+    this._fadingOutSpeed = speed || 1;
+  }
+
   SPF_Sprite.prototype.update = function () {
       Sprite.prototype.update.call(this);
 
@@ -743,16 +744,11 @@ function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance=
         this._update();
       }
 
-  };
+      if (this._isFadingOut) {
+        this.opacity -= this._fadingOutSpeed;
+      }
 
-  // SPF_Message.prototype = Object.create(Window_Message.prototype);
-  // SPF_Message.prototype.constructor = SPF_Message;
-  //
-  // SPF_Message.prototype.initialize = function() {
-  //     Window_Message.prototype.initialize.call(this);
-  // }
-  //
-  // SPF_Message.prototype.close
+  };
 
   SPF_Timer.prototype = Object.create(Game_Timer.prototype);
   SPF_Timer.prototype.constructor = SPF_Timer;
@@ -760,6 +756,7 @@ function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance=
       Game_Timer.prototype.initialize.call(this);
 
       this._initialCount = 0;
+      this._timerState = 3; // Used to keep track of current counter bitmap being displayed.
 
       //HACK: Piggyback off of sprite to update our timer.
       //TODO: Allow the user to pass in a sprite that the timer will be going on
@@ -800,6 +797,45 @@ function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance=
   // progress bar element.
   SPF_Timer.prototype.getAsProgress = function() {
       return Math.round( (this._frames / this._initialCount) * 100);
+  }
+
+  SPF_Timer.prototype.onStateChange = function(animation) {
+    switch (this._timerState) {
+      case 3:
+        animation.bitmap = ImageManager.loadSystem("3");
+        // TODO: Play sound here....
+        break;
+      case 2:
+        animation.bitmap = ImageManager.loadSystem("2");
+        // TODO: Play sound here....
+        break;
+      case 1:
+        animation.bitmap = ImageManager.loadSystem("1");
+        // TODO: Play sound here....
+        break;
+      default:
+        // Nothing.
+    }
+  }
+
+  SPF_Timer.prototype.updateState = function(animation) {
+
+    var progress = this.getAsProgress();
+    var newState = 0;
+
+    if (progress > 60) {
+      newState = 3;
+    } else if (progress > 30) {
+      newState = 2;
+    } else if (progress > 0) {
+      newState = 1;
+    }
+
+    if (newState != this._timerState) {
+      this._timerState = newState;
+      this.onStateChange(animation);
+    }
+
   }
 
 })();
