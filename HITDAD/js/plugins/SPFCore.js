@@ -361,6 +361,16 @@ function SPF_StunEnemy(enemy, stunType, stunDuration) {
 
         stunTimerAnimation.x = SPF_MapXToScreenX(enemy._x) - 50;
         stunTimerAnimation.y = SPF_MapYToScreenY(enemy._y) - 100;
+
+        // Fix emitter to enemy on screen.
+        var enemyEmitter = SPF_FindEnemyHaveEmitter(enemy);
+        if (enemyEmitter) {
+          $gameMap.movePEmitterPos(enemyEmitter,
+          [SPF_MapXToScreenX(enemy._realX),
+           SPF_MapYToScreenY(enemy._realY) - 100,
+            1, 'linear']);
+        }
+
       });
 
       stunTimerAnimation.show();
