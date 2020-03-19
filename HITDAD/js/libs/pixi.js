@@ -1228,7 +1228,7 @@ var compileShader = function (gl, type, src)
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
     {
-        console.log(gl.getShaderInfoLog(shader));
+        // console.log(gl.getShaderInfoLog(shader));
         return null;
     }
 

@@ -180,8 +180,9 @@
 
       DisplayParticles(enemy);
       SPF_StunEnemy(enemy, SPF_ENEMYSTATE.JOKESTUNNED, STUN_DURATION);
-    });
 
+    });
+    AudioManager.playSe(SE_DADJOKE);
     let item = SPF_FindItemById(ITEM_ID);
     $gameParty.loseItem(item, 1);
   }

@@ -5011,6 +5011,11 @@ Game_Party.prototype.gainItem = function(item, amount, includeEquip) {
         if (includeEquip && newNumber < 0) {
             this.discardMembersEquip(item, -newNumber);
         }
+        if (amount > 0 && !$gameSwitches.value(12)) {
+
+            //play sound item get
+            AudioManager.playSe(SE_GAINITEM);
+        }
         $gameMap.requestRefresh();
     }
 };

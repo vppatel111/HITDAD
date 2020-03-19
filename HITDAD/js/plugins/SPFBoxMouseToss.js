@@ -86,7 +86,16 @@
     function executeCarry(object) {
         $gamePlayer._carryingObject = object;
         $gamePlayer._carryingObject.carry();
-        AudioManager.playSe(SE_PICKUPBOX);
+
+        switch(object._boxType) {
+            case 1:
+                AudioManager.playSe(SE_PICKUPBOX);
+                break;
+            case 2:
+                AudioManager.playSe(SE_PICKUPBARREL);
+                break;
+        }
+
         SPF_ChangeSpriteSheet(SPF_SPRITESHEET.CARRYING);
     }
 

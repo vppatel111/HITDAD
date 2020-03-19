@@ -218,6 +218,8 @@ function SPF_ProjectileBomb() {
 
       if (distanceToExplosion < EXPLOSION_RADIUS_TILES) {
         SPF_StunEnemy(enemy, SPF_ENEMYSTATE.DIAPERSTUNNED, STUN_DURATION);
+
+        AudioManager.playSe(SE_DIAPERGUARDHIT);
       }
 
     });
