@@ -504,23 +504,37 @@ function SPF_ChangeEnemyState(enemy, state) {
     }
 }
 
+function SPF_isPlayerOnLadder() {
+  return $gameMap.isLadder($gamePlayer._x, $gamePlayer._y);
+}
 
 /**
- * Do a line trace forward from the player, return first hit event in range or null if none in range
+ * Do a line trace forward from the player, return first hit event in range or
+ * null if none in range.
  *
  * @method SPF_LineTrace
  * @param {Array} events The list of events to check for
- * @param {Number} range The max distance for the line trace from the trace start (in tiles or fraction of tiles)
- * @param {Number} traceStartOffset The offset for the start of the line trace from the player (+ moves start in front of player, - behind)
+ * @param {Number} range The max distance for the line trace from the trace start
+ *                         (in tiles or fraction of tiles)
+ * @param {Number} traceStartOffset The offset for the start of the line trace
+ *                                  from the player (+ moves start in front of player, - behind)
  * @param {Number} verticalStartOffset The offset for the center of the vertical tolerance
  * @param {Number} verticalTolerance The y tolerance for the line trace.
- * @param {CallableFunction} checkFunction Extra function to pass in, if the function returns true for an event, the event is ignored.
+ * @param {CallableFunction} checkFunction Extra function to pass in, if the
+ *                     function returns true for an event, the event is ignored.
  */
-function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance= 2.0, verticalStartOffset = 0, checkFunction = null) {
+function SPF_LineTrace(events, range,
+                       traceStartOffset = 0.0,
+                       verticalTolerance = 2.0,
+                       verticalStartOffset = 0,
+                       checkFunction = null) {
+
     let direction = $gamePlayer.direction();
 
     // Adjusts trace start if an offset is set
-    let xTraceStart = direction === DIRECTION.RIGHT ? $gamePlayer._realX + traceStartOffset : $gamePlayer._realX - traceStartOffset;
+    let xTraceStart = direction === DIRECTION.RIGHT ?
+        $gamePlayer._realX + traceStartOffset :
+        $gamePlayer._realX - traceStartOffset;
 
     let closestEvent;
     let closestEventDistance;
@@ -531,21 +545,28 @@ function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance=
             if (checkFunction(event)) return;
         }
 
-        let distanceToBox =  event._realX - xTraceStart; // Will be positive if box is to right of player
+        // Will be positive if box is to right of player
+        let distanceToBox =  event._realX - xTraceStart;
 
         // Stop execution if direction of object does not match direction of player
-        if (!(distanceToBox > 0 === (direction === DIRECTION.RIGHT))) return;
+        // and player is not on ladder.
+        if (!(distanceToBox > 0 === (direction === DIRECTION.RIGHT)) &&
+            !SPF_isPlayerOnLadder()) return;
 
         let verticalOffset = Math.abs($gamePlayer._realY - event._realY + verticalStartOffset);
 
         let forwardDistanceToBox = Math.abs(distanceToBox);
 
         // Assigns closest event if object is in range of the trace
-        if (forwardDistanceToBox <= range && forwardDistanceToBox >= 0.0 && verticalOffset < verticalTolerance) {
+        if (forwardDistanceToBox <= range &&
+            forwardDistanceToBox >= 0.0 &&
+            verticalOffset < verticalTolerance) {
+
             if (!closestEvent || closestEventDistance > forwardDistanceToBox) {
                 closestEventDistance = forwardDistanceToBox;
                 closestEvent = event;
             }
+
         }
     });
 
