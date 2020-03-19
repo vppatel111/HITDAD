@@ -178,7 +178,9 @@ function SPF_ProjectileBomb() {
       SPF_ParticleEffect.locate(0,0);
       $gameMap.pausePEmitter("1");
         });
-    $gameMap.createPEmitter("1", "diaper_explosion", "diaper_explosion", SPF_ParticleEffect.eventId());
+    // $gameMap.createPEmitter("1", "diaper_explosion", "diaper_explosion", SPF_ParticleEffect.eventId());
+    $gameMap.createPEmitter("1", ["fart1","fart2","fart3"], "fart_emitter2", SPF_ParticleEffect.eventId());
+    $gameMap.setPEmitterZ("1", 9)
 
     // Stun all vulnerable enemies in range
     SPF_Enemies.forEach(function(enemy) {
