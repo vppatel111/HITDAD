@@ -732,6 +732,11 @@ function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance=
     SceneManager._scene.removeChild(this);
   }
 
+  SPF_Sprite.prototype.fadeOut = function(speed) {
+    this._isFadingOut = true;
+    this._fadingOutSpeed = speed || 1;
+  }
+
   SPF_Sprite.prototype.update = function () {
       Sprite.prototype.update.call(this);
 
@@ -739,16 +744,11 @@ function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance=
         this._update();
       }
 
-  };
+      if (this._isFadingOut) {
+        this.opacity -= this._fadingOutSpeed;
+      }
 
-  // SPF_Message.prototype = Object.create(Window_Message.prototype);
-  // SPF_Message.prototype.constructor = SPF_Message;
-  //
-  // SPF_Message.prototype.initialize = function() {
-  //     Window_Message.prototype.initialize.call(this);
-  // }
-  //
-  // SPF_Message.prototype.close
+  };
 
   SPF_Timer.prototype = Object.create(Game_Timer.prototype);
   SPF_Timer.prototype.constructor = SPF_Timer;
