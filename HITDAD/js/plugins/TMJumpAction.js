@@ -2933,6 +2933,7 @@ function Game_Bullet() {
       this._boxReset = +this.loadTagParam('box_reset') || 0;
       this._instantDeath = +this.loadTagParam('death') || 0;
       this._fireRate = +this.loadTagParam('fire_rate') || 0;
+      this._explosionParticleEffect = +this.loadTagParam('particle_effect');
       this._fireCountdown = 0;
       this._startX = +this.loadTagParam('position') || this.x;
       this._startY = this.y;

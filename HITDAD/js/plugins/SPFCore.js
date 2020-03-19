@@ -91,6 +91,7 @@ var SPF_CSI = {
 
 var SPF_Enemies = [];
 var SPF_Boxes = [];
+var SPF_ParticleEffect;
 
 // Defines a rectanglular hitbox for HITDAD units are in tiles.
 // The (x, y) coordinates define the top left corner of hitbox.
@@ -569,6 +570,7 @@ function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance=
             initializeEnemies();
             initializeBoxes();
             initializePlayer();
+            initializeDiaperParticleEffect();
             break;
         case "HideUI":
             showHotbar = false;
@@ -625,6 +627,20 @@ function SPF_LineTrace(events, range, traceStartOffset = 0.0, verticalTolerance=
         });
 
         return pickupableEvents;
+    }
+
+    function initializeDiaperParticleEffect() {
+      let allEvents = $gameMap.events();
+      allEvents.forEach(function(event)
+      {
+          if (event._explosionParticleEffect)
+          {
+              SPF_ParticleEffect = event;
+              $gameMap.pausePEmitter("1");
+              console.log("ParticleEvent Set");
+          }
+      });
+
     }
 
   SPF_Projectile.prototype.initialize = function(directionX) {
