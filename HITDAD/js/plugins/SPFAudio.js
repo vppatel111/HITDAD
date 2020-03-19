@@ -62,6 +62,16 @@
  * @desc: {"volume":60, "pitch"100, "pan":0}
  * @default {"volume":60, "pitch":100, "pan":0}
  *
+ * @param WalkStepHeavy
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param WalkStepHeavyParam
+ * @type string
+ * @desc: {"volume":60, "pitch"100, "pan":0}
+ * @default {"volume":60, "pitch":100, "pan":0}
+ *
  * @param LadderStep
  * @require 1
  * @dir audio/se/
@@ -305,6 +315,9 @@ SE_JUMPLAND.name = parameters['JumpLand'] || '';
 var SE_WALKSTEP = JSON.parse(parameters['WalkStepParam'] || '{}');
 SE_WALKSTEP.name = parameters['WalkStep'] || '';
 
+var SE_WALKSTEPHEAVY = JSON.parse(parameters['WalkStepHeavyParam'] || '{}');
+SE_WALKSTEPHEAVY.name = parameters['WalkStepHeavy'] || '';
+
 var SE_LADDERSTEP = JSON.parse(parameters['LadderStepParam'] || '{}');
 SE_LADDERSTEP.name = parameters['LadderStep'] || '';
 
@@ -373,7 +386,15 @@ SE_KIDSURPRISED.name = parameters['KidSurprised'] || '';
 var SE_MONKEY = JSON.parse(parameters['MonkeyParam'] || '{}');
 SE_MONKEY.name = parameters['Monkey'] || '';
 
+// To play different footstep sound on last level
+function playFootstepSound() {
+    if ($gameMap.mapId() !== 10) { //Not last map
+        AudioManager.playSe(SE_WALKSTEP);
+    } else {
+        AudioManager.playSe(SE_WALKSTEPHEAVY);
+    }
 
+}
 
 /** Plugin commands for event specific sounds **/
 
