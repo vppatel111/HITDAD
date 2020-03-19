@@ -309,6 +309,16 @@ function SPF_EnemyPauseMovement(enemy, pause) {
     if (enemy._movementPauseCountDown > 0) enemy._movementPauseCountDown--;
 }
 
+function SPF_FindEnemyHaveEmitter(enemy) {
+  for (var i = 0; i < SPF_StunnedEnemyEmitters.length; i++) {
+    if (SPF_StunnedEnemyEmitters[i] == "enemy" + enemy._eventId) {
+      return "enemy" + enemy._eventId;
+    }
+  }
+
+  return false;
+}
+
 // Stun duration is in units of frames.
 function SPF_StunEnemy(enemy, stunType, stunDuration) {
   var stunTimerAnimation = new SPF_Sprite();
@@ -332,12 +342,18 @@ function SPF_StunEnemy(enemy, stunType, stunDuration) {
 
   } else {
       SPF_ChangeEnemyState(enemy, stunType);
-    enemy._state = stunType;
-    enemy.stunTimer = new SPF_Timer();
-    enemy.stunTimer.start(stunDuration,
+      enemy._state = stunType;
+      enemy.stunTimer = new SPF_Timer();
+      enemy.stunTimer.start(stunDuration,
       function () { //onExpire
         SPF_UnstunEnemy(enemy);
         stunTimerAnimation.remove();
+
+        var enemyEmitter = SPF_FindEnemyHaveEmitter(enemy);
+        if (enemyEmitter) {
+          $gameMap.deletePEmitter(enemyEmitter);
+        }
+
       },
       function() { // onTick
         stunTimerAnimation.bitmap.resetProgressBar(25, 25, 100);

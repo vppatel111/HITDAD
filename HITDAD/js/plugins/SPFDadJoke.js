@@ -49,6 +49,9 @@
  * @default 50
  *
  */
+
+ var SPF_StunnedEnemyEmitters = []; // Keeps IDs for the stunned enemies.
+
 (function() {
 
   var parameters = PluginManager.parameters('SPFDadJoke');
@@ -78,9 +81,6 @@
 
   var chargeAnimation;
   var jokeAnimation;
-
-  var numberofStunnedEnemies = 0;
-  var stunnedEnemyEmitters = []; // Keeps IDs for the stunned enemies.
 
   function getDadJoke() {
       var joke = DAD_JOKES[dadJokeIndex];
@@ -171,7 +171,6 @@
   function executeDadJoke() {
     $gameScreen.startShake(3, 5, 120);
 
-    var enemyId = 0;
     SPF_Enemies.forEach(function(enemy) {
       if (enemy._npcType === SPF_NPCS.DEAF_GUARD ||
           SPF_IsEnemyPacified(enemy)) {
@@ -179,8 +178,7 @@
         return;
       }
 
-      DisplayParticles(enemy, enemyId);
-      enemyId++;
+      DisplayParticles(enemy);
       SPF_StunEnemy(enemy, SPF_ENEMYSTATE.JOKESTUNNED, STUN_DURATION);
     });
 
@@ -188,79 +186,20 @@
     $gameParty.loseItem(item, 1);
   }
 
-  function DisplayParticles(enemy, enemyId) {
-    console.log(enemy, SPF_MapXToScreenX(enemy._realX),
-                       SPF_MapYToScreenY(enemy._realY));
-    $gameMap.createPEmitter("enemy"+enemyId, "HA!", "laugh_emitter", enemy.eventId);
+  function DisplayParticles(enemy) {
+
+    var emitterId = "enemy" + enemy._eventId;
+    $gameMap.createPEmitter(emitterId, "HA!", "laugh_emitter", enemy.eventId);
+
+    $gameMap.setPEmitterZ(emitterId, 5); // 5 => In front of character.
 
     // 1 and linear are from the game.
-    $gameMap.movePEmitterPos("enemy1",
+    $gameMap.movePEmitterPos(emitterId,
     [SPF_MapXToScreenX(enemy._realX),
-     SPF_MapYToScreenY(enemy._realY),
+     SPF_MapYToScreenY(enemy._realY) - 100,
       1, 'linear']);
-  }
 
-  function stunEnemiesInRadius() {
-
-    // TODO: Any other effect I can use here?
-    var explosion = new SPF_Sprite();
-    var bitmap = new Bitmap(STUN_RADIUS * 2,
-                            STUN_RADIUS * 2);
-
-    bitmap.drawCircle(STUN_RADIUS,
-                      STUN_RADIUS,
-                      STUN_RADIUS, 'grey');
-
-    explosion.bitmap = bitmap;
-
-    explosion.visible = true;
-    explosion.opacity = 255;
-
-    // Draw explosion slightly higher then where it landed.
-    explosion.x = SPF_MapXToScreenX($gamePlayer.x) - STUN_RADIUS;
-    explosion.y = SPF_MapYToScreenY($gamePlayer.y) - STUN_RADIUS;
-
-    explosion.spawnX = $gamePlayer.x;
-    explosion.spawnY = $gamePlayer.y;
-
-    // Make the smoke bomb slowly disperse
-    explosion.setUpdate(function() {
-
-      if (explosion.opacity > 0) {
-        explosion.opacity -= 5;
-      }
-
-      // This ensures the explosion does not move when the screen moves.
-      explosion.x = SPF_MapXToScreenX(this.spawnX) - STUN_RADIUS;
-      explosion.y = SPF_MapYToScreenY(this.spawnY) - STUN_RADIUS;
-
-    });
-
-    explosion.show();
-
-    SPF_Enemies.forEach(function(enemy) {
-
-      if (enemy._npcType === SPF_NPCS.DEAF_GUARD ||
-          SPF_IsEnemyPacified(enemy)) {
-
-        return;
-      }
-
-      var distanceToExplosion = SPF_DistanceBetweenTwoPoints(enemy.x, enemy.y,
-                                           explosion.spawnX, explosion.spawnY);
-
-      if (distanceToExplosion < STUN_RADIUS_TILES) {
-        SPF_StunEnemy(enemy, STUN_DURATION);
-      }
-
-    });
-
-    // Decrement item after bomb is thrown
-    // ASSUMPTION: Item is not empty because we check item before ChargeDadJoke()
-    // therefore it should still be defined.
-    var item = SPF_FindItemById(ITEM_ID);
-    $gameParty.loseItem(item, 1);
-
+    SPF_StunnedEnemyEmitters.push(emitterId);
   }
 
 })();
