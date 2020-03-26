@@ -1589,16 +1589,16 @@ Window_MenuCommand.prototype.makeCommandList = function() {
 Window_MenuCommand.prototype.addMainCommands = function() {
     var enabled = this.areMainCommandsEnabled();
     if (this.needsCommand('item')) {
-        // this.addCommand(TextManager.item, 'item', enabled);
+        this.addCommand(TextManager.item, 'item', enabled);
     }
     if (this.needsCommand('skill')) {
-        // this.addCommand(TextManager.skill, 'skill', enabled);
+        this.addCommand(TextManager.skill, 'skill', enabled);
     }
     if (this.needsCommand('equip')) {
-        // this.addCommand(TextManager.equip, 'equip', enabled);
+        this.addCommand(TextManager.equip, 'equip', enabled);
     }
     if (this.needsCommand('status')) {
-        // this.addCommand(TextManager.status, 'status', enabled);
+        this.addCommand(TextManager.status, 'status', enabled);
     }
 };
 
@@ -1615,7 +1615,7 @@ Window_MenuCommand.prototype.addOriginalCommands = function() {
 Window_MenuCommand.prototype.addOptionsCommand = function() {
     if (this.needsCommand('options')) {
         var enabled = this.isOptionsEnabled();
-        // this.addCommand(TextManager.options, 'options', enabled);
+        this.addCommand(TextManager.options, 'options', enabled);
     }
 };
 
@@ -1805,7 +1805,7 @@ Window_MenuStatus.prototype.setPendingIndex = function(index) {
 // The window for selecting a target actor on the item and skill screens.
 
 function Window_MenuActor() {
-    fthis.initialize.apply(this, arguments);
+    this.initialize.apply(this, arguments);
 }
 
 Window_MenuActor.prototype = Object.create(Window_MenuStatus.prototype);
@@ -5744,8 +5744,8 @@ Window_TitleCommand.prototype.updatePlacement = function() {
 
 Window_TitleCommand.prototype.makeCommandList = function() {
     this.addCommand(TextManager.newGame,   'newGame');
-    this.addCommand(TextManager.continue_, 'continue', this.isContinueEnabled());
-    // this.addCommand(TextManager.options,   'options');
+    // this.addCommand(TextManager.continue_, 'continue', this.isContinueEnabled());
+    this.addCommand(TextManager.options,   'options');
 };
 
 Window_TitleCommand.prototype.isContinueEnabled = function() {
