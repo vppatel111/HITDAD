@@ -3830,7 +3830,7 @@ function Game_Bullet() {
   var _Window_Option_makeCommandList = Window_Options.prototype.makeCommandList;
   Window_Options.prototype.makeCommandList = function() {
     _Window_Option_makeCommandList.call(this);
-    if (padConfigCommand) this.addCommand(padConfigCommand, 'padConfig');
+    // if (padConfigCommand) this.addCommand(padConfigCommand, 'padConfig');
     // 常にダッシュは不要なので削除してしまう。
     for (var i = 0; i < this._list.length; i++) {
       if (this._list[i].symbol === 'alwaysDash') {
@@ -3902,7 +3902,7 @@ function Game_Bullet() {
 
   Window_PadOptions.prototype.makeCommandList = function() {
     for (var i = 1; i <= 12; i++) {
-      this.addCommand('パッドボタン' + i, 'padButton' + i);
+      // this.addCommand('パッドボタン' + i, 'padButton' + i);
     }
   };
 

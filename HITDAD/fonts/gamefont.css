@@ -13,6 +13,11 @@
     src: url("Kindergarden.ttf");
 }
 
+@font-face {
+    font-family: RetroComputer;
+    src: url("RetroComputer.ttf");
+}
+
 .IIV::-webkit-media-controls-play-button,
 video::-webkit-media-controls-start-playback-button {
     opacity: 0;
