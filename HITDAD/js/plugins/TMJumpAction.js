@@ -2204,7 +2204,7 @@ function Game_Bullet() {
     this.jumpByInput();
     // this.dashByInput();
     // this.guardByInput();
-    // this.triggerButtonAction();
+    this.triggerButtonAction();
   };
 
   // 重力の処理

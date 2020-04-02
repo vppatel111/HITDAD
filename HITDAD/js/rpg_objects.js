@@ -7800,6 +7800,7 @@ Game_Player.prototype.triggerAction = function() {
 
 Game_Player.prototype.triggerButtonAction = function() {
     if (Input.isTriggered('ok')) {
+        console.log("Ok Pressed")
         if (this.getOnOffVehicle()) {
             return true;
         }
