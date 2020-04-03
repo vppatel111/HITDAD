@@ -165,6 +165,11 @@ function SPF_OnPhone(event) {
     return ($gameSwitches.value(10) && event.pageY < 150.0 && event.pageY < 150.0) || $gameSwitches.value(11);
 }
 
+function SPF_InGameMenu()
+{
+    return SceneManager._scene._optionsWindow || SceneManager._scene._commandWindow;
+}
+
 function SPF_Projectile() {
   this.initialize.apply(this, arguments);
 }
