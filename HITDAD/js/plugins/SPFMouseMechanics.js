@@ -28,7 +28,7 @@
 
     document.addEventListener("mousedown", function (event) {
 
-        if (!$gameSwitches || !$gamePlayer) {
+        if (!$gameSwitches || !$gamePlayer || SPF_InGameMenu()) {
             return;
         }
 
@@ -65,7 +65,7 @@
 
     document.addEventListener("mousemove", function (event) {
 
-        if (!$gameSwitches || !$gamePlayer) {
+        if (!$gameSwitches || !$gamePlayer || SPF_InGameMenu()) {
             return;
         }
 
@@ -79,7 +79,7 @@
 
     document.addEventListener("mouseup", function (event) {
 
-        if (!$gameSwitches || !$gamePlayer) {
+        if (!$gameSwitches || !$gamePlayer || SPF_InGameMenu()) {
             return;
         }
 
