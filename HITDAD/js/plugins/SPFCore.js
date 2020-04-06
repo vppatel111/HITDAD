@@ -91,6 +91,8 @@ var SPF_CSI = {
 
 var SPF_Enemies = [];
 var SPF_Boxes = [];
+var SPF_Interactables = [];
+var SPF_InteractableIndicator;
 var SPF_ParticleEffect;
 
 // Defines a rectanglular hitbox for HITDAD units are in tiles.
@@ -593,6 +595,7 @@ function SPF_LineTrace(events, range,
             initializeBoxes();
             initializePlayer();
             initializeDiaperParticleEffect();
+            initializeInteractables();
             break;
         case "HideUI":
             showHotbar = false;
@@ -649,6 +652,29 @@ function SPF_LineTrace(events, range,
         });
 
         return pickupableEvents;
+    }
+
+    function initializeInteractables() {
+        let allEvents = $gameMap.events();
+        SPF_Interactables = getInteractableEvents(allEvents);
+    }
+
+    function getInteractableEvents(events) {
+        let interactableEvents = [];
+
+        events.forEach(function(event) {
+
+            if (event._interactableIndicator) {
+                SPF_InteractableIndicator = event;
+                SPF_InteractableIndicator.setOpacity(0);
+            }
+
+            if (event._interactable) {
+                interactableEvents.push(event);
+            }
+        });
+
+        return interactableEvents;
     }
 
     function initializeDiaperParticleEffect() {
