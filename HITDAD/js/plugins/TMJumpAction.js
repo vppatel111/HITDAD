@@ -2167,6 +2167,8 @@ function Game_Bullet() {
 
   Game_Player.prototype.update = function(sceneActive) {
 
+    this.SPF_CheckForInteractables();
+
     if (this.isCarrying()) {
       $gamePlayer.drawTrajectory();
     }
@@ -2929,6 +2931,8 @@ function Game_Bullet() {
       this._npcType = +this.loadTagParam('npc_type');
       this._boxType = +this.loadTagParam('box_type') || 0; // If 0, not a box.
       this._canPickup = +this.loadTagParam('can_pickup') || 0;
+      this._interactable = +this.loadTagParam('interactable') || 0;
+      this._interactableIndicator = +this.loadTagParam('interactable_indicator') || 0;
       this._resets = +this.loadTagParam('resets');
       this._boxReset = +this.loadTagParam('box_reset') || 0;
       this._instantDeath = +this.loadTagParam('death') || 0;
@@ -2944,6 +2948,7 @@ function Game_Bullet() {
       this._shotDelay = +this.loadTagParam('shot_delay') || 2;
       this._shotDelayCountdown = 0;
       this._movingLeft = true;
+      this._showingInteractablePopup = false;
       this._state = 0;
       this._resetting = false;
       // if (this._npcType) console.log("Start Positions", this._startX, this._startY);
