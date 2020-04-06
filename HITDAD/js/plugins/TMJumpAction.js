@@ -2933,6 +2933,7 @@ function Game_Bullet() {
       this._canPickup = +this.loadTagParam('can_pickup') || 0;
       this._interactable = +this.loadTagParam('interactable') || 0;
       this._interactableIndicator = +this.loadTagParam('interactable_indicator') || 0;
+      this._interactableBitmap = 0;
       this._resets = +this.loadTagParam('resets');
       this._boxReset = +this.loadTagParam('box_reset') || 0;
       this._instantDeath = +this.loadTagParam('death') || 0;

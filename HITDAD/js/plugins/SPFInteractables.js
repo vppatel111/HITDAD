@@ -10,8 +10,7 @@
  * @help Plugin to extend TMJumpAction to make popups appear when near interactable event.
  * REQUIRES TMJumpAction plugin and SPFCore plugin.
  *
- * Must tag any interactables with <interactable> as well as make an event with the tag <interactable_indicator>
- * in each level which should have the image set as what should popup over the indicator
+ * Must tag any interactables with <interactable>
  *
  * Plugin Command
  * =================================================================================
@@ -31,30 +30,55 @@
             let xDistance = Math.abs(interactable._realX - $gamePlayer._x);
             let yDistance = Math.abs(interactable._realY - $gamePlayer._y);
 
+            let hintText = "Press F"
+
+            // Create Interactable  on first iteration only
+            if (!interactable._interactableBitmap) {
+                interactable._interactableBitmap = new SPF_Sprite();
+
+                let hintBitmap = new Bitmap(getTextLength(hintText), 48);
+                hintBitmap.drawText(hintText, 0, 20, getTextLength(hintText), 24, "center");
+
+                interactable._interactableBitmap.bitmap = hintBitmap;
+                interactable._interactableBitmap.show();
+                interactable._interactableBitmap.opacity = 0;
+            }
+
+            // Update Bitmap Location
+            interactable._interactableBitmap.x = interactable.screenX() - getTextLength(hintText) / 2;
+            interactable._interactableBitmap.y = interactable.screenY() - 48;
+
+            let isActive = $gameSelfSwitches.value([$gameMap._mapId, interactable.eventId(), 'A']);
+
             // turn show indicator on or off - do only once
-            if (!interactable._showingInteractablePopup && xDistance + yDistance < 3) {
+            if (!interactable._showingInteractablePopup && xDistance + yDistance < 3 && isActive) {
                 interactable._showingInteractablePopup = true;
-                SPF_InteractableIndicator.locate(interactable._realX, interactable._realY - 2);
             } else if (interactable._showingInteractablePopup && xDistance + yDistance > 3) {
                 interactable._showingInteractablePopup = false;
             }
 
             // fade animation
             let fadeRate = 10;
-            if (interactable._showingInteractablePopup && SPF_InteractableIndicator._opacity < 255)
+            if (interactable._showingInteractablePopup && interactable._interactableBitmap.opacity < 255)
             {
-                SPF_InteractableIndicator.setOpacity(SPF_InteractableIndicator._opacity + fadeRate);
-            } else if (!interactable._showingInteractablePopup && SPF_InteractableIndicator._opacity > 0) {
-                SPF_InteractableIndicator.setOpacity(SPF_InteractableIndicator._opacity - fadeRate);
-            } else if (!interactable._showingInteractablePopup && SPF_InteractableIndicator._opacity <= 0) {
-                SPF_InteractableIndicator.setOpacity(0);
-                SPF_InteractableIndicator.locate(0, 0);
+                interactable._interactableBitmap.opacity += fadeRate;
+
+            } else if ((!interactable._showingInteractablePopup) && interactable._interactableBitmap.opacity > 0) {
+
+                interactable._interactableBitmap.opacity -= fadeRate;
+
+            } else if (!interactable._showingInteractablePopup && interactable._interactableBitmap.opacity <= 0) {
+
+                interactable._interactableBitmap.opacity = 0;
             }
 
         });
     };
 
 
-
+    // Returns # of characters * 10px width.
+    function getTextLength(text) {
+        return text.length * 10;
+    }
 
 })();
