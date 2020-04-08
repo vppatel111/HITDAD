@@ -307,6 +307,7 @@ function SPF_IsEnemyPacified(enemy) {
 }
 
 function SPF_IncapacitateEnemy(enemy) {
+    AudioManager.playSe(SE_MILKBOTTLE_KNOCKOUT);
     SPF_ChangeEnemyState(enemy, SPF_ENEMYSTATE.PACIFIED);
 }
 
