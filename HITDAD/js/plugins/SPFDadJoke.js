@@ -205,6 +205,7 @@
 
     });
     AudioManager.playSe(SE_DADJOKE);
+    AudioManager.playSe(SE_COUNTDOWN);
     let item = SPF_FindItemById(ITEM_ID);
     $gameParty.loseItem(item, 1);
   }

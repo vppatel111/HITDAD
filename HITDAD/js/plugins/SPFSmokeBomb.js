@@ -196,6 +196,7 @@ function SPF_ProjectileBomb() {
         SPF_StunEnemy(enemy, SPF_ENEMYSTATE.DIAPERSTUNNED, STUN_DURATION);
 
         AudioManager.playSe(SE_DIAPERGUARDHIT);
+        AudioManager.playSe(SE_COUNTDOWN);
       }
 
     });

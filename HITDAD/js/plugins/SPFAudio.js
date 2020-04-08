@@ -230,6 +230,20 @@
  * @param DadJokeParam
  * @desc: {"volume":50, "pitch"70, "pan":0}
  * @default {"volume":50, "pitch":70, "pan":0}
+ * 
+ * @param
+ * @param *WEAPONS COUNTDOWN*
+ * @default ----------------------------
+ * @param
+ * 
+ * @param Countdown
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param CountdownParam
+ * @desc: {"volume":100, "pitch"100, "pan":0}
+ * @default {"volume":100, "pitch":100, "pan":0}
  *
  * @param
  * @param ***ENEMY SETTINGS***
@@ -281,6 +295,16 @@
  * @desc: {"volume":100, "pitch"100, "pan":0}
  * @default {"volume":100, "pitch":100, "pan":0}
  *
+ * @param KidWow
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param KidWowParam
+ * @type string
+ * @desc: {"volume":100, "pitch"100, "pan":0}
+ * @default {"volume":100, "pitch":100, "pan":0}
+ * 
  * @param KidSurprised
  * @require 1
  * @dir audio/se/
@@ -290,13 +314,83 @@
  * @type string
  * @desc: {"volume":100, "pitch"100, "pan":0}
  * @default {"volume":100, "pitch":100, "pan":0}
+ * 
+ * @param KidLaugh
+ * @require 1
+ * @dir audio/se/
+ * @type file
  *
+ * @param KidLaughParam
+ * @type string
+ * @desc: {"volume":100, "pitch"100, "pan":0}
+ * @default {"volume":100, "pitch":100, "pan":0}
+ * 
+ * @param KidSad
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param KidSadParam
+ * @type string
+ * @desc: {"volume":100, "pitch"100, "pan":0}
+ * @default {"volume":100, "pitch":100, "pan":0}
+ * 
+ * @param KidGo
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param KidGoParam
+ * @type string
+ * @desc: {"volume":100, "pitch"100, "pan":0}
+ * @default {"volume":100, "pitch":100, "pan":0}
+ *
+ * @param KidAhh
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param KidAhhParam
+ * @type string
+ * @desc: {"volume":100, "pitch"100, "pan":0}
+ * @default {"volume":100, "pitch":100, "pan":0}
+ * 
  * @param Monkey
  * @require 1
  * @dir audio/se/
  * @type file
  *
  * @param MonkeyParam
+ * @type string
+ * @desc: {"volume":100, "pitch"100, "pan":0}
+ * @default {"volume":100, "pitch":100, "pan":0}
+ * 
+ * @param DadHuh
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param DadHuhParam
+ * @type string
+ * @desc: {"volume":100, "pitch"100, "pan":0}
+ * @default {"volume":100, "pitch":100, "pan":0}
+ * 
+ * @param DadOhh
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param DadOhhParam
+ * @type string
+ * @desc: {"volume":100, "pitch"100, "pan":0}
+ * @default {"volume":100, "pitch":100, "pan":0}
+ * 
+ * @param DadHmm
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param DadHmmParam
  * @type string
  * @desc: {"volume":100, "pitch"100, "pan":0}
  * @default {"volume":100, "pitch":100, "pan":0}
@@ -362,12 +456,13 @@ SE_DIAPERGUARDHIT.name = parameters['DiaperGuardHit'] || '';
 var SE_DADJOKE = JSON.parse(parameters['DadJokeParam'] || '{}');
 SE_DADJOKE.name = parameters['DadJoke'] || '';
 
+var SE_COUNTDOWN = JSON.parse(parameters['CountdownParam'] || '{}');
+SE_COUNTDOWN.name = parameters['Countdown'] || '';
 
 /** Enemy Sound Effects **/
 
 var SE_SHOOT = JSON.parse(parameters['ShootParam'] || '{}');
 SE_SHOOT.name = parameters['Shoot'] || '';
-
 
 /** Voice Sound Effects **/
 
@@ -383,8 +478,32 @@ SE_KIDHUH.name = parameters['KidHuh'] || '';
 var SE_KIDSURPRISED = JSON.parse(parameters['KidSurprisedParam'] || '{}');
 SE_KIDSURPRISED.name = parameters['KidSurprised'] || '';
 
+var SE_KIDWOW = JSON.parse(parameters['KidWowParam'] || '{}');
+SE_KIDWOW.name = parameters['KidWow'] || '';
+
+var SE_KIDLAUGH = JSON.parse(parameters['KidLaughParam'] || '{}');
+SE_KIDLAUGH.name = parameters['KidLaugh'] || '';
+
+var SE_KIDSAD = JSON.parse(parameters['KidSadParam'] || '{}');
+SE_KIDSAD.name = parameters['KidSad'] || '';
+
+var SE_KIDGO = JSON.parse(parameters['KidGoParam'] || '{}');
+SE_KIDGO.name = parameters['KidGo'] || '';
+
+var SE_KIDAHH = JSON.parse(parameters['KidAhhParam'] || '{}');
+SE_KIDAHH.name = parameters['KidAhh'] || '';
+
 var SE_MONKEY = JSON.parse(parameters['MonkeyParam'] || '{}');
 SE_MONKEY.name = parameters['Monkey'] || '';
+
+var SE_DADHUH = JSON.parse(parameters['DadHuhParam'] || '{}');
+SE_DADHUH.name = parameters['DadHuh'] || '';
+
+var SE_DADOHH = JSON.parse(parameters['DadOhhParam'] || '{}');
+SE_DADOHH.name = parameters['DadOhh'] || '';
+
+var SE_DADHMM = JSON.parse(parameters['DadHmmParam'] || '{}');
+SE_DADHMM.name = parameters['DadHmm'] || '';
 
 // To play different footstep sound on last level
 function playFootstepSound() {
@@ -417,8 +536,32 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
             case "KidSurprised":
                 AudioManager.playSe(SE_KIDSURPRISED);
                 break;
+            case "KidWow":
+                AudioManager.playSe(SE_KIDWOW);
+                break;
+            case "KidLaugh":
+                AudioManager.playSe(SE_KIDLAUGH);
+                break;
+            case "KidSad":
+                AudioManager.playSe(SE_KIDSAD);
+                break;
+            case "KidGo":
+                AudioManager.playSe(SE_KIDGO);
+                break;
+            case "KidAhh":
+                AudioManager.playSe(SE_KIDAHH);
+                break;
             case "Monkey":
                 AudioManager.playSe(SE_MONKEY);
+                break;
+            case "DadHuh":
+                AudioManager.playSe(SE_DADHUH);
+                break;
+            case "DadOhh":
+                AudioManager.playSe(SE_DADOHH);
+                break;
+            case "DadHmm":
+                AudioManager.playSe(SE_DADHMM);
                 break;
             case "HealthPickup":
                 AudioManager.playSe(SE_GAINHEALTH);

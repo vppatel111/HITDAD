@@ -132,6 +132,7 @@
       $gameParty.loseItem(item, 1);
       SPF_IncapacitateEnemy(enemyHit);
       AudioManager.playSe(SE_MILKBOTTLE);
+      AudioManager.playSe(SE_JUMPLAND);
 
     }
   }
