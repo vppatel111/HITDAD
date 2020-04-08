@@ -67,7 +67,7 @@
   var bulletCollider = {x: 0.16, y: 0.27, width: 0.67, height: 0.33};
 
   function isLookingInDirectionOfPlayer(event) {
-    var distanceX = event.x - $gamePlayer.x;
+    var distanceX = event._realX - $gamePlayer._realX;
     var direction = event.direction();
 
     // Enemy is to the right of player and enemy is facing left.
@@ -89,11 +89,10 @@
   // - "ENEMY_RANGE" tiles to the left or right of the security guard
   function isPlayerInRange(event) {
 
-    var distanceX = Math.abs(event.x - $gamePlayer.x);
-    var distanceY = Math.abs(event.y - $gamePlayer.y);
+    var distanceX = Math.abs(event._realX - $gamePlayer._realX);
+    var distanceY = Math.abs(event._realY - $gamePlayer._realY);
 
     let range = event._detectionRange ? event._detectionRange : ENEMY_RANGE;
-    // if (distanceX <= ENEMY_RANGE &&
     if (distanceX <= range &&
         distanceY <= 1) {
       return true;
@@ -245,7 +244,7 @@
               bullet.setup(enemy._realX - 1, enemy._realY - 1.45, -1 * BULLET_SPEED);
           } else {
               // Spawn bullet on right of enemy if going right.
-              bullet.setup(enemy._realX + 1, enemy._realY - 1.45, BULLET_SPEED);
+              bullet.setup(enemy._realX + 0.9, enemy._realY - 1.45, BULLET_SPEED);
           }
           AudioManager.playSe(SE_SHOOT);
 
