@@ -176,6 +176,15 @@
  * @desc: {"volume":50, "pitch"70, "pan":0}
  * @default {"volume":50, "pitch":70, "pan":0}
  *
+ * @param MilkBottleKnockout
+ * @require 1
+ * @dir audio/se/
+ * @type file
+ *
+ * @param MilkBottleKnockoutParam
+ * @desc: {"volume":50, "pitch"70, "pan":0}
+ * @default {"volume":50, "pitch":70, "pan":0}
+ *
  * @param MilkBottleMiss
  * @require 1
  * @dir audio/se/
@@ -349,6 +358,9 @@ SE_MILKBOTTLE.name = parameters['MilkBottle'] || '';
 
 var SE_MILKBOTTLEMISS = JSON.parse(parameters['MilkBottleMissParam'] || '{}');
 SE_MILKBOTTLEMISS.name = parameters['MilkBottleMiss'] || '';
+
+var SE_MILKBOTTLE_KNOCKOUT = JSON.parse(parameters['MilkBottleKnockoutParam'] || '{}');
+SE_MILKBOTTLE_KNOCKOUT.name = parameters['MilkBottleKnockout'] || '';
 
 var SE_DIAPERTHROW = JSON.parse(parameters['ThrowDiaperParam'] || '{}');
 SE_DIAPERTHROW.name = parameters['ThrowDiaper'] || '';
