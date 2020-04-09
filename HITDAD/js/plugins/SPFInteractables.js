@@ -15,6 +15,7 @@
  * Plugin Command
  * =================================================================================
  * Must call Initialize on loading of level
+ * Must call ReinitializeInteractables when respawning player
  * =================================================================================
  *
  * @author Mike Greber
@@ -22,6 +23,25 @@
  */
 
 (function() {
+
+    var aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
+    Game_Interpreter.prototype.pluginCommand = function(command, args) {
+        aliasPluginCommand.call(this, command, args);
+
+        switch(command)
+        {
+            case "ReinitializeInteractables":
+                regenerateInteractables();
+                break;
+        }
+    };
+
+    function regenerateInteractables() {
+        SPF_Interactables.forEach(function(interactable) {
+            interactable._interactableBitmap = null;
+        });
+
+    }
 
     Game_Player.prototype.SPF_CheckForInteractables = function() {
 
@@ -32,7 +52,7 @@
 
             let hintText = "Press F"
 
-            // Create Interactable  on first iteration only
+            // Create Interactable text on first iteration only
             if (!interactable._interactableBitmap) {
                 interactable._interactableBitmap = new SPF_Sprite();
 
